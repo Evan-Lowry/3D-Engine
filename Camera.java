@@ -1,4 +1,3 @@
-package Game.main;
 public class Camera {
     int x;
     int y;
@@ -39,16 +38,26 @@ public class Camera {
         return cordinates;
     }
 
-    public void moveX( int deltaX) {
+    public void moveX(int deltaX) {
         this.x += deltaX;
     }
 
-    public void moveY( int deltaY) {
+    public void moveY(int deltaY) {
         this.y += deltaY;
     }
 
-    public void moveZ( int deltaZ) {
+    public void moveZ(int deltaZ) {
         this.z += deltaZ;
+    }
+
+    public void moveForward(int delta) {
+        this.x += delta * Math.cos(this.rot);
+        this.y += delta * Math.sin(this.rot);
+    }
+
+    public void moveSideways(int delta) {
+        this.x += delta * Math.sin(this.rot);
+        this.y += delta * Math.cos(this.rot);
     }
 
     public void moveRot(double deltaRot) {

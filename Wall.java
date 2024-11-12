@@ -1,4 +1,3 @@
-package Game.main;
 public class Wall {
 
     private Vertex p1 = new Vertex(0, 0, 0);
@@ -16,7 +15,7 @@ public class Wall {
         p4.setY(GamePanel.windowHeight - p2.getY());
     }
 
-    private Vertex castToScreen(Camera c, Vertex v) {
+    private Vertex castToScreen(Camera c, Vertex vOriginal) {
 
         double xSqrd;
         double ySqrd;
@@ -36,6 +35,10 @@ public class Wall {
         double screenPosX;
         double screenPosY;
 
+        Vertex v;
+
+        v = new Vertex(vOriginal.getX(), vOriginal.getY(), 0);
+
         v.moveX(-c.getX());
         v.moveY(-c.getY());
 
@@ -47,7 +50,7 @@ public class Wall {
         ySqrd = Math.pow(v.getY(), 2);
         rSqrd = xSqrd + ySqrd;
         r = Math.sqrt(rSqrd);
-        // System.out.println(r);
+        System.out.println(r);
 
         // calculate the angle theta to vertex 1
         // tan-1(y / x) = theta

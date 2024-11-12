@@ -1,4 +1,3 @@
-package Game.main;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -14,7 +13,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     int FPS = 60;
 
-    public Camera c = new Camera(0,0,0,0,2);
+    public Camera c = new Camera(0,0,0,0,5);
     int camSpeed = 5;
 
     KeyHandler keyH = new KeyHandler();
@@ -26,6 +25,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        this.requestFocusInWindow();
     }
 
 
@@ -63,34 +63,35 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void update(){
+
         if (keyH.upPressed == true) {
-            c.moveX(camSpeed);
-            System.out.println("UP");
+            c.moveForward(camSpeed);
+            // System.out.println("UP");
         }
         if (keyH.downPressed == true) {
-            c.moveX(-camSpeed);
-            System.out.println("DOWN");
+            c.moveForward(-camSpeed);
+            // System.out.println("DOWN");
         }
         if (keyH.leftPressed == true) {
-            c.moveY(camSpeed);
-            System.out.println("LEFT");
+            c.moveSideways(camSpeed);
+            // System.out.println("LEFT");
         }
         if (keyH.rightPressed == true) {
-            c.moveY(-camSpeed);
-            System.out.println("RIGHT");
+            c.moveSideways(-camSpeed);
+            // System.out.println("RIGHT");
         }
         if (keyH.turnLeftPressed == true) {
             c.moveRot(camSpeed);
-            System.out.println("TURNLEFT");
+            // System.out.println("TURNLEFT");
         }
         if (keyH.turnRightPressed == true) {
             c.moveRot(-camSpeed);
-            System.out.println("TURNRIGHT");
+            // System.out.println("TURNRIGHT");
         }
 
         // c.moveRot(1/2);
-        c.moveY(0);
-        c.moveX(1);
+        // c.moveY(0);
+        // c.moveX(1);
     }
 
     public void paintComponent(Graphics g) {
@@ -98,18 +99,23 @@ public class GamePanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D)g;
 
         Vertex v1 = new Vertex(300,50,0);
-        Vertex v2 = new Vertex(200,-50,0);
+        Vertex v2 = new Vertex(300,-50,0);
         Wall w1 = new Wall(c,v1,v2);
 
         g2.setColor(Color.white);
+
+        g2.drawOval(windowHeight/2 + v1.getX(), windowWidth/2 + v1.getY(), 3, 3);
+        g2.drawOval(windowHeight/2 + v2.getX(), windowWidth/2 + v2.getY(), 3, 3);
+        g2.drawOval(windowHeight/2 + c.getX(), windowWidth/2 + v1.getY(), 5, 5);
+
         // g2.drawLine(w1.getP1().getX(), w1.getP1().getY(), w1.getP3().getX(), w1.getP3().getY());
         // g2.drawLine(w1.getP1().getX(), w1.getP1().getY(), w1.getP2().getX(), w1.getP2().getY());
         // g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP2().getX(), w1.getP2().getY());
         // g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP3().getX(), w1.getP3().getY());
         // g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP1().getX(), w1.getP1().getY());
 
-        g2.drawLine(windowWidth/2 - v1.getX(), windowHeight/2 - v1.getY(), windowWidth/2 - v2.getX(), windowHeight/2 - v2.getY());
-        g2.drawLine(windowWidth/2, windowHeight/2, windowWidth/2 + (int)(20 * Math.cos(c.getRot())), windowHeight/2 + (int)(20 * Math.sin(c.getRot())));
+        // g2.drawLine(windowWidth/2 - v1.getX(), windowHeight/2 - v1.getY(), windowWidth/2 - v2.getX(), windowHeight/2 - v2.getY());
+        // g2.drawLine(windowWidth/2, windowHeight/2, windowWidth/2 + (int)(20 * Math.cos(c.getRot())), windowHeight/2 + (int)(20 * Math.sin(c.getRot())));
 
         g2.dispose();
 

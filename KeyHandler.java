@@ -1,5 +1,3 @@
-package Game.main;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -10,39 +8,56 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyTyped(KeyEvent e) {
+        // char keyChar = e.getKeyChar();
+
+        // System.out.println(keyChar);
+    
+        // if (keyChar == 'w') {
+
+        // } else if (keyChar == 'a') {
+
+        // } else if (keyChar == 's') {
+ 
+        // } else if (keyChar == 'd') {
+   
+        // } else if (keyChar == 'j') {
+  
+        // } else if (keyChar == 'l') {
+
+        // }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int code = e.getKeyChar();
+        char keyChar = e.getKeyChar();
 
         // W
-        if(code == 119) {
+        if(keyChar == 'w') {
             upPressed = true;
         }
 
         // S
-        if(code == 115) {
+        if(keyChar == 's') {
             downPressed = true;
         }
 
         // A
-        if(code == 97) {
+        if(keyChar == 'a') {
             leftPressed = true;
         }
 
         // D
-        if(code == 100) {
+        if(keyChar == 'd') {
             rightPressed = true;
         }
 
         // <
-        if(code == 106) {
+        if(keyChar == 'j') {
             turnLeftPressed = true;
         }
 
         // >
-        if(code == 108) {
+        if(keyChar == 'l') {
             turnRightPressed = true;
         }
 
@@ -50,38 +65,36 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyReleased(KeyEvent e) {
-        int code = e.getKeyChar();
+        char keyChar = e.getKeyChar();
 
         // W
-        if(code == 119) {
+        if(keyChar == 'w') {
             upPressed = false;
         }
 
         // S
-        if(code == 115) {
+        if(keyChar == 's') {
             downPressed = false;
         }
 
         // A
-        if(code == 97) {
+        if(keyChar == 'a') {
             leftPressed = false;
         }
 
         // D
-        if(code == 100) {
+        if(keyChar == 'd') {
             rightPressed = false;
         }
 
         // <
-        if(code == 106) {
+        if(keyChar == 'j') {
             turnLeftPressed = false;
         }
 
         // >
-        if(code == 108) {
+        if(keyChar == 'l') {
             turnRightPressed = false;
         }
     }
-
-
 }

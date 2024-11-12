@@ -1,4 +1,3 @@
-package Game.main;
 public class Vertex {
     private int x;
     private int y;
