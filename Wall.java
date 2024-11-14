@@ -1,6 +1,6 @@
 public class Wall {
 
-    private Vertex p1 = new Vertex(0, 0, 0);
+    public Vertex p1 = new Vertex(0, 0, 0);
     private Vertex p2 = new Vertex(0, 0, 0);
     private Vertex p3 = new Vertex(0, 0, 0);
     private Vertex p4 = new Vertex(0, 0, 0);
@@ -50,7 +50,10 @@ public class Wall {
         ySqrd = Math.pow(v.getY(), 2);
         rSqrd = xSqrd + ySqrd;
         r = Math.sqrt(rSqrd);
-        System.out.println(r);
+
+        p1.setZ((int)r);
+
+        // System.out.println(r);
 
         // calculate the angle theta to vertex 1
         // tan-1(y / x) = theta
