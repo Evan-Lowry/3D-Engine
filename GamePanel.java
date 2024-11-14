@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    static int windowHeight = (int)(0.75*1080);
-    static int windowWidth = (int)(0.75*1920);
+    static int windowHeight = (int)(0.5*1080);
+    static int windowWidth = (int)(0.5*1920);
     
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
@@ -17,7 +17,7 @@ public class GamePanel extends JPanel implements Runnable{
     int FPS = 60;
 
     public Camera c = new Camera(0,0,0,0,10);
-    int camSpeed = 5;
+    int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
@@ -57,6 +57,8 @@ public class GamePanel extends JPanel implements Runnable{
                 if (remainingTime < 0) {
                     remainingTime = 0;
                 }
+                // double gh = drawInterval - remainingTime;
+                // System.out.println(1000000000/gh);
                 Thread.sleep((long) remainingTime);
                 nextDrawTime += drawInterval;
 
@@ -88,11 +90,11 @@ public class GamePanel extends JPanel implements Runnable{
             // System.out.println("RIGHT");
         }
         if (keyH.turnLeftPressed == true) {
-            c.moveRot(-camSpeed);
+            c.moveRot(-0.5 * camSpeed);
             // System.out.println("TURNLEFT");
         }
         if (keyH.turnRightPressed == true) {
-            c.moveRot(camSpeed);
+            c.moveRot(0.5 * camSpeed);
             // System.out.println("TURNRIGHT");
         }
 
@@ -110,29 +112,37 @@ public class GamePanel extends JPanel implements Runnable{
         Vertex v2 = new Vertex(300,-50,0);
         Wall w1 = new Wall(c,v1,v2);
 
-        g2.setColor(Color.RED);
-        // g2.drawOval(windowWidth/2 + c.getX()-50, windowHeight/2 + c.getY()-50, 100, 100);
-        // drawRadius(g2, c.getX(), c.getY(), 2*w1.info.getZ());
-        // drawPointer(g2, c.getX(), c.getY(), 50, c.getRot());
-
-        // g2.setColor(Color.WHITE);
-        // System.out.println(w1.info.x);
-        // drawPointer(g2, c.getX(), c.getY(), w1.info.getX(), w1.info.y);
-        // g2.drawOval(windowWidth/2 + v1.getX()-2, windowHeight/2 + v1.getY()-2, 4, 4);
-        // g2.drawOval(windowWidth/2 + v2.getX()-2, windowHeight/2 + v2.getY()-2, 4, 4);
-        // g2.drawOval(windowWidth/2 + c.getX()-3, windowHeight/2 + c.getY()-3, 6, 6);
-
-        g2.drawLine(w1.getP1().getX(), w1.getP1().getY(), w1.getP3().getX(), w1.getP3().getY());
-        g2.drawLine(w1.getP1().getX(), w1.getP1().getY(), w1.getP2().getX(), w1.getP2().getY());
-        g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP2().getX(), w1.getP2().getY());
-        g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP3().getX(), w1.getP3().getY());
-        g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP1().getX(), w1.getP1().getY());
-
-        // g2.drawLine(windowWidth/2 - v1.getX(), windowHeight/2 - v1.getY(), windowWidth/2 - v2.getX(), windowHeight/2 - v2.getY());
-        // g2.drawLine(windowWidth/2, windowHeight/2, windowWidth/2 + (int)(20 * Math.cos(c.getRot())), windowHeight/2 + (int)(20 * Math.sin(c.getRot())));
+        // drawWall(g2, w1);
+        drawDebug(g2, c, w1, v1, v2);
 
         g2.dispose();
 
+    }
+
+    private void drawDebug (Graphics2D g2, Camera c, Wall w, Vertex v1, Vertex v2) {
+        g2.setColor(Color.BLUE);
+        // System.out.println(w1.info.x);
+        drawPointer(g2, c.getX(), c.getY(), w.info.getZ(), c.getRot());
+        drawPointer(g2, c.getX(), c.getY(), w.info.getX(), c.getRot() + Math.toRadians(90));
+        g2.drawOval(windowWidth/2 + v1.getX()-2, windowHeight/2 + v1.getY()-2, 4, 4);
+        g2.drawOval(windowWidth/2 + v2.getX()-2, windowHeight/2 + v2.getY()-2, 4, 4);
+        g2.drawOval(windowWidth/2 + c.getX()-3, windowHeight/2 + c.getY()-3, 6, 6);
+
+        g2.setColor(Color.WHITE);
+        g2.drawOval(windowWidth/2 + c.getX()-50, windowHeight/2 + c.getY()-50, 100, 100);
+        // drawRadius(g2, c.getX(), c.getY(), 2*w.info.getZ());
+        drawPointer(g2, c.getX(), c.getY(), 50, c.getRot());
+    }
+
+    private void drawWall (Graphics2D g2, Wall w) {
+        if (w.isValid()) {
+            g2.setColor(Color.RED);
+            g2.drawLine(w.getP1().getX(), w.getP1().getY(), w.getP3().getX(), w.getP3().getY());
+            g2.drawLine(w.getP1().getX(), w.getP1().getY(), w.getP2().getX(), w.getP2().getY());
+            g2.drawLine(w.getP4().getX(), w.getP4().getY(), w.getP2().getX(), w.getP2().getY());
+            g2.drawLine(w.getP4().getX(), w.getP4().getY(), w.getP3().getX(), w.getP3().getY());
+            g2.drawLine(w.getP4().getX(), w.getP4().getY(), w.getP1().getX(), w.getP1().getY());
+        }
     }
 
     public void drawPointer(Graphics2D g2, int x, int y, int magnitude, double angle) {

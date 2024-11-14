@@ -6,8 +6,25 @@ public class Wall {
     private Vertex p4 = new Vertex(0, 0, 0);
 
     public Vertex info = new Vertex(0, 0, 0);
+    private boolean isValid = true;
+
 
     public Wall(Camera c, Vertex v1, Vertex v2) {
+
+        isValid = true;
+
+        v1 = normalizeCoordinates(c, v1);
+        v2 = normalizeCoordinates(c, v2);
+
+        if (v1.getY() < 0 && v2.getY() < 0) {
+            isValid = false;
+            // System.out.println(isValid);
+        } else if (v1.getY() < 0) {
+            v1 = ghostVertex(c, v1, v2);
+        } else if (v2.getY() < 0) {
+            v2 = ghostVertex(c, v2, v1);
+        }
+
         p1 = castToScreen(c, v1);
         p3.setX(p1.getX());
         p3.setY(GamePanel.windowHeight - p1.getY());
@@ -17,7 +34,7 @@ public class Wall {
         p4.setY(GamePanel.windowHeight - p2.getY());
     }
 
-    private Vertex castToScreen(Camera c, Vertex vOriginal) {
+    private Vertex normalizeCoordinates(Camera c, Vertex vOriginal) {
 
         double xSqrd;
         double ySqrd;
@@ -29,13 +46,6 @@ public class Wall {
 
         double width;
         double length;
-
-        double factor;
-        double screenFactor;
-
-        double pixelOffset;
-        double screenPosX;
-        double screenPosY;
 
         Vertex v;
 
@@ -52,8 +62,6 @@ public class Wall {
         ySqrd = Math.pow(v.getY(), 2);
         rSqrd = xSqrd + ySqrd;
         r = Math.sqrt(rSqrd);
-
-        info.setX(r);
 
         // System.out.println(r);
 
@@ -78,11 +86,53 @@ public class Wall {
         width = r * Math.sin(thetaNet);
         // System.out.println(width);
 
+        info.setX(width);
+
         // calculate the length from the camera to the closest point on a plane intesecting
         // vertex and parallel to camera rotation
         length = r * Math.cos(thetaNet);
         // System.out.println(length);
+
         info.setZ(length);
+
+        v.setX(width);
+        v.setY(length);
+
+        return v;
+    }
+
+    private Vertex ghostVertex(Camera c, Vertex v1, Vertex v2) {
+        double height;
+        double length;
+        double width;
+        double base;
+        double newX;
+
+        height = v2.getY() - v1.getY();
+        length = v2.getY();
+        width = v2.getX();
+        base = v1.getX() - width;
+        
+        newX = (base * length) / height;
+
+        // System.out.println(v1.getX());
+        // System.out.println(v1.getY());
+
+        v1.set(newX, 0, 0);
+
+        return v1;
+    }
+
+    private Vertex castToScreen(Camera c, Vertex v) {
+        double factor;
+        double screenFactor;
+
+        double pixelOffset;
+        double screenPosX;
+        double screenPosY;
+
+        double length = v.getX();
+        double width = v.getY();
 
         // the factor between the difference in scale between the world triange and screen triangle
         factor = c.FOV / length;
@@ -95,17 +145,13 @@ public class Wall {
         // calculates the difference in vertex screen position from the center of the screen
         pixelOffset = (screenFactor * 40);
         // System.out.println(pixelOffset);
-        
-        // calculates the pixel positon on the x axis to draw the vertex
-        if (length > 0) {
-            screenPosX = (GamePanel.windowWidth / 2) + pixelOffset;
-        } else {
-            screenPosX = (GamePanel.windowWidth / 2) + (Math.sin((Math.PI)-(2*thetaNet)))*(pixelOffset/Math.sin(thetaNet));
-        }
-        // System.out.println(screenPosX);
 
         screenPosY  = (GamePanel.windowHeight / 2) - (c.FOV * 2000/Math.abs(length));
         // System.out.println(screenPosY);
+
+        // calculates the pixel positon on the x axis to draw the vertex
+        screenPosX = (GamePanel.windowWidth / 2) + pixelOffset;
+        // System.out.println(screenPosX);
 
         return new Vertex((int)screenPosX, (int)screenPosY, 0);
     }
@@ -124,5 +170,9 @@ public class Wall {
 
     public Vertex getP4() {
         return this.p4;
+    }
+
+    public boolean isValid() {
+        return this.isValid;
     }
 }

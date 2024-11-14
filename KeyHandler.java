@@ -11,24 +11,26 @@ public class KeyHandler implements KeyListener{
         char keyChar = e.getKeyChar();
 
         // System.out.println(keyChar);
-
-        //upPressed = !upPressed;
-
-
     
-        // if (keyChar == 'w') {
-        //     upPressed = true;
-        // } else if (keyChar == 'a') {
-        //     leftPressed = true;
-        // } else if (keyChar == 's') {
-        //     upPressed = false;
-        // } else if (keyChar == 'd') {
-        //     leftPressed = false;
-        // // } else if (keyChar == 'j') {
-        // //     turnLeftPressed = !turnLeftPressed;
-        // // } else if (keyChar == 'l') {
-        // //     turnRightPressed = !turnRightPressed;
-        // }
+        if (keyChar == 'w') {
+            upPressed = !upPressed;
+            downPressed = false;
+        } else if (keyChar == 'a') {
+            leftPressed = !leftPressed;
+            rightPressed = false;
+        } else if (keyChar == 's') {
+            downPressed = !downPressed;
+            upPressed = false;
+        } else if (keyChar == 'd') {
+            rightPressed = !rightPressed;
+            leftPressed = false;
+        } else if (keyChar == 'j') {
+            turnLeftPressed = !turnLeftPressed;
+            turnRightPressed = false;
+        } else if (keyChar == 'l') {
+            turnRightPressed = !turnRightPressed;
+            turnLeftPressed = false;
+        }
     }
 
     @Override
@@ -37,32 +39,32 @@ public class KeyHandler implements KeyListener{
 
         // W
         if(keyChar == 'w') {
-            upPressed = true;
+            // upPressed = true;
         }
 
         // S
         if(keyChar == 's') {
-            downPressed = true;
+            // downPressed = true;
         }
 
         // A
         if(keyChar == 'a') {
-            leftPressed = true;
+            // leftPressed = true;
         }
 
         // D
         if(keyChar == 'd') {
-            rightPressed = true;
+            // rightPressed = true;
         }
 
         // <
         if(keyChar == 'j') {
-            turnLeftPressed = true;
+            // turnLeftPressed = true;
         }
 
         // >
         if(keyChar == 'l') {
-            turnRightPressed = true;
+            // turnRightPressed = true;
         }
 
     }
@@ -73,32 +75,32 @@ public class KeyHandler implements KeyListener{
 
         // W
         if(keyChar == 'w') {
-            upPressed = false;
+            // upPressed = false;
         }
 
         // S
         if(keyChar == 's') {
-            downPressed = false;
+            // downPressed = false;
         }
 
         // A
         if(keyChar == 'a') {
-            leftPressed = false;
+            // leftPressed = false;
         }
 
         // D
         if(keyChar == 'd') {
-            rightPressed = false;
+            // rightPressed = false;
         }
 
         // <
         if(keyChar == 'j') {
-            turnLeftPressed = false;
+            // turnLeftPressed = false;
         }
 
         // >
         if(keyChar == 'l') {
-            turnRightPressed = false;
+            // turnRightPressed = false;
         }
     }
 }
