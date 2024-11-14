@@ -1,7 +1,7 @@
 public class Camera {
-    int x;
-    int y;
-    int z;
+    double x;
+    double y;
+    double z;
     double rot;
     int FOV;
 
@@ -14,15 +14,15 @@ public class Camera {
     }
 
     public int getX() {
-        return this.x;
+        return (int)this.x;
     }
 
     public int getY() {
-        return this.y;
+        return (int)this.y;
     }
 
     public int getZ() {
-        return this.z;
+        return (int)this.z;
     }
 
     public double getRot() {
@@ -34,29 +34,29 @@ public class Camera {
     }
 
     public int[] getPos() {
-        int[] cordinates = {this.x, this.y, this.z};
+        int[] cordinates = {(int)this.x, (int)this.y, (int)this.z};
         return cordinates;
     }
 
-    public void moveX(int deltaX) {
+    public void moveX(double deltaX) {
         this.x += deltaX;
     }
 
-    public void moveY(int deltaY) {
+    public void moveY(double deltaY) {
         this.y += deltaY;
     }
 
-    public void moveZ(int deltaZ) {
+    public void moveZ(double deltaZ) {
         this.z += deltaZ;
     }
 
-    public void moveForward(int delta) {
+    public void moveForward(double delta) {
         this.x += delta * Math.cos(this.rot);
         this.y += delta * Math.sin(this.rot);
     }
 
-    public void moveSideways(int delta) {
-        this.x += delta * Math.sin(this.rot);
+    public void moveSideways(double delta) {
+        this.x -= delta * Math.sin(this.rot);
         this.y += delta * Math.cos(this.rot);
     }
 

@@ -8,15 +8,15 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    static int windowHeight = 1080/2;
-    static int windowWidth = 1920/2;
+    static int windowHeight = (int)(0.75*1080);
+    static int windowWidth = (int)(0.75*1920);
     
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
 
     int FPS = 60;
 
-    public Camera c = new Camera(0,0,0,0,5);
+    public Camera c = new Camera(0,0,0,0,10);
     int camSpeed = 5;
 
     KeyHandler keyH = new KeyHandler();
@@ -80,23 +80,23 @@ public class GamePanel extends JPanel implements Runnable{
             // System.out.println("DOWN");
         }
         if (keyH.leftPressed == true) {
-            c.moveSideways(camSpeed);
+            c.moveSideways(-camSpeed);
             // System.out.println("LEFT");
         }
         if (keyH.rightPressed == true) {
-            c.moveSideways(-camSpeed);
+            c.moveSideways(camSpeed);
             // System.out.println("RIGHT");
         }
         if (keyH.turnLeftPressed == true) {
-            c.moveRot(camSpeed);
+            c.moveRot(-camSpeed);
             // System.out.println("TURNLEFT");
         }
         if (keyH.turnRightPressed == true) {
-            c.moveRot(-camSpeed);
+            c.moveRot(camSpeed);
             // System.out.println("TURNRIGHT");
         }
 
-        c.moveRot(1);
+        // c.moveRot(1);
         // System.out.println(c.getRot());
         // c.moveY(0);
         // c.moveX(1);
@@ -112,20 +112,21 @@ public class GamePanel extends JPanel implements Runnable{
 
         g2.setColor(Color.RED);
         // g2.drawOval(windowWidth/2 + c.getX()-50, windowHeight/2 + c.getY()-50, 100, 100);
-        drawRadius(g2, c.getX(), c.getY(), 2*w1.p1.getZ());
+        // drawRadius(g2, c.getX(), c.getY(), 2*w1.info.getZ());
+        // drawPointer(g2, c.getX(), c.getY(), 50, c.getRot());
 
-        g2.setColor(Color.white);
+        // g2.setColor(Color.WHITE);
+        // System.out.println(w1.info.x);
+        // drawPointer(g2, c.getX(), c.getY(), w1.info.getX(), w1.info.y);
+        // g2.drawOval(windowWidth/2 + v1.getX()-2, windowHeight/2 + v1.getY()-2, 4, 4);
+        // g2.drawOval(windowWidth/2 + v2.getX()-2, windowHeight/2 + v2.getY()-2, 4, 4);
+        // g2.drawOval(windowWidth/2 + c.getX()-3, windowHeight/2 + c.getY()-3, 6, 6);
 
-        g2.drawOval(windowWidth/2 + v1.getX()-2, windowHeight/2 + v1.getY()-2, 4, 4);
-        g2.drawOval(windowWidth/2 + v2.getX()-2, windowHeight/2 + v2.getY()-2, 4, 4);
-
-        g2.drawOval(windowWidth/2 + c.getX()-3, windowHeight/2 + c.getY()-3, 6, 6);
-
-        // g2.drawLine(w1.getP1().getX(), w1.getP1().getY(), w1.getP3().getX(), w1.getP3().getY());
-        // g2.drawLine(w1.getP1().getX(), w1.getP1().getY(), w1.getP2().getX(), w1.getP2().getY());
-        // g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP2().getX(), w1.getP2().getY());
-        // g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP3().getX(), w1.getP3().getY());
-        // g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP1().getX(), w1.getP1().getY());
+        g2.drawLine(w1.getP1().getX(), w1.getP1().getY(), w1.getP3().getX(), w1.getP3().getY());
+        g2.drawLine(w1.getP1().getX(), w1.getP1().getY(), w1.getP2().getX(), w1.getP2().getY());
+        g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP2().getX(), w1.getP2().getY());
+        g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP3().getX(), w1.getP3().getY());
+        g2.drawLine(w1.getP4().getX(), w1.getP4().getY(), w1.getP1().getX(), w1.getP1().getY());
 
         // g2.drawLine(windowWidth/2 - v1.getX(), windowHeight/2 - v1.getY(), windowWidth/2 - v2.getX(), windowHeight/2 - v2.getY());
         // g2.drawLine(windowWidth/2, windowHeight/2, windowWidth/2 + (int)(20 * Math.cos(c.getRot())), windowHeight/2 + (int)(20 * Math.sin(c.getRot())));
@@ -143,7 +144,7 @@ public class GamePanel extends JPanel implements Runnable{
         deltaX = Math.cos(angle) * magnitude;
         deltaY = Math.sin(angle) * magnitude;
 
-        g2.setColor(Color.RED);
+        // g2.setColor(Color.RED);
         g2.drawLine(centerX + x, centerY + y, centerX + x + (int)deltaX, centerY + y + (int)deltaY);
     }
 

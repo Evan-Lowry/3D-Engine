@@ -1,7 +1,7 @@
 public class Vertex {
-    private int x;
-    private int y;
-    private int z;
+    public double x;
+    public double y;
+    public double z;
 
     public Vertex(int x, int y, int z) {
         this.x = x;
@@ -10,54 +10,54 @@ public class Vertex {
     }
 
     public int getX() {
-        return this.x;
+        return (int)this.x;
     }
 
     public int getY() {
-        return this.y;
+        return (int)this.y;
     }
 
     public int getZ() {
-        return this.z;
+        return (int)this.z;
     }
 
     public int[] get() {
-        int[] cordinates = {this.x, this.y, this.z};
+        int[] cordinates = {(int)this.x, (int)this.y, (int)this.z};
         return cordinates;
     }
 
-    public void moveX( int deltaX) {
+    public void moveX( double deltaX) {
         this.x += deltaX;
 
     }
 
-    public void moveY( int deltaY) {
+    public void moveY( double deltaY) {
         this.y += deltaY;
     }
 
-    public void moveZ( int deltaZ) {
+    public void moveZ( double deltaZ) {
         this.z += deltaZ;
     }
 
-    public void move(int deltaX, int deltaY, int deltaZ) {
+    public void move(double deltaX, double deltaY, double deltaZ) {
         this.x += deltaX;
         this.y += deltaY;
         this.z += deltaZ;
     }
 
-    public void setX( int x) {
+    public void setX( double x) {
         this.x = x;
     }
 
-    public void setY( int y) {
+    public void setY( double y) {
         this.y = y;
     }
 
-    public void setZ( int z) {
+    public void setZ( double z) {
         this.z = z;
     }
 
-    public void set(int x, int y, int z) {
+    public void set(double x, double y, double z) {
         this.x = x;
         this.y = x;
         this.z = x;

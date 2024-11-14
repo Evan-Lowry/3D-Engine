@@ -1,9 +1,11 @@
 public class Wall {
 
-    public Vertex p1 = new Vertex(0, 0, 0);
+    private Vertex p1 = new Vertex(0, 0, 0);
     private Vertex p2 = new Vertex(0, 0, 0);
     private Vertex p3 = new Vertex(0, 0, 0);
     private Vertex p4 = new Vertex(0, 0, 0);
+
+    public Vertex info = new Vertex(0, 0, 0);
 
     public Wall(Camera c, Vertex v1, Vertex v2) {
         p1 = castToScreen(c, v1);
@@ -51,14 +53,21 @@ public class Wall {
         rSqrd = xSqrd + ySqrd;
         r = Math.sqrt(rSqrd);
 
-        p1.setZ((int)r);
+        info.setX(r);
 
         // System.out.println(r);
 
         // calculate the angle theta to vertex 1
         // tan-1(y / x) = theta
         theta = Math.atan((double)v.getY() / v.getX());
+        if (v.getX() < 0) {
+            theta += Math.toRadians(180);
+        }
+        // System.out.println((double)v.getY() / v.getX());
         // System.out.println(Math.toDegrees(theta));
+
+        info.setY(theta);
+        // System.out.println(p2.getZ());
 
         // get theta for triange between vertex and camera accounting for the camera rotation
         thetaNet = theta - c.getRot();
@@ -73,6 +82,7 @@ public class Wall {
         // vertex and parallel to camera rotation
         length = r * Math.cos(thetaNet);
         // System.out.println(length);
+        info.setZ(length);
 
         // the factor between the difference in scale between the world triange and screen triangle
         factor = c.FOV / length;
@@ -87,10 +97,14 @@ public class Wall {
         // System.out.println(pixelOffset);
         
         // calculates the pixel positon on the x axis to draw the vertex
-        screenPosX = (GamePanel.windowWidth / 2) - pixelOffset;
+        if (length > 0) {
+            screenPosX = (GamePanel.windowWidth / 2) + pixelOffset;
+        } else {
+            screenPosX = (GamePanel.windowWidth / 2) + (Math.sin((Math.PI)-(2*thetaNet)))*(pixelOffset/Math.sin(thetaNet));
+        }
         // System.out.println(screenPosX);
 
-        screenPosY  = (GamePanel.windowHeight / 2) - (c.FOV * 2000/length);
+        screenPosY  = (GamePanel.windowHeight / 2) - (c.FOV * 2000/Math.abs(length));
         // System.out.println(screenPosY);
 
         return new Vertex((int)screenPosX, (int)screenPosY, 0);
