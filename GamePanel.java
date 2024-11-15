@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 // import java.awt.RenderingHints.Key;
+import java.awt.Polygon;
 
 import javax.swing.JPanel;
 
@@ -16,7 +17,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     int FPS = 60;
 
-    public Camera c = new Camera(0,0,0,0,10);
+    public Camera c = new Camera(-300,0,0,0,20);
     int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
@@ -107,41 +108,46 @@ public class GamePanel extends JPanel implements Runnable{
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
+        Wall w1 = new Wall(c,new Vertex(-50, -50, 0),new Vertex(-50, 50, 0), Color.RED);
+        Wall w2 = new Wall(c,new Vertex(-50, 50, 0),new Vertex(50, 50, 0), Color.BLUE);
+        Wall w3 = new Wall(c,new Vertex(50, 50, 0),new Vertex(50, -50, 0), Color.YELLOW);
+        Wall w4 = new Wall(c,new Vertex(50, -50, 0),new Vertex(-50, -50, 0), Color.GREEN);
 
-        Vertex v1 = new Vertex(300,50,0);
-        Vertex v2 = new Vertex(300,-50,0);
-        Wall w1 = new Wall(c,v1,v2);
 
-        // drawWall(g2, w1);
-        drawDebug(g2, c, w1, v1, v2);
+
+        drawWall(g2, w1);
+        drawWall(g2, w2);
+        drawWall(g2, w3);
+        drawWall(g2, w4);
+        camDebug(g2, c);
+        wallDebug(g2, w1);
+        wallDebug(g2, w2);
+        wallDebug(g2, w3);
+        wallDebug(g2, w4);
 
         g2.dispose();
-
     }
 
-    private void drawDebug (Graphics2D g2, Camera c, Wall w, Vertex v1, Vertex v2) {
-        g2.setColor(Color.BLUE);
-        // System.out.println(w1.info.x);
-        drawPointer(g2, c.getX(), c.getY(), w.info.getZ(), c.getRot());
-        drawPointer(g2, c.getX(), c.getY(), w.info.getX(), c.getRot() + Math.toRadians(90));
-        g2.drawOval(windowWidth/2 + v1.getX()-2, windowHeight/2 + v1.getY()-2, 4, 4);
-        g2.drawOval(windowWidth/2 + v2.getX()-2, windowHeight/2 + v2.getY()-2, 4, 4);
-        g2.drawOval(windowWidth/2 + c.getX()-3, windowHeight/2 + c.getY()-3, 6, 6);
-
+    private void camDebug (Graphics2D g2, Camera c) {
         g2.setColor(Color.WHITE);
-        g2.drawOval(windowWidth/2 + c.getX()-50, windowHeight/2 + c.getY()-50, 100, 100);
-        // drawRadius(g2, c.getX(), c.getY(), 2*w.info.getZ());
-        drawPointer(g2, c.getX(), c.getY(), 50, c.getRot());
+        g2.drawOval(windowWidth/2 + c.getX()-25, windowHeight/2 + c.getY()-25, 50, 50);
+        drawPointer(g2, c.getX(), c.getY(), 25, c.getRot());
+    }
+
+    private void wallDebug (Graphics g2, Wall w) {
+        Vertex v1 = w.getV1();
+        Vertex v2 = w.getV2();
+
+        g2.setColor(w.getColor());
+        g2.drawLine(windowWidth/2 + v1.getX(), windowHeight/2 + v1.getY(), windowWidth/2 + v2.getX(), windowHeight/2 + v2.getY());
     }
 
     private void drawWall (Graphics2D g2, Wall w) {
         if (w.isValid()) {
-            g2.setColor(Color.RED);
-            g2.drawLine(w.getP1().getX(), w.getP1().getY(), w.getP3().getX(), w.getP3().getY());
-            g2.drawLine(w.getP1().getX(), w.getP1().getY(), w.getP2().getX(), w.getP2().getY());
-            g2.drawLine(w.getP4().getX(), w.getP4().getY(), w.getP2().getX(), w.getP2().getY());
-            g2.drawLine(w.getP4().getX(), w.getP4().getY(), w.getP3().getX(), w.getP3().getY());
-            g2.drawLine(w.getP4().getX(), w.getP4().getY(), w.getP1().getX(), w.getP1().getY());
+            g2.setColor(w.getColor());
+            int[] cordinatesX = {w.getP1().getX(), w.getP2().getX(), w.getP4().getX(), w.getP3().getX()};
+            int[] cordinatesY = {w.getP1().getY(), w.getP2().getY(), w.getP4().getY(), w.getP3().getY()};
+            g2.fillPolygon(cordinatesX, cordinatesY, 4);
         }
     }
 

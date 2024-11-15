@@ -1,37 +1,83 @@
+import java.awt.Color;
+
 public class Wall {
 
+    private Vertex v1;
+    private Vertex v2;
     private Vertex p1 = new Vertex(0, 0, 0);
     private Vertex p2 = new Vertex(0, 0, 0);
     private Vertex p3 = new Vertex(0, 0, 0);
     private Vertex p4 = new Vertex(0, 0, 0);
+    private double depthFromCamera;
+    private Color col;
 
     public Vertex info = new Vertex(0, 0, 0);
     private boolean isValid = true;
 
 
-    public Wall(Camera c, Vertex v1, Vertex v2) {
+    public Wall(Camera c, Vertex v1, Vertex v2, Color col) {
 
+        this.v1 = v1;
+        this.v2 = v2;
+        this.col = col;
+
+        //used to determine if to draw wall
         isValid = true;
 
+        // adjusts the cordinates so the camera has 0 rotation and is at (0,0)
         v1 = normalizeCoordinates(c, v1);
         v2 = normalizeCoordinates(c, v2);
 
-        if (v1.getY() < 0 && v2.getY() < 0) {
-            isValid = false;
-            // System.out.println(isValid);
-        } else if (v1.getY() < 0) {
-            v1 = ghostVertex(c, v1, v2);
-        } else if (v2.getY() < 0) {
-            v2 = ghostVertex(c, v2, v1);
+        // figures out which point is farther from camera, then sets depthFromCamera to furthest back
+        if (v1.getDY() >= v2.getDY()) {
+            depthFromCamera = v1.getDY();
+        } else {
+            depthFromCamera = v2.getDY();
         }
 
-        p1 = castToScreen(c, v1);
-        p3.setX(p1.getX());
-        p3.setY(GamePanel.windowHeight - p1.getY());
+        if (v1.getY() <= 0 && v2.getY() <= 0) {
+            isValid = false;
+            // System.out.println(isValid);
+        } else {
+            if (v1.getY() <= 0) {
+                v1 = ghostVertex(c, v1, v2);
+            } else if (v2.getY() <= 0) {
+                v2 = ghostVertex(c, v2, v1);
+            }
 
-        p2 = castToScreen(c, v2);
-        p4.setX(p2.getX());
-        p4.setY(GamePanel.windowHeight - p2.getY());
+            System.out.println(this.col);
+            int colFactor = (int)((v1.getDY()+v2.getDY())/20);
+            System.out.println(colFactor);
+
+            int r = (int) (col.getRed() -colFactor);   // Darken by 30%
+            int g = (int) (col.getGreen() -colFactor);
+            int b = (int) (col.getBlue() -colFactor);
+            
+            // Ensure RGB values stay within the valid range (0-255)
+            r = Math.max(0, Math.min(255, r));
+            g = Math.max(0, Math.min(255, g));
+            b = Math.max(0, Math.min(255, b));
+            
+            this.col = new Color(r, g, b);
+
+            // int colFactor = (int)((v1.getDY()+v2.getDY())/50);
+            // this.col = new Color (this.col.getRed() - colFactor, this.col.getBlue() - colFactor, this.col.getGreen() - colFactor);
+
+
+            // System.out.println(v1.getDX() + ", " + v1.getDY());
+
+            p1 = castToScreen(c, v1);
+            p3.setX(p1.getX());
+            p3.setY(GamePanel.windowHeight - p1.getY());
+
+            p2 = castToScreen(c, v2);
+            p4.setX(p2.getX());
+            p4.setY(GamePanel.windowHeight - p2.getY());
+
+            if (p1.getX() >= p2.getX()) {
+                isValid = false;
+            }
+        }
     }
 
     private Vertex normalizeCoordinates(Camera c, Vertex vOriginal) {
@@ -102,23 +148,21 @@ public class Wall {
     }
 
     private Vertex ghostVertex(Camera c, Vertex v1, Vertex v2) {
-        double height;
-        double length;
-        double width;
-        double base;
+        double deltaHeight;
         double newX;
 
-        height = v2.getY() - v1.getY();
-        length = v2.getY();
-        width = v2.getX();
-        base = v1.getX() - width;
+        // calculates the new y value (5 degrees raised from x axis)
+        deltaHeight = Math.abs(Math.tan(Math.toRadians(5))*v2.getX());
         
-        newX = (base * length) / height;
+        newX = ((v1.getDX()-v2.getDX()) * (v2.getDY()-deltaHeight)) / (v2.getDY()-v1.getDY());
+        // System.out.println(newX + ", " + v2.getDX() + ", " + (newX+v2.getDX()) + ", " + deltaHeight);
+        newX =+ v2.getDX();
 
         // System.out.println(v1.getX());
         // System.out.println(v1.getY());
 
-        v1.set(newX, 0, 0);
+        v1.set(newX, deltaHeight, 0);
+        // System.out.println(newX + ", " + deltaHeight);
 
         return v1;
     }
@@ -131,8 +175,8 @@ public class Wall {
         double screenPosX;
         double screenPosY;
 
-        double length = v.getX();
-        double width = v.getY();
+        double length = v.getDY();
+        double width = v.getDX();
 
         // the factor between the difference in scale between the world triange and screen triangle
         factor = c.FOV / length;
@@ -146,7 +190,7 @@ public class Wall {
         pixelOffset = (screenFactor * 40);
         // System.out.println(pixelOffset);
 
-        screenPosY  = (GamePanel.windowHeight / 2) - (c.FOV * 2000/Math.abs(length));
+        screenPosY  = (GamePanel.windowHeight / 2) - (c.FOV * 2000/length);
         // System.out.println(screenPosY);
 
         // calculates the pixel positon on the x axis to draw the vertex
@@ -154,6 +198,14 @@ public class Wall {
         // System.out.println(screenPosX);
 
         return new Vertex((int)screenPosX, (int)screenPosY, 0);
+    }
+
+    public Vertex getV1() {
+        return this.v1;
+    }
+
+    public Vertex getV2() {
+        return this.v2;
     }
 
     public Vertex getP1() {
@@ -170,6 +222,10 @@ public class Wall {
 
     public Vertex getP4() {
         return this.p4;
+    }
+
+    public Color getColor() {
+        return this.col;
     }
 
     public boolean isValid() {

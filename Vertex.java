@@ -21,6 +21,18 @@ public class Vertex {
         return (int)this.z;
     }
 
+    public double getDX() {
+        return this.x;
+    }
+
+    public double getDY() {
+        return this.y;
+    }
+
+    public double getDZ() {
+        return this.z;
+    }
+
     public int[] get() {
         int[] cordinates = {(int)this.x, (int)this.y, (int)this.z};
         return cordinates;
@@ -59,7 +71,7 @@ public class Vertex {
 
     public void set(double x, double y, double z) {
         this.x = x;
-        this.y = x;
-        this.z = x;
+        this.y = y;
+        this.z = z;
     }
 }
