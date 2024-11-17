@@ -1,7 +1,9 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
-public class KeyHandler implements KeyListener{
+public class KeyHandler implements KeyListener, MouseMotionListener{
 
 
     public boolean upPressed, downPressed, leftPressed, rightPressed, turnLeftPressed, turnRightPressed;
@@ -12,25 +14,30 @@ public class KeyHandler implements KeyListener{
 
         // System.out.println(keyChar);
     
-        if (keyChar == 'w') {
-            upPressed = !upPressed;
-            downPressed = false;
-        } else if (keyChar == 'a') {
-            leftPressed = !leftPressed;
-            rightPressed = false;
-        } else if (keyChar == 's') {
-            downPressed = !downPressed;
-            upPressed = false;
-        } else if (keyChar == 'd') {
-            rightPressed = !rightPressed;
-            leftPressed = false;
-        } else if (keyChar == 'j') {
-            turnLeftPressed = !turnLeftPressed;
-            turnRightPressed = false;
-        } else if (keyChar == 'l') {
-            turnRightPressed = !turnRightPressed;
-            turnLeftPressed = false;
-        }
+        // if (keyChar == 'w') {
+        //     upPressed = !upPressed;
+        //     downPressed = false;
+        // } else if (keyChar == 'a') {
+        //     leftPressed = !leftPressed;
+        //     rightPressed = false;
+        // } else if (keyChar == 's') {
+        //     downPressed = !downPressed;
+        //     upPressed = false;
+        // } else if (keyChar == 'd') {
+        //     rightPressed = !rightPressed;
+        //     leftPressed = false;
+        // } else if (keyChar == 'j') {
+        //     turnLeftPressed = !turnLeftPressed;
+        //     turnRightPressed = false;
+        // } else if (keyChar == 'l') {
+        //     turnRightPressed = !turnRightPressed;
+        //     turnLeftPressed = false;
+        // }
+
+        // if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        //     System.out.println("ESC");
+        // }
+        // System.out.println(e.getExtendedKeyCode());
     }
 
     @Override
@@ -39,32 +46,32 @@ public class KeyHandler implements KeyListener{
 
         // W
         if(keyChar == 'w') {
-            // upPressed = true;
+            upPressed = true;
         }
 
         // S
         if(keyChar == 's') {
-            // downPressed = true;
+            downPressed = true;
         }
 
         // A
         if(keyChar == 'a') {
-            // leftPressed = true;
+            leftPressed = true;
         }
 
         // D
         if(keyChar == 'd') {
-            // rightPressed = true;
+            rightPressed = true;
         }
 
         // <
         if(keyChar == 'j') {
-            // turnLeftPressed = true;
+            turnLeftPressed = true;
         }
 
         // >
         if(keyChar == 'l') {
-            // turnRightPressed = true;
+            turnRightPressed = true;
         }
 
     }
@@ -75,32 +82,44 @@ public class KeyHandler implements KeyListener{
 
         // W
         if(keyChar == 'w') {
-            // upPressed = false;
+            upPressed = false;
         }
 
         // S
         if(keyChar == 's') {
-            // downPressed = false;
+            downPressed = false;
         }
 
         // A
         if(keyChar == 'a') {
-            // leftPressed = false;
+            leftPressed = false;
         }
 
         // D
         if(keyChar == 'd') {
-            // rightPressed = false;
+            rightPressed = false;
         }
 
         // <
         if(keyChar == 'j') {
-            // turnLeftPressed = false;
+            turnLeftPressed = false;
         }
 
         // >
         if(keyChar == 'l') {
-            // turnRightPressed = false;
+            turnRightPressed = false;
         }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mouseDragged'");
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mouseMoved'");
     }
 }

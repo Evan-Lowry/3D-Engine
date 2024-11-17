@@ -2,6 +2,8 @@ import java.awt.Color;
 
 public class Wall {
 
+    private Vertex originalV1;
+    private Vertex originalV2;
     private Vertex v1;
     private Vertex v2;
     private Vertex p1 = new Vertex(0, 0, 0);
@@ -15,18 +17,21 @@ public class Wall {
     private boolean isValid = true;
 
 
-    public Wall(Camera c, Vertex v1, Vertex v2, Color col) {
+    public Wall( Vertex v1, Vertex v2, int colorIndex) {
+        this.originalV1 = v1;
+        this.originalV2 = v2;
+    }
 
-        this.v1 = v1;
-        this.v2 = v2;
-        this.col = col;
+    public void update() {
+        this.col = Color.RED;
+        Camera c = GamePanel.c;
 
         //used to determine if to draw wall
         isValid = true;
 
         // adjusts the cordinates so the camera has 0 rotation and is at (0,0)
-        v1 = normalizeCoordinates(c, v1);
-        v2 = normalizeCoordinates(c, v2);
+        v1 = normalizeCoordinates(c, this.originalV1);
+        v2 = normalizeCoordinates(c, this.originalV2);
 
         // figures out which point is farther from camera, then sets depthFromCamera to furthest back
         if (v1.getDY() >= v2.getDY()) {
@@ -45,11 +50,10 @@ public class Wall {
                 v2 = ghostVertex(c, v2, v1);
             }
 
-            System.out.println(this.col);
+            // System.out.println(this.col);
             int colFactor = (int)((v1.getDY()+v2.getDY())/20);
-            System.out.println(colFactor);
 
-            int r = (int) (col.getRed() -colFactor);   // Darken by 30%
+            int r = (int) (col.getRed() -colFactor);
             int g = (int) (col.getGreen() -colFactor);
             int b = (int) (col.getBlue() -colFactor);
             
@@ -59,6 +63,7 @@ public class Wall {
             b = Math.max(0, Math.min(255, b));
             
             this.col = new Color(r, g, b);
+            System.out.println(this.col);
 
             // int colFactor = (int)((v1.getDY()+v2.getDY())/50);
             // this.col = new Color (this.col.getRed() - colFactor, this.col.getBlue() - colFactor, this.col.getGreen() - colFactor);
@@ -201,11 +206,11 @@ public class Wall {
     }
 
     public Vertex getV1() {
-        return this.v1;
+        return this.originalV1;
     }
 
     public Vertex getV2() {
-        return this.v2;
+        return this.originalV2;
     }
 
     public Vertex getP1() {

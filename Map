@@ -1,4 +1,17 @@
-// number of sectors
 1
-//number of walls in sector
-8
+4
+-50 -50 0
+-50 50 0
+50 50 0 
+50 -50 0
+4
+1 2 1
+2 3 2
+3 4 3
+4 1 4
+// number of sectors
+// number of vertexs in sector
+// each vertex coordinates (x,y,z) followed by material (each material has an int)
+// number of walls in sector
+// each walls vertexs followed by material (each material has an int)
+// 4 5 0 2

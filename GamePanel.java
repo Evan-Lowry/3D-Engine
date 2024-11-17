@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
 
+    private Map map = new Map("Map");
+
     static int windowHeight = (int)(0.5*1080);
     static int windowWidth = (int)(0.5*1920);
     
@@ -17,7 +19,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     int FPS = 60;
 
-    public Camera c = new Camera(-300,0,0,0,20);
+    public static Camera c = new Camera(-300,0,0,0,20);
     int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
@@ -42,8 +44,13 @@ public class GamePanel extends JPanel implements Runnable{
 
     @Override
     public void run() {
+
         double drawInterval = 1000000000/FPS;
         double nextDrawTime = System.nanoTime() + drawInterval;
+
+        update();
+
+        repaint();
 
         while(gameThread != null){
 
@@ -108,22 +115,20 @@ public class GamePanel extends JPanel implements Runnable{
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
-        Wall w1 = new Wall(c,new Vertex(-50, -50, 0),new Vertex(-50, 50, 0), Color.RED);
-        Wall w2 = new Wall(c,new Vertex(-50, 50, 0),new Vertex(50, 50, 0), Color.BLUE);
-        Wall w3 = new Wall(c,new Vertex(50, 50, 0),new Vertex(50, -50, 0), Color.YELLOW);
-        Wall w4 = new Wall(c,new Vertex(50, -50, 0),new Vertex(-50, -50, 0), Color.GREEN);
 
+        Wall[] walls = map.getSector().getWalls();
 
+        for (int i = 0; i < walls.length; i++) {
+            Wall w = walls[i];
+            w.update();
+        }
+        for (Wall w : walls) {
+            drawWall(g2, w);
+            wallDebug(g2, w);
+        }
+        System.out.println();
 
-        drawWall(g2, w1);
-        drawWall(g2, w2);
-        drawWall(g2, w3);
-        drawWall(g2, w4);
         camDebug(g2, c);
-        wallDebug(g2, w1);
-        wallDebug(g2, w2);
-        wallDebug(g2, w3);
-        wallDebug(g2, w4);
 
         g2.dispose();
     }
@@ -137,6 +142,8 @@ public class GamePanel extends JPanel implements Runnable{
     private void wallDebug (Graphics g2, Wall w) {
         Vertex v1 = w.getV1();
         Vertex v2 = w.getV2();
+
+        System.out.println(v1.getX() + ", " + v1.getY());
 
         g2.setColor(w.getColor());
         g2.drawLine(windowWidth/2 + v1.getX(), windowHeight/2 + v1.getY(), windowWidth/2 + v2.getX(), windowHeight/2 + v2.getY());
