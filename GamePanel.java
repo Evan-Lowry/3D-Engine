@@ -4,22 +4,25 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 // import java.awt.RenderingHints.Key;
 import java.awt.Polygon;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
 
     private Map map = new Map("Map");
+    private Color[] textures = {Color.BLUE.darker(), Color.BLUE.darker().darker(), Color.RED.darker(), Color.RED.darker().darker(), Color.ORANGE.darker(), Color.ORANGE.darker().darker()};
 
-    static int windowHeight = (int)(0.5*1080);
-    static int windowWidth = (int)(0.5*1920);
+    static int windowHeight = (int)(0.75*1080);
+    static int windowWidth = (int)(0.75*1920);
     
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
 
     int FPS = 60;
 
-    public static Camera c = new Camera(-300,0,0,0,20);
+    public static Camera c = new Camera(100,100,0,0,20);
     int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
@@ -118,15 +121,17 @@ public class GamePanel extends JPanel implements Runnable{
 
         Wall[] walls = map.getSector().getWalls();
 
+        Arrays.sort(walls, (w1, w2) -> Double.compare(w2.getDepthFromCamera(), w1.getDepthFromCamera()));
+
         for (int i = 0; i < walls.length; i++) {
             Wall w = walls[i];
             w.update();
+            drawWall(g2, w);
         }
         for (Wall w : walls) {
-            drawWall(g2, w);
             wallDebug(g2, w);
         }
-        System.out.println();
+        // System.out.println();
 
         camDebug(g2, c);
 
@@ -135,7 +140,9 @@ public class GamePanel extends JPanel implements Runnable{
 
     private void camDebug (Graphics2D g2, Camera c) {
         g2.setColor(Color.WHITE);
-        g2.drawOval(windowWidth/2 + c.getX()-25, windowHeight/2 + c.getY()-25, 50, 50);
+        // g2.drawOval(windowWidth/2 + c.getX()-25, windowHeight/2 + c.getY()-25, 50, 50);
+        g2.drawOval(c.getX()-25, c.getY()-25, 50, 50);
+
         drawPointer(g2, c.getX(), c.getY(), 25, c.getRot());
     }
 
@@ -143,15 +150,16 @@ public class GamePanel extends JPanel implements Runnable{
         Vertex v1 = w.getV1();
         Vertex v2 = w.getV2();
 
-        System.out.println(v1.getX() + ", " + v1.getY());
+        // System.out.println(v1.getX() + ", " + v1.getY());
 
-        g2.setColor(w.getColor());
-        g2.drawLine(windowWidth/2 + v1.getX(), windowHeight/2 + v1.getY(), windowWidth/2 + v2.getX(), windowHeight/2 + v2.getY());
+        g2.setColor(Color.WHITE);
+        g2.drawLine(v1.getX(),v1.getY(),v2.getX(),v2.getY());
+        // g2.drawLine(windowWidth/2 + v1.getX(), windowHeight/2 + v1.getY(), windowWidth/2 + v2.getX(), windowHeight/2 + v2.getY());
     }
 
     private void drawWall (Graphics2D g2, Wall w) {
         if (w.isValid()) {
-            g2.setColor(w.getColor());
+            g2.setColor(textures[w.getColorIndex()-1]);
             int[] cordinatesX = {w.getP1().getX(), w.getP2().getX(), w.getP4().getX(), w.getP3().getX()};
             int[] cordinatesY = {w.getP1().getY(), w.getP2().getY(), w.getP4().getY(), w.getP3().getY()};
             g2.fillPolygon(cordinatesX, cordinatesY, 4);
@@ -168,7 +176,8 @@ public class GamePanel extends JPanel implements Runnable{
         deltaY = Math.sin(angle) * magnitude;
 
         // g2.setColor(Color.RED);
-        g2.drawLine(centerX + x, centerY + y, centerX + x + (int)deltaX, centerY + y + (int)deltaY);
+        g2.drawLine(x, y, x + (int)deltaX,y + (int)deltaY);
+        // g2.drawLine(centerX + x, centerY + y, centerX + x + (int)deltaX, centerY + y + (int)deltaY);
     }
 
     public void drawRadius(Graphics2D g2, int x, int y, int magnitude) {

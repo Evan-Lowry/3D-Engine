@@ -12,6 +12,7 @@ public class Wall {
     private Vertex p4 = new Vertex(0, 0, 0);
     private double depthFromCamera;
     private Color col;
+    private int colorIndex;
 
     public Vertex info = new Vertex(0, 0, 0);
     private boolean isValid = true;
@@ -20,6 +21,7 @@ public class Wall {
     public Wall( Vertex v1, Vertex v2, int colorIndex) {
         this.originalV1 = v1;
         this.originalV2 = v2;
+        this.colorIndex = colorIndex;
     }
 
     public void update() {
@@ -28,6 +30,9 @@ public class Wall {
 
         //used to determine if to draw wall
         isValid = true;
+        if (colorIndex == 0) {
+            this.isValid = false;
+        }
 
         // adjusts the cordinates so the camera has 0 rotation and is at (0,0)
         v1 = normalizeCoordinates(c, this.originalV1);
@@ -50,20 +55,7 @@ public class Wall {
                 v2 = ghostVertex(c, v2, v1);
             }
 
-            // System.out.println(this.col);
-            int colFactor = (int)((v1.getDY()+v2.getDY())/20);
-
-            int r = (int) (col.getRed() -colFactor);
-            int g = (int) (col.getGreen() -colFactor);
-            int b = (int) (col.getBlue() -colFactor);
-            
-            // Ensure RGB values stay within the valid range (0-255)
-            r = Math.max(0, Math.min(255, r));
-            g = Math.max(0, Math.min(255, g));
-            b = Math.max(0, Math.min(255, b));
-            
-            this.col = new Color(r, g, b);
-            System.out.println(this.col);
+            darkenColor();
 
             // int colFactor = (int)((v1.getDY()+v2.getDY())/50);
             // this.col = new Color (this.col.getRed() - colFactor, this.col.getBlue() - colFactor, this.col.getGreen() - colFactor);
@@ -229,11 +221,32 @@ public class Wall {
         return this.p4;
     }
 
-    public Color getColor() {
-        return this.col;
+    public double getDepthFromCamera() {
+        return this.depthFromCamera;
+    }
+
+    public int getColorIndex() {
+        return this.colorIndex;
     }
 
     public boolean isValid() {
         return this.isValid;
+    }
+
+    private void darkenColor() {
+        // System.out.println(this.col);
+        int colFactor = (int)((v1.getDY()+v2.getDY())/20);
+
+        int r = (int) (col.getRed() -colFactor);
+        int g = (int) (col.getGreen() -colFactor);
+        int b = (int) (col.getBlue() -colFactor);
+        
+        // Ensure RGB values stay within the valid range (0-255)
+        r = Math.max(0, Math.min(255, r));
+        g = Math.max(0, Math.min(255, g));
+        b = Math.max(0, Math.min(255, b));
+        
+        this.col = new Color(r, g, b);
+        // System.out.println(this.col);
     }
 }
