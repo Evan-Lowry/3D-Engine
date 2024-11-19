@@ -54,22 +54,19 @@ public class Wall {
             } else if (v2.getY() <= 0) {
                 v2 = ghostVertex(c, v2, v1);
             }
-
-            darkenColor();
-
             // int colFactor = (int)((v1.getDY()+v2.getDY())/50);
             // this.col = new Color (this.col.getRed() - colFactor, this.col.getBlue() - colFactor, this.col.getGreen() - colFactor);
 
 
             // System.out.println(v1.getDX() + ", " + v1.getDY());
+            Vertex[] vertexs;
+            vertexs = castToScreen(c, v1);
+            p1 = vertexs[0];
+            p3 = vertexs[1];
 
-            p1 = castToScreen(c, v1);
-            p3.setX(p1.getX());
-            p3.setY(GamePanel.windowHeight - p1.getY());
-
-            p2 = castToScreen(c, v2);
-            p4.setX(p2.getX());
-            p4.setY(GamePanel.windowHeight - p2.getY());
+            vertexs = castToScreen(c, v2);
+            p2 = vertexs[0];
+            p4 = vertexs[1];
 
             if (p1.getX() >= p2.getX()) {
                 isValid = false;
@@ -145,56 +142,92 @@ public class Wall {
     }
 
     private Vertex ghostVertex(Camera c, Vertex v1, Vertex v2) {
-        double deltaHeight;
+
+        double slopeVertex;
+        double slopeCam;
+        double b;
         double newX;
-
-        // calculates the new y value (5 degrees raised from x axis)
-        deltaHeight = Math.abs(Math.tan(Math.toRadians(5))*v2.getX());
+        double newY;
         
-        newX = ((v1.getDX()-v2.getDX()) * (v2.getDY()-deltaHeight)) / (v2.getDY()-v1.getDY());
-        // System.out.println(newX + ", " + v2.getDX() + ", " + (newX+v2.getDX()) + ", " + deltaHeight);
-        newX =+ v2.getDX();
+        double x1 = v1.getDX();
+        double y1 = v1.getDY();
+        double x2 = v2.getDX();
+        double y2 = v2.getDY();
 
-        // System.out.println(v1.getX());
-        // System.out.println(v1.getY());
+        slopeCam = Math.tan((Math.PI-c.getFOV())/2);
 
-        v1.set(newX, deltaHeight, 0);
-        // System.out.println(newX + ", " + deltaHeight);
+        slopeVertex = (y2-y1)/(x2-x1);
 
-        return v1;
+        b = y1-(slopeVertex*x1);
+
+        if (x1 < 0) {
+            if (b < 0) {
+                slopeCam = -slopeCam;   
+            }
+        }
+
+        if ((int)(x1) == (int)(x2)) {
+            newX = x2;
+            newY = slopeCam*newX;
+            System.out.println(newX);
+            return new Vertex(newX, newY, 0);
+        }
+
+        newX = -b / (slopeVertex - slopeCam);
+
+        newY = slopeVertex*newX + b;
+
+        // System.out.println(x1 + ", " + y1 + " " + x2 + ", " + y2);
+
+        System.out.println(newX + ", " + newY);
+
+        // System.out.println(slopeVertex-slopeCam);
+        return new Vertex(newX, newY, 0);
     }
 
-    private Vertex castToScreen(Camera c, Vertex v) {
-        double factor;
-        double screenFactor;
+    private Vertex[] castToScreen(Camera c, Vertex v) {
 
-        double pixelOffset;
+        double intersectionToScreenX;
+        double intersectionToScreenY;
+
+        double screenToWindowRatio;
+
+        double pixelOffsetX;
+        double pixelOffsetY;
         double screenPosX;
         double screenPosY;
+
+        int windowWidth = GamePanel.windowWidth;
+        int windowHeight = GamePanel.windowHeight;
+
+        double screenWidth;
+        double screenHeight;
+        int screenDistance = 10;
 
         double length = v.getDY();
         double width = v.getDX();
 
-        // the factor between the difference in scale between the world triange and screen triangle
-        factor = c.FOV / length;
-        // System.out.println(factor);
+        int wallHeight = 100;
 
-        // the difference in scale between screen space and world space
-        screenFactor = factor * width;
-        // System.out.println(screenFactor);
+        screenWidth = Math.tan(c.getFOV()/2)*screenDistance;
+        screenHeight = (screenWidth*windowHeight/windowWidth);
 
-        // calculates the difference in vertex screen position from the center of the screen
-        pixelOffset = (screenFactor * 40);
-        // System.out.println(pixelOffset);
+        intersectionToScreenX = (screenDistance*width/length);
+        intersectionToScreenY = (screenDistance*(wallHeight/2)/length);
 
-        screenPosY  = (GamePanel.windowHeight / 2) - (c.FOV * 2000/length);
-        // System.out.println(screenPosY);
+        pixelOffsetX = (windowWidth*intersectionToScreenX/(screenWidth*2));
+        pixelOffsetY = (windowHeight*intersectionToScreenY/(screenHeight*2));
+
 
         // calculates the pixel positon on the x axis to draw the vertex
-        screenPosX = (GamePanel.windowWidth / 2) + pixelOffset;
+        screenPosX = (int)((GamePanel.windowWidth / 2) + pixelOffsetX + 0.5);
         // System.out.println(screenPosX);
 
-        return new Vertex((int)screenPosX, (int)screenPosY, 0);
+        screenPosY  = (int)((GamePanel.windowHeight / 2) - pixelOffsetY + 0.5);
+        // System.out.println(screenPosY);
+
+        Vertex[] vertexs = {new Vertex(screenPosX, screenPosY, 0), new Vertex(screenPosX, (int) (GamePanel.centerY + pixelOffsetY + 0.5),0)};
+        return vertexs;
     }
 
     public Vertex getV1() {

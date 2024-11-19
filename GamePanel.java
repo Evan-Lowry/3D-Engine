@@ -14,15 +14,15 @@ public class GamePanel extends JPanel implements Runnable{
     private Map map = new Map("Map");
     private Color[] textures = {Color.BLUE.darker(), Color.BLUE.darker().darker(), Color.RED.darker(), Color.RED.darker().darker(), Color.ORANGE.darker(), Color.ORANGE.darker().darker()};
 
-    static int windowHeight = (int)(0.75*1080);
-    static int windowWidth = (int)(0.75*1920);
+    static int windowHeight = (int)(0.5*1080);
+    static int windowWidth = (int)(0.5*1920);
     
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
 
     int FPS = 60;
 
-    public static Camera c = new Camera(100,100,0,0,20);
+    public static Camera c = new Camera(300,150,0,0,90);
     int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
@@ -108,6 +108,15 @@ public class GamePanel extends JPanel implements Runnable{
             c.moveRot(0.5 * camSpeed);
             // System.out.println("TURNRIGHT");
         }
+        if (keyH.turnUpPressed == true) {
+            c.movePitch(0.5 * camSpeed);
+            // System.out.println("TURNLEFT");
+        }
+        if (keyH.turnDownPressed == true) {
+            c.movePitch(-0.5 * camSpeed);
+            // System.out.println("TURNRIGHT");
+        }
+        // System.out.println(c.getPitch());
 
         // c.moveRot(1);
         // System.out.println(c.getRot());
@@ -122,6 +131,8 @@ public class GamePanel extends JPanel implements Runnable{
         Wall[] walls = map.getSector().getWalls();
 
         Arrays.sort(walls, (w1, w2) -> Double.compare(w2.getDepthFromCamera(), w1.getDepthFromCamera()));
+
+        drawFloor(g2, new Floor());
 
         for (int i = 0; i < walls.length; i++) {
             Wall w = walls[i];
@@ -144,6 +155,8 @@ public class GamePanel extends JPanel implements Runnable{
         g2.drawOval(c.getX()-25, c.getY()-25, 50, 50);
 
         drawPointer(g2, c.getX(), c.getY(), 25, c.getRot());
+        drawPointer(g2, c.getX(), c.getY(), 500, c.getRot()+(c.getFOV()/2));
+        drawPointer(g2, c.getX(), c.getY(), 500, c.getRot()-(c.getFOV()/2));
     }
 
     private void wallDebug (Graphics g2, Wall w) {
@@ -155,6 +168,13 @@ public class GamePanel extends JPanel implements Runnable{
         g2.setColor(Color.WHITE);
         g2.drawLine(v1.getX(),v1.getY(),v2.getX(),v2.getY());
         // g2.drawLine(windowWidth/2 + v1.getX(), windowHeight/2 + v1.getY(), windowWidth/2 + v2.getX(), windowHeight/2 + v2.getY());
+    }
+
+    private void drawFloor (Graphics2D g2, Floor f) {
+        g2.setColor(Color.DARK_GRAY);
+        g2.fillRect(0, centerY, windowWidth, centerY);
+        g2.setColor(Color.DARK_GRAY.darker());
+        g2.fillRect(0, 0, windowWidth, centerY);
     }
 
     private void drawWall (Graphics2D g2, Wall w) {

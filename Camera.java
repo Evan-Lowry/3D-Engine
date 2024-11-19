@@ -3,14 +3,16 @@ public class Camera {
     double y;
     double z;
     double rot;
-    int FOV;
+    double pitch;
+    double FOV;
 
     public Camera(int x, int y, int z, double rot, int FOV) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.rot = Math.toRadians(rot);
-        this.FOV = FOV;
+        this.FOV = Math.toRadians(FOV);
+        this.pitch = 0;
     }
 
     public int getX() {
@@ -29,7 +31,11 @@ public class Camera {
         return this.rot;
     }
 
-    public int getFOV() {
+    public double getPitch() {
+        return this.pitch;
+    }
+
+    public double getFOV() {
         return this.FOV;
     }
 
@@ -66,6 +72,15 @@ public class Camera {
             this.rot -= 2*Math.PI;
         } else if (this.rot < 0) {
             this.rot += 2*Math.PI;
+        }
+    }
+
+    public void movePitch(double deltaPitch) {
+        this.pitch += Math.toRadians(deltaPitch);
+        if (this.pitch > (Math.PI/2)) {
+            this.pitch = (Math.PI/2);
+        } else if (this.pitch < -(Math.PI/2)) {
+            this.pitch = -(Math.PI/2);
         }
     }
 
