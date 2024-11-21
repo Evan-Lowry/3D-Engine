@@ -1,7 +1,7 @@
 public class Vertex {
-    public double x;
-    public double y;
-    public double z;
+    private double x;
+    private double y;
+    private double z;
 
     public Vertex(double x, double y, double z) {
         this.x = x;
@@ -9,27 +9,98 @@ public class Vertex {
         this.z = z;
     }
 
-    public int getX() {
+    public Vertex normalizeCoordinates() {
+        Camera c = GamePanel.c;
+
+        double xSqrd;
+        double ySqrd;
+        double zSqrd;
+        double rSqrd;
+        double r;
+
+        double thetaRot;
+        double thetaPitch;
+        double thetaNet;
+
+        double width;
+        double length;
+        double height;
+
+        Vertex v = new Vertex(0, 0, 0);
+
+        v.setX(this.x - c.getX());
+        v.setY(this.y - c.getY());
+        v.setZ(this.z - c.getZ());
+
+
+        // calculate distance to vertex point
+        // x^2 + y^2 + z^2 = r^2
+        // r gives distance to vertex 1
+        xSqrd = Math.pow(v.getX(), 2);
+        ySqrd = Math.pow(v.getY(), 2);
+        rSqrd = xSqrd + ySqrd;
+        r = Math.sqrt(rSqrd);
+
+        // System.out.println(r);
+
+        // calculate the angle theta to vertex
+        // tan-1(y / x) = theta
+        thetaRot = Math.atan2(this.y, this.x);
+        // System.out.println((double)v.getY() / v.getX());
+        // System.out.println(Math.toDegrees(theta));
+
+        // get theta for triange between vertex and camera accounting for the camera rotation
+        thetaNet = thetaRot - c.getRot();
+        // System.out.println(Math.toDegrees(thetaNet));
+        // System.out.println(Math.toDegrees(thetaNet) + " = " + Math.toDegrees(theta) + " - " + Math.toDegrees(c.getRot()));
+
+        // calculate the length of the base of the triangle
+        width = r * Math.sin(thetaNet);
+        // System.out.println(width);
+
+        // calculate the length from the camera to the closest point on a plane intesecting
+        // vertex and parallel to camera rotation
+        length = r * Math.cos(thetaNet);
+        // System.out.println(length);
+
+        // calculate the angle theta to vertex
+        // tan-1(y / x) = theta
+        thetaPitch = Math.atan2(this.y, this.x);
+        // System.out.println((double)v.getY() / v.getX());
+        // System.out.println(Math.toDegrees(theta));
+
+        v.setX(width);
+        v.setY(length);
+
+        return new Vertex(width, length, height);
+    }
+
+    public castToScreen() {
+        Camera c = GamePanel.c;
+
+    }
+
+    public int getIX() {
         return (int)this.x;
     }
 
-    public int getY() {
+    public int getIY() {
         return (int)this.y;
     }
 
-    public int getZ() {
+    public int getIZ() {
         return (int)this.z;
     }
 
-    public double getDX() {
+    public double getX() {
         return this.x;
     }
 
-    public double getDY() {
+    public double getY() {
         return this.y;
     }
 
-    public double getDZ() {
+    public double getZ() {
         return this.z;
     }
 

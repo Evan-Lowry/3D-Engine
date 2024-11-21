@@ -17,6 +17,9 @@ public class Wall {
     public Vertex info = new Vertex(0, 0, 0);
     private boolean isValid = true;
 
+    private double slopeCam;
+    private double slopeVertex;
+    private double slopeCamToVertex;
 
     public Wall( Vertex v1, Vertex v2, int colorIndex) {
         this.originalV1 = v1;
@@ -27,6 +30,7 @@ public class Wall {
     public void update() {
         this.col = Color.RED;
         Camera c = GamePanel.c;
+        slopeCam = Math.tan((Math.PI-c.getFOV())/2);
 
         //used to determine if to draw wall
         isValid = true;
@@ -35,41 +39,74 @@ public class Wall {
         }
 
         // adjusts the cordinates so the camera has 0 rotation and is at (0,0)
-        v1 = normalizeCoordinates(c, this.originalV1);
-        v2 = normalizeCoordinates(c, this.originalV2);
+        this.v1 = normalizeCoordinates(c, this.originalV1);
+        this.v2 = normalizeCoordinates(c, this.originalV2);
 
         // figures out which point is farther from camera, then sets depthFromCamera to furthest back
-        if (v1.getDY() >= v2.getDY()) {
-            depthFromCamera = v1.getDY();
+        if (this.v1.getDY() >= this.v2.getDY()) {
+            depthFromCamera = this.v1.getDY();
         } else {
-            depthFromCamera = v2.getDY();
+            depthFromCamera = this.v2.getDY();
         }
 
-        if (v1.getY() <= 0 && v2.getY() <= 0) {
-            isValid = false;
-            // System.out.println(isValid);
-        } else {
-            if (v1.getY() <= 0) {
-                v1 = ghostVertex(c, v1, v2);
-            } else if (v2.getY() <= 0) {
-                v2 = ghostVertex(c, v2, v1);
-            }
-            // int colFactor = (int)((v1.getDY()+v2.getDY())/50);
-            // this.col = new Color (this.col.getRed() - colFactor, this.col.getBlue() - colFactor, this.col.getGreen() - colFactor);
+        slopeVertex = (this.v2.getDY()-this.v1.getDY())/(this.v2.getDX()-this.v1.getDX());
 
+        // slopeCamToVertex = (v2.getDY())/(v2.getDX());
+
+        // check if points are not in the first two quadrants
+        if (this.v1.getY() <= 0 && this.v2.getY() <= 0) {
+            this.isValid = false;
+            System.out.println("Points not in fisrt two quadrants");
+        }
+        // if both points lie to right of camera
+        else if (this.v1.getX() >= 0 && this.v2.getX() >= 0) {
+            // if both points are graphically below the line of FOV 
+            if (this.v1.getDY() < this.v1.getDX()*slopeCam && this.v2.getDY() < this.v2.getDX()*slopeCam) {
+                this.isValid = false;
+                System.out.println("First Quadrant culling");
+            }
+            else {
+                System.out.println("Both points on right, but still in view");
+            }
+        }
+        // if both points lie to thel left of camera        
+        else if (this.v1.getX() <= 0 && this.v2.getX() <= 0){
+            // if both points are graphically below the line of FOV 
+            if (this.v1.getDY() < this.v1.getDX()*-slopeCam && this.v2.getDY() < this.v2.getDX()*-slopeCam) {
+                this.isValid = false;
+                System.out.println("Second Quadrant culling");
+            }
+            else {
+                System.out.println("Both points on left, but still in view");
+            }
+        }
+        // wall is in FOV
+        else {
+            if (this.v1.getY() <= 0) {
+                this.v1 = ghostVertex(c, this.v1, this.v2);
+                System.out.print("v1 is behind camera, ");
+            } else if (v2.getY() <= 0) {
+                this.v2 = ghostVertex(c, this.v2, this.v1);
+                System.out.print("v2 is behind camera, ");
+            }
 
             // System.out.println(v1.getDX() + ", " + v1.getDY());
             Vertex[] vertexs;
-            vertexs = castToScreen(c, v1);
-            p1 = vertexs[0];
-            p3 = vertexs[1];
+            vertexs = castToScreen(c, this.v1);
+            this.p1 = vertexs[0];
+            this.p3 = vertexs[1];
 
-            vertexs = castToScreen(c, v2);
-            p2 = vertexs[0];
-            p4 = vertexs[1];
+            vertexs = castToScreen(c, this.v2);
+            this.p2 = vertexs[0];
+            this.p4 = vertexs[1];
 
-            if (p1.getX() >= p2.getX()) {
-                isValid = false;
+            // checks if wall is faceing camera
+            if (this.p1.getX() >= this.p2.getX()) {
+                this.isValid = false;
+                System.out.println("Wall is not facing camera");
+            }
+            else {
+                System.out.println("Drawing wall");
             }
         }
     }
@@ -143,8 +180,8 @@ public class Wall {
 
     private Vertex ghostVertex(Camera c, Vertex v1, Vertex v2) {
 
-        double slopeVertex;
-        double slopeCam;
+        // double slopeVertex;
+        // double slopeCam;
         double b;
         double newX;
         double newY;
@@ -154,32 +191,34 @@ public class Wall {
         double x2 = v2.getDX();
         double y2 = v2.getDY();
 
-        slopeCam = Math.tan((Math.PI-c.getFOV())/2);
-
-        slopeVertex = (y2-y1)/(x2-x1);
+        this.slopeVertex = (y2-y1)/(x2-x1);
 
         b = y1-(slopeVertex*x1);
 
-        if (x1 < 0) {
-            if (b < 0) {
-                slopeCam = -slopeCam;   
-            }
-        }
-
-        if ((int)(x1) == (int)(x2)) {
+        if ((int)(x1/4) == (int)(x2/4)) {
             newX = x2;
-            newY = slopeCam*newX;
-            System.out.println(newX);
+            newY = Math.abs(slopeCam*newX);
+            // System.out.println(newX + ", " + newY);
             return new Vertex(newX, newY, 0);
         }
 
         newX = -b / (slopeVertex - slopeCam);
-
         newY = slopeVertex*newX + b;
+
+        if (newY > y2 || y1 > newY) {
+            newX = -b / (slopeVertex + slopeCam);
+            newY = slopeVertex*newX + b;
+        }
+
+        if (newX < 0) {
+            newX = -b / (slopeVertex + slopeCam);
+            newY = slopeVertex*newX + b;
+        }
 
         // System.out.println(x1 + ", " + y1 + " " + x2 + ", " + y2);
 
-        System.out.println(newX + ", " + newY);
+        // System.out.println("x,y: " + newX + ", " + newY + " + " + b);
+        // System.out.println("slope: " + slopeCam + ", " + slopeVertex);
 
         // System.out.println(slopeVertex-slopeCam);
         return new Vertex(newX, newY, 0);

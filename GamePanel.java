@@ -152,11 +152,13 @@ public class GamePanel extends JPanel implements Runnable{
     private void camDebug (Graphics2D g2, Camera c) {
         g2.setColor(Color.WHITE);
         // g2.drawOval(windowWidth/2 + c.getX()-25, windowHeight/2 + c.getY()-25, 50, 50);
-        g2.drawOval(c.getX()-25, c.getY()-25, 50, 50);
+        g2.drawOval(c.getX()-10, c.getY()-10, 20, 20);
 
         drawPointer(g2, c.getX(), c.getY(), 25, c.getRot());
         drawPointer(g2, c.getX(), c.getY(), 500, c.getRot()+(c.getFOV()/2));
         drawPointer(g2, c.getX(), c.getY(), 500, c.getRot()-(c.getFOV()/2));
+        drawPointer(g2, c.getX(), c.getY(), 1000, c.getRot()+(Math.PI/2));
+        drawPointer(g2, c.getX(), c.getY(), 1000, c.getRot()-(Math.PI/2));
     }
 
     private void wallDebug (Graphics g2, Wall w) {
