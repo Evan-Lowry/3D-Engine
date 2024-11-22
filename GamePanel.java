@@ -128,7 +128,7 @@ public class GamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
 
-        Wall[] walls = map.getSector().getWalls();
+        Triangle[] triangles = map.getSector().getWalls();
 
         Arrays.sort(walls, (w1, w2) -> Double.compare(w2.getDepthFromCamera(), w1.getDepthFromCamera()));
 
@@ -179,9 +179,9 @@ public class GamePanel extends JPanel implements Runnable{
         g2.fillRect(0, 0, windowWidth, centerY);
     }
 
-    private void drawWall (Graphics2D g2, Wall w) {
-        if (w.isValid()) {
-            g2.setColor(textures[w.getColorIndex()-1]);
+    private void drawTriangle (Graphics2D g2, Triangle t) {
+        if (t.isValid()) {
+            g2.setColor(textures[t.getColorIndex()-1]);
             int[] cordinatesX = {w.getP1().getX(), w.getP2().getX(), w.getP4().getX(), w.getP3().getX()};
             int[] cordinatesY = {w.getP1().getY(), w.getP2().getY(), w.getP4().getY(), w.getP3().getY()};
             g2.fillPolygon(cordinatesX, cordinatesY, 4);

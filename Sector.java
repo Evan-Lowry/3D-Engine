@@ -1,12 +1,14 @@
 public class Sector {
-    private Wall[] walls;
+    private Triangle[] triangles;
 
-    public Sector(Wall[] walls){
+    public Sector(Triangle[] triangles){
         // create the scanner to read the file
-        this.walls = walls;
+        this.triangles = triangles;
     }
 
-    public Wall[] getWalls() {
-        return this.walls;
+    public Triangle[] getTriangles() {
+        return this.triangles;
     }
+
+    public Triangles
 }

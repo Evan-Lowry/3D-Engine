@@ -20,7 +20,10 @@ public class Vertex {
 
         double thetaRot;
         double thetaPitch;
-        double thetaNet;
+
+
+        double thetaRotNormalized;
+        double thetaPitchNormalized;
 
         double width;
         double length;
@@ -50,27 +53,51 @@ public class Vertex {
         // System.out.println(Math.toDegrees(theta));
 
         // get theta for triange between vertex and camera accounting for the camera rotation
-        thetaNet = thetaRot - c.getRot();
+        thetaRotNormalized = thetaRot - c.getRot();
         // System.out.println(Math.toDegrees(thetaNet));
         // System.out.println(Math.toDegrees(thetaNet) + " = " + Math.toDegrees(theta) + " - " + Math.toDegrees(c.getRot()));
 
         // calculate the length of the base of the triangle
-        width = r * Math.sin(thetaNet);
+        width = r * Math.sin(thetaRotNormalized);
         // System.out.println(width);
 
         // calculate the length from the camera to the closest point on a plane intesecting
         // vertex and parallel to camera rotation
-        length = r * Math.cos(thetaNet);
+        length = r * Math.cos(thetaRotNormalized);
         // System.out.println(length);
-
-        // calculate the angle theta to vertex
-        // tan-1(y / x) = theta
-        thetaPitch = Math.atan2(this.y, this.x);
-        // System.out.println((double)v.getY() / v.getX());
-        // System.out.println(Math.toDegrees(theta));
 
         v.setX(width);
         v.setY(length);
+
+        // calculate distance to vertex point
+        // x^2 + y^2 + z^2 = r^2
+        // r gives distance to vertex 1
+        zSqrd = Math.pow(v.getZ(), 2);
+        ySqrd = Math.pow(v.getY(), 2);
+        rSqrd = zSqrd + ySqrd;
+        r = Math.sqrt(rSqrd);
+
+        // System.out.println(r);
+
+        // calculate the angle theta to vertex
+        // tan-1(y / x) = theta
+        thetaPitch = Math.atan2(this.z, this.y);
+        // System.out.println((double)v.getY() / v.getX());
+        // System.out.println(Math.toDegrees(theta));
+
+        // get theta for triange between vertex and camera accounting for the camera rotation
+        thetaPitchNormalized = thetaPitch - c.getPitch();
+        // System.out.println(Math.toDegrees(thetaNet));
+        // System.out.println(Math.toDegrees(thetaNet) + " = " + Math.toDegrees(theta) + " - " + Math.toDegrees(c.getRot()));
+
+        // calculate the length of the base of the triangle
+        height = r * Math.sin(thetaPitchNormalized);
+        // System.out.println(width);
+
+        // calculate the length from the camera to the closest point on a plane intesecting
+        // vertex and parallel to camera rotation
+        length = r * Math.cos(thetaRotNormalized);
+        // System.out.println(length);
 
         return new Vertex(width, length, height);
     }

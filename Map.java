@@ -48,15 +48,17 @@ public class Map {
                 // creates an array to store walls for a sector
                 this.walls = new Wall[numWalls];
                 for (int j = 0; j < walls.length; j++) {
-                    Wall w;
+                    Triangle t;
                     int vertexIndex1 = input.nextInt();
                     int vertexIndex2 = input.nextInt();
+                    int vertexIndex3 = input.nextInt();
                     Vertex v1 = this.vertexs[vertexIndex1-1];
                     Vertex v2 = this.vertexs[vertexIndex2-1];
+                    Vertex v3 = this.vertexs[vertexIndex3-1];
                     int materialIndex = input.nextInt();
                     input.nextLine();
-                    w = new Wall(v1, v2, materialIndex);
-                    walls[j] = w;
+                    t = new Wall(v1, v2, v3, materialIndex);
+                    walls[j] = t;
                 }
                 this.sectors[i] = new Sector(walls);
             }
