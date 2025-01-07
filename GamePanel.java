@@ -128,19 +128,17 @@ public class GamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
 
-        Triangle[] triangles = map.getSector().getWalls();
+        Triangle[] triangles = map.getSector().getTriangles();
 
-        Arrays.sort(walls, (w1, w2) -> Double.compare(w2.getDepthFromCamera(), w1.getDepthFromCamera()));
+        Arrays.sort(triangles, (t1, t2) -> Double.compare(t2.getDepthFromCamera(), t1.getDepthFromCamera()));
 
-        drawFloor(g2, new Floor());
-
-        for (int i = 0; i < walls.length; i++) {
-            Wall w = walls[i];
-            w.update();
-            drawWall(g2, w);
+        for (int i = 0; i < triangles.length; i++) {
+            Triangle t = triangles[i];
+            t.update();
+            drawTriangle(g2, t);
         }
-        for (Wall w : walls) {
-            wallDebug(g2, w);
+        for (Triangle t : triangles) {
+            triangleDebug(g2, t);
         }
         // System.out.println();
 
@@ -161,15 +159,21 @@ public class GamePanel extends JPanel implements Runnable{
         drawPointer(g2, c.getX(), c.getY(), 1000, c.getRot()-(Math.PI/2));
     }
 
-    private void wallDebug (Graphics g2, Wall w) {
-        Vertex v1 = w.getV1();
-        Vertex v2 = w.getV2();
-
-        // System.out.println(v1.getX() + ", " + v1.getY());
+    private void triangleDebug (Graphics g2, Triangle t) {
+        Vertex v1 = t.getV1();
+        Vertex v2 = t.getV2();
+        Vertex v3 = t.getV3();
+ 
 
         g2.setColor(Color.WHITE);
-        g2.drawLine(v1.getX(),v1.getY(),v2.getX(),v2.getY());
-        // g2.drawLine(windowWidth/2 + v1.getX(), windowHeight/2 + v1.getY(), windowWidth/2 + v2.getX(), windowHeight/2 + v2.getY());
+        // g2.drawLine(v1.getIX(),v1.getIY(),v2.getIX(),v2.getIY());
+        // g2.drawLine(v2.getIX(),v2.getIY(),v3.getIX(),v3.getIY());
+        g2.drawLine(v3.getIX(),v3.getIY(),v1.getIX(),v1.getIY());
+
+        g2.setColor(Color.RED);
+        g2.drawLine((int)v1.getLegnth(),(int)v1.getLegnth(),(int)v3.getLegnth(),(int)v3.getLegnth());
+
+
     }
 
     private void drawFloor (Graphics2D g2, Floor f) {
@@ -180,12 +184,12 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     private void drawTriangle (Graphics2D g2, Triangle t) {
-        if (t.isValid()) {
-            g2.setColor(textures[t.getColorIndex()-1]);
-            int[] cordinatesX = {w.getP1().getX(), w.getP2().getX(), w.getP4().getX(), w.getP3().getX()};
-            int[] cordinatesY = {w.getP1().getY(), w.getP2().getY(), w.getP4().getY(), w.getP3().getY()};
-            g2.fillPolygon(cordinatesX, cordinatesY, 4);
-        }
+        // if (t.isValid()) {
+        //     g2.setColor(textures[t.getColorIndex()-1]);
+        //     int[] cordinatesX = {t.getP1().getX(), t.getP2().getX(), t.getP3().getX()};
+        //     int[] cordinatesY = {t.getP1().getY(), t.getP2().getY(), t.getP3().getY()};
+        //     g2.fillPolygon(cordinatesX, cordinatesY, 3);
+        // }
     }
 
     public void drawPointer(Graphics2D g2, int x, int y, int magnitude, double angle) {
@@ -204,6 +208,6 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void drawRadius(Graphics2D g2, int x, int y, int magnitude) {
         g2.setColor(Color.RED);
-        g2.drawOval(centerX + x - magnitude/2, centerY + y - magnitude/2, magnitude, magnitude);
+        g2.drawOval(x - magnitude/2,y - magnitude/2, magnitude, magnitude);
     }
 }

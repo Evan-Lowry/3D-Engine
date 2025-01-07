@@ -1,40 +1,23 @@
 public class Vertex2D {
     public double x;
     public double y;
-    public double z;
 
-    public Vertex2D(double x, double y, double z) {
+    public Vertex2D(double x, double y) {
         this.x = x;
         this.y = y;
-        this.z = z;
     }
 
     public int getX() {
-        return (int)this.x;
+        return (int)(this.x + 0.5);
     }
 
     public int getY() {
-        return (int)this.y;
+        return (int)(this.y + 0.5);
     }
 
-    public int getZ() {
-        return (int)this.z;
-    }
-
-    public double getDX() {
-        return this.x;
-    }
-
-    public double getDY() {
-        return this.y;
-    }
-
-    public double getDZ() {
-        return this.z;
-    }
 
     public int[] get() {
-        int[] cordinates = {(int)this.x, (int)this.y, (int)this.z};
+        int[] cordinates = {(int)(this.x + 0.5), (int)(this.y + 0.5)};
         return cordinates;
     }
 
@@ -47,14 +30,9 @@ public class Vertex2D {
         this.y += deltaY;
     }
 
-    public void moveZ( double deltaZ) {
-        this.z += deltaZ;
-    }
-
-    public void move(double deltaX, double deltaY, double deltaZ) {
+    public void move(double deltaX, double deltaY) {
         this.x += deltaX;
         this.y += deltaY;
-        this.z += deltaZ;
     }
 
     public void setX( double x) {
@@ -65,13 +43,8 @@ public class Vertex2D {
         this.y = y;
     }
 
-    public void setZ( double z) {
-        this.z = z;
-    }
-
-    public void set(double x, double y, double z) {
+    public void set(double x, double y) {
         this.x = x;
         this.y = y;
-        this.z = z;
     }
 }

@@ -7,8 +7,8 @@ public class Map {
     private Sector[] sectors;
     private int currentSectorIndex;
     private Sector currentSector;
-    private int numWalls;
-    private Wall[] walls;
+    private int numTriangles;
+    private Triangle[] triangles;
     private int numVertexs;
     private Vertex[] vertexs;
 
@@ -42,12 +42,12 @@ public class Map {
                     vertexs[j] = v;
                 }
                 // scanning number of walls
-                this.numWalls = input.nextInt();
+                this.numTriangles = input.nextInt();
                 // drop to new line
                 input.nextLine();
                 // creates an array to store walls for a sector
-                this.walls = new Wall[numWalls];
-                for (int j = 0; j < walls.length; j++) {
+                this.triangles = new Triangle[this.numTriangles];
+                for (int j = 0; j < triangles.length; j++) {
                     Triangle t;
                     int vertexIndex1 = input.nextInt();
                     int vertexIndex2 = input.nextInt();
@@ -57,10 +57,10 @@ public class Map {
                     Vertex v3 = this.vertexs[vertexIndex3-1];
                     int materialIndex = input.nextInt();
                     input.nextLine();
-                    t = new Wall(v1, v2, v3, materialIndex);
-                    walls[j] = t;
+                    t = new Triangle(v1, v2, v3, materialIndex);
+                    this.triangles[j] = t;
                 }
-                this.sectors[i] = new Sector(walls);
+                this.sectors[i] = new Sector(this.triangles);
             }
             
             // set the current location

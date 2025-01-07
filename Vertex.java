@@ -3,13 +3,17 @@ public class Vertex {
     private double y;
     private double z;
 
+    private double length;
+    private double width;
+    private double height;
+
     public Vertex(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Vertex normalizeCoordinates() {
+    public void normalizeCoordinates() {
         Camera c = GamePanel.c;
 
         double xSqrd;
@@ -21,13 +25,8 @@ public class Vertex {
         double thetaRot;
         double thetaPitch;
 
-
         double thetaRotNormalized;
         double thetaPitchNormalized;
-
-        double width;
-        double length;
-        double height;
 
         Vertex v = new Vertex(0, 0, 0);
 
@@ -73,7 +72,7 @@ public class Vertex {
         // x^2 + y^2 + z^2 = r^2
         // r gives distance to vertex 1
         zSqrd = Math.pow(v.getZ(), 2);
-        ySqrd = Math.pow(v.getY(), 2);
+        ySqrd = Math.pow(length, 2);
         rSqrd = zSqrd + ySqrd;
         r = Math.sqrt(rSqrd);
 
@@ -98,25 +97,58 @@ public class Vertex {
         // vertex and parallel to camera rotation
         length = r * Math.cos(thetaRotNormalized);
         // System.out.println(length);
-
-        return new Vertex(width, length, height);
     }
 
-    public castToScreen() {
+    public Vertex2D castToScreen() {
         Camera c = GamePanel.c;
 
+        double intersectionToScreenX;
+        double intersectionToScreenY;
+
+        double screenToWindowRatio;
+
+        double pixelOffsetX;
+        double pixelOffsetY;
+        double screenPosX;
+        double screenPosY;
+
+        int windowWidth = GamePanel.windowWidth;
+        int windowHeight = GamePanel.windowHeight;
+
+        double screenWidth;
+        double screenHeight;
+
+        int screenDistance = 10;
+
+        screenWidth = Math.tan(c.getFOV()/2)*screenDistance;
+        screenHeight = (screenWidth*windowHeight/windowWidth);
+
+        intersectionToScreenX = (screenDistance*width/length);
+        intersectionToScreenY = (screenDistance*(height)/length);
+
+        pixelOffsetX = (windowWidth*intersectionToScreenX/(screenWidth*2));
+        pixelOffsetY = (windowHeight*intersectionToScreenY/(screenHeight*2));
+
+        // calculates the pixel positon on the x axis to draw the vertex
+        screenPosX = (int)((GamePanel.windowWidth / 2) + pixelOffsetX + 0.5);
+        // System.out.println(screenPosX);
+
+        screenPosY  = (int)((GamePanel.windowHeight / 2) - pixelOffsetY + 0.5);
+        // System.out.println(screenPosY);
+
+        return new Vertex2D(screenPosX, screenPosY);
     }
 
     public int getIX() {
-        return (int)this.x;
+        return (int)(this.x + 0.5);
     }
 
     public int getIY() {
-        return (int)this.y;
+        return (int)(this.y + 0.5);
     }
 
     public int getIZ() {
-        return (int)this.z;
+        return (int)(this.z + 0.5);
     }
 
     public double getX() {
@@ -129,6 +161,10 @@ public class Vertex {
 
     public double getZ() {
         return this.z;
+    }
+
+    public double getLegnth() {
+        return this.length;
     }
 
     public int[] get() {
