@@ -14,8 +14,10 @@ public class GamePanel extends JPanel implements Runnable{
     private Map map = new Map("Map copy");
     private Color[] textures = {Color.BLUE.darker(), Color.BLUE.darker().darker(), Color.RED.darker(), Color.RED.darker().darker(), Color.ORANGE.darker(), Color.ORANGE.darker().darker()};
 
-    static int windowHeight = (int)(0.5*1080);
-    static int windowWidth = (int)(0.5*1920);
+    static double fullscreen = 1;
+
+    static int windowHeight = (int)(fullscreen*1080);
+    static int windowWidth = (int)(fullscreen*1920);
     
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
@@ -26,6 +28,7 @@ public class GamePanel extends JPanel implements Runnable{
     int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
+    MouseAiming mouseA = new MouseAiming();
     Thread gameThread;
 
     
@@ -35,16 +38,10 @@ public class GamePanel extends JPanel implements Runnable{
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
+        this.addMouseMotionListener(mouseA);
         this.setFocusable(true);
-        this.requestFocusInWindow();
-    }
-
-    public void fullscreen() {
-        if (this.isDisplayable()) {
-            this.setVisible(false);
-            this.setUndecorated(!this.isUndecorated());
-            this.setVisible(true);
-        }
+        this.setVisible(true);
+        this.setFocusTraversalKeysEnabled(false);
     }
 
     public void startGameThread(){
@@ -127,18 +124,13 @@ public class GamePanel extends JPanel implements Runnable{
             c.jump();
             // System.out.println("JUMP");
         }
-        if (keyH.fullscreen == true) {
-            this.fullscreen();
-            // System.out.println("FULLSCREEN");
+
+        if (mouseA.mouseMoved == true) {
+            c.moveRot(mouseA.rot);
+            c.movePitch(mouseA.pitch);
+            mouseA.mouseMoved = false;
         }
-
-
-        // System.out.println(c.getPitch());
-
-        // c.moveRot(1);
-        // System.out.println(c.getRot());
-        // c.moveY(0);
-        // c.moveX(1);
+        mouseA.recenterMouse();
     }
 
     public void paintComponent(Graphics g) {

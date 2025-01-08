@@ -29,30 +29,59 @@ public class KeyHandler implements KeyListener{
 
         // System.out.println(keyChar);
     
+        // if (keyChar == 'w') {
+        //     upPressed = !upPressed;
+        //     downPressed = false;
+        // } else if (keyChar == 'a') {
+        //     leftPressed = !leftPressed;
+        //     rightPressed = false;
+        // } else if (keyChar == 's') {
+        //     downPressed = !downPressed;
+        //     upPressed = false;
+        // } else if (keyChar == 'd') {
+        //     rightPressed = !rightPressed;
+        //     leftPressed = false;
+        // } else if (keyChar == 'j') {
+        //     turnLeftPressed = !turnLeftPressed;
+        //     turnRightPressed = false;
+        // } else if (keyChar == 'l') {
+        //     turnRightPressed = !turnRightPressed;
+        //     turnLeftPressed = false;
+        // } else if (keyChar == 'i') {
+        //     turnUpPressed = !turnUpPressed;
+        //     turnDownPressed = false;
+        // } else if (keyChar == 'k') {
+        //     turnDownPressed = !turnDownPressed;
+        //     turnUpPressed = false;
+        // } else if (keyChar == ' ') {
+        //     spacePressed = true;
+        // } else if (keyChar == 'q') {
+        //     System.exit(0);
+        // } else if (keyChar == 'f') {
+        //     fullscreen = !fullscreen;
+        // }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        char keyChar = e.getKeyChar();
+
         if (keyChar == 'w') {
-            upPressed = !upPressed;
-            downPressed = false;
+            upPressed = true;
         } else if (keyChar == 'a') {
-            leftPressed = !leftPressed;
-            rightPressed = false;
+            leftPressed = true;
         } else if (keyChar == 's') {
-            downPressed = !downPressed;
-            upPressed = false;
+            downPressed = true;
         } else if (keyChar == 'd') {
-            rightPressed = !rightPressed;
-            leftPressed = false;
+            rightPressed = true;
         } else if (keyChar == 'j') {
-            turnLeftPressed = !turnLeftPressed;
-            turnRightPressed = false;
+            turnLeftPressed = true;
         } else if (keyChar == 'l') {
-            turnRightPressed = !turnRightPressed;
-            turnLeftPressed = false;
+            turnRightPressed = true;
         } else if (keyChar == 'i') {
-            turnUpPressed = !turnUpPressed;
-            turnDownPressed = false;
+            turnUpPressed = true;
         } else if (keyChar == 'k') {
-            turnDownPressed = !turnDownPressed;
-            turnUpPressed = false;
+            turnDownPressed = true;
         } else if (keyChar == ' ') {
             spacePressed = true;
         } else if (keyChar == 'q') {
@@ -61,79 +90,34 @@ public class KeyHandler implements KeyListener{
             fullscreen = !fullscreen;
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            System.out.println("ESC");
-        }
-        // System.out.println(e.getExtendedKeyCode());
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        char keyChar = e.getKeyChar();
-
-        // // W
-        // if(keyChar == 'w') {
-        //     upPressed = true;
-        // }
-
-        // // S
-        // if(keyChar == 's') {
-        //     downPressed = true;
-        // }
-
-        // // A
-        // if(keyChar == 'a') {
-        //     leftPressed = true;
-        // }
-
-        // // D
-        // if(keyChar == 'd') {
-        //     rightPressed = true;
-        // }
-
-        // // <
-        // if(keyChar == 'j') {
-        //     turnLeftPressed = true;
-        // }
-
-        // // >
-        // if(keyChar == 'l') {
-        //     turnRightPressed = true;
-        // }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         char keyChar = e.getKeyChar();
 
-        // // W
-        // if(keyChar == 'w') {
-        //     upPressed = false;
-        // }
-
-        // // S
-        // if(keyChar == 's') {
-        //     downPressed = false;
-        // }
-
-        // // A
-        // if(keyChar == 'a') {
-        //     leftPressed = false;
-        // }
-
-        // // D
-        // if(keyChar == 'd') {
-        //     rightPressed = false;
-        // }
-
-        // // <
-        // if(keyChar == 'j') {
-        //     turnLeftPressed = false;
-        // }
-
-        // // >
-        // if(keyChar == 'l') {
-        //     turnRightPressed = false;
-        // }
+        if (keyChar == 'w') {
+            upPressed = false;
+        } else if (keyChar == 'a') {
+            leftPressed = false;
+        } else if (keyChar == 's') {
+            downPressed = false;
+        } else if (keyChar == 'd') {
+            rightPressed = false;
+        } else if (keyChar == 'j') {
+            turnLeftPressed = false;
+        } else if (keyChar == 'l') {
+            turnRightPressed = false;
+        } else if (keyChar == 'i') {
+            turnUpPressed = false;
+        } else if (keyChar == 'k') {
+            turnDownPressed = false;
+        } else if (keyChar == ' ') {
+            spacePressed = false;
+        } else if (keyChar == 'q') {
+            System.exit(0);
+        } else if (keyChar == 'f') {
+            fullscreen = !fullscreen;
+        }
     }
 }
