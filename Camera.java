@@ -93,4 +93,8 @@ public class Camera {
         this.y += deltaY;
         this.z += deltaZ;
     }
+
+    public void jump() {
+        
+    }
 }

@@ -3,11 +3,25 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
-public class KeyHandler implements KeyListener, MouseMotionListener{
+public class KeyHandler implements KeyListener{
 
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean turnLeftPressed, turnRightPressed, turnUpPressed, turnDownPressed;
+    public boolean spacePressed, fullscreen;
+
+    public KeyHandler() {
+        upPressed = false;
+        downPressed = false;
+        leftPressed = false;
+        rightPressed = false;
+        turnLeftPressed = false;
+        turnRightPressed = false;
+        turnUpPressed = false;
+        turnDownPressed = false;
+        spacePressed = false;
+        fullscreen = false;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -39,6 +53,12 @@ public class KeyHandler implements KeyListener, MouseMotionListener{
         } else if (keyChar == 'k') {
             turnDownPressed = !turnDownPressed;
             turnUpPressed = false;
+        } else if (keyChar == ' ') {
+            spacePressed = true;
+        } else if (keyChar == 'q') {
+            System.exit(0);
+        } else if (keyChar == 'f') {
+            fullscreen = !fullscreen;
         }
 
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -115,17 +135,5 @@ public class KeyHandler implements KeyListener, MouseMotionListener{
         // if(keyChar == 'l') {
         //     turnRightPressed = false;
         // }
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseDragged'");
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseMoved'");
     }
 }

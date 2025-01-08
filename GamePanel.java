@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    private Map map = new Map("Map");
+    private Map map = new Map("Map copy");
     private Color[] textures = {Color.BLUE.darker(), Color.BLUE.darker().darker(), Color.RED.darker(), Color.RED.darker().darker(), Color.ORANGE.darker(), Color.ORANGE.darker().darker()};
 
     static int windowHeight = (int)(0.5*1080);
@@ -22,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     int FPS = 60;
 
-    public static Camera c = new Camera(300,150,0,0,90);
+    public static Camera c = new Camera(300,150,50,180,90);
     int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
@@ -39,6 +39,13 @@ public class GamePanel extends JPanel implements Runnable{
         this.requestFocusInWindow();
     }
 
+    public void fullscreen() {
+        if (this.isDisplayable()) {
+            this.setVisible(false);
+            this.setUndecorated(!this.isUndecorated());
+            this.setVisible(true);
+        }
+    }
 
     public void startGameThread(){
         gameThread = new Thread(this);
@@ -116,6 +123,16 @@ public class GamePanel extends JPanel implements Runnable{
             c.movePitch(-0.5 * camSpeed);
             // System.out.println("TURNRIGHT");
         }
+        if (keyH.spacePressed == true) {
+            c.jump();
+            // System.out.println("JUMP");
+        }
+        if (keyH.fullscreen == true) {
+            this.fullscreen();
+            // System.out.println("FULLSCREEN");
+        }
+
+
         // System.out.println(c.getPitch());
 
         // c.moveRot(1);
@@ -140,7 +157,6 @@ public class GamePanel extends JPanel implements Runnable{
         for (Triangle t : triangles) {
             triangleDebug(g2, t);
         }
-        // System.out.println();
 
         camDebug(g2, c);
 
@@ -164,32 +180,18 @@ public class GamePanel extends JPanel implements Runnable{
         Vertex v2 = t.getV2();
         Vertex v3 = t.getV3();
  
-
         g2.setColor(Color.WHITE);
-        // g2.drawLine(v1.getIX(),v1.getIY(),v2.getIX(),v2.getIY());
-        // g2.drawLine(v2.getIX(),v2.getIY(),v3.getIX(),v3.getIY());
         g2.drawLine(v3.getIX(),v3.getIY(),v1.getIX(),v1.getIY());
-
-        g2.setColor(Color.RED);
-        g2.drawLine((int)v1.getLegnth(),(int)v1.getLegnth(),(int)v3.getLegnth(),(int)v3.getLegnth());
-
-
-    }
-
-    private void drawFloor (Graphics2D g2, Floor f) {
-        g2.setColor(Color.DARK_GRAY);
-        g2.fillRect(0, centerY, windowWidth, centerY);
-        g2.setColor(Color.DARK_GRAY.darker());
-        g2.fillRect(0, 0, windowWidth, centerY);
     }
 
     private void drawTriangle (Graphics2D g2, Triangle t) {
-        // if (t.isValid()) {
-        //     g2.setColor(textures[t.getColorIndex()-1]);
-        //     int[] cordinatesX = {t.getP1().getX(), t.getP2().getX(), t.getP3().getX()};
-        //     int[] cordinatesY = {t.getP1().getY(), t.getP2().getY(), t.getP3().getY()};
-        //     g2.fillPolygon(cordinatesX, cordinatesY, 3);
-        // }
+        if (t.isValid() == false) {
+            return;
+        }
+        g2.setColor(textures[t.getColorIndex()]);
+        int[] cordinatesX = {t.getP1().getX(), t.getP2().getX(), t.getP3().getX(), t.getP4().getX()};
+        int[] cordinatesY = {t.getP1().getY(), t.getP2().getY(), t.getP3().getY(), t.getP4().getY()};
+        g2.fillPolygon(cordinatesX, cordinatesY, t.getNumberOfVertices());
     }
 
     public void drawPointer(Graphics2D g2, int x, int y, int magnitude, double angle) {

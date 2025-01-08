@@ -3,100 +3,38 @@ public class Vertex {
     private double y;
     private double z;
 
-    private double length;
-    private double width;
-    private double height;
-
     public Vertex(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public void normalizeCoordinates() {
+    public Vertex normalizeCoordinates() {
         Camera c = GamePanel.c;
-
-        double xSqrd;
-        double ySqrd;
-        double zSqrd;
-        double rSqrd;
-        double r;
-
-        double thetaRot;
-        double thetaPitch;
-
-        double thetaRotNormalized;
-        double thetaPitchNormalized;
-
         Vertex v = new Vertex(0, 0, 0);
 
+        // calculates the vertex position relative to the camera
         v.setX(this.x - c.getX());
         v.setY(this.y - c.getY());
         v.setZ(this.z - c.getZ());
 
+        double x = v.getX();
+        double y = v.getY();
+        double z = v.getZ();
 
-        // calculate distance to vertex point
-        // x^2 + y^2 + z^2 = r^2
-        // r gives distance to vertex 1
-        xSqrd = Math.pow(v.getX(), 2);
-        ySqrd = Math.pow(v.getY(), 2);
-        rSqrd = xSqrd + ySqrd;
-        r = Math.sqrt(rSqrd);
+        double newX;
+        double newY;
+        double newZ;
 
-        // System.out.println(r);
+        // rotates the vertex around the camera z axis
+        newX = x*Math.cos(c.getRot()) + y*Math.sin(c.getRot());
+        newY = y*Math.cos(c.getRot()) - x*Math.sin(c.getRot());
 
-        // calculate the angle theta to vertex
-        // tan-1(y / x) = theta
-        thetaRot = Math.atan2(this.y, this.x);
-        // System.out.println((double)v.getY() / v.getX());
-        // System.out.println(Math.toDegrees(theta));
+        // rotates the vertex around the camera y axis
+        newX = newX*Math.cos(c.getPitch()) + z*Math.sin(c.getPitch());
+        newZ = z*Math.cos(c.getPitch()) - newX*Math.sin(c.getPitch());
 
-        // get theta for triange between vertex and camera accounting for the camera rotation
-        thetaRotNormalized = thetaRot - c.getRot();
-        // System.out.println(Math.toDegrees(thetaNet));
-        // System.out.println(Math.toDegrees(thetaNet) + " = " + Math.toDegrees(theta) + " - " + Math.toDegrees(c.getRot()));
-
-        // calculate the length of the base of the triangle
-        width = r * Math.sin(thetaRotNormalized);
-        // System.out.println(width);
-
-        // calculate the length from the camera to the closest point on a plane intesecting
-        // vertex and parallel to camera rotation
-        length = r * Math.cos(thetaRotNormalized);
-        // System.out.println(length);
-
-        v.setX(width);
-        v.setY(length);
-
-        // calculate distance to vertex point
-        // x^2 + y^2 + z^2 = r^2
-        // r gives distance to vertex 1
-        zSqrd = Math.pow(v.getZ(), 2);
-        ySqrd = Math.pow(length, 2);
-        rSqrd = zSqrd + ySqrd;
-        r = Math.sqrt(rSqrd);
-
-        // System.out.println(r);
-
-        // calculate the angle theta to vertex
-        // tan-1(y / x) = theta
-        thetaPitch = Math.atan2(this.z, this.y);
-        // System.out.println((double)v.getY() / v.getX());
-        // System.out.println(Math.toDegrees(theta));
-
-        // get theta for triange between vertex and camera accounting for the camera rotation
-        thetaPitchNormalized = thetaPitch - c.getPitch();
-        // System.out.println(Math.toDegrees(thetaNet));
-        // System.out.println(Math.toDegrees(thetaNet) + " = " + Math.toDegrees(theta) + " - " + Math.toDegrees(c.getRot()));
-
-        // calculate the length of the base of the triangle
-        height = r * Math.sin(thetaPitchNormalized);
-        // System.out.println(width);
-
-        // calculate the length from the camera to the closest point on a plane intesecting
-        // vertex and parallel to camera rotation
-        length = r * Math.cos(thetaRotNormalized);
-        // System.out.println(length);
+        return new Vertex(newX, newY, newZ);
     }
 
     public Vertex2D castToScreen() {
@@ -123,8 +61,8 @@ public class Vertex {
         screenWidth = Math.tan(c.getFOV()/2)*screenDistance;
         screenHeight = (screenWidth*windowHeight/windowWidth);
 
-        intersectionToScreenX = (screenDistance*width/length);
-        intersectionToScreenY = (screenDistance*(height)/length);
+        intersectionToScreenX = (screenDistance*y/x);
+        intersectionToScreenY = (screenDistance*(z)/x);
 
         pixelOffsetX = (windowWidth*intersectionToScreenX/(screenWidth*2));
         pixelOffsetY = (windowHeight*intersectionToScreenY/(screenHeight*2));
@@ -161,10 +99,6 @@ public class Vertex {
 
     public double getZ() {
         return this.z;
-    }
-
-    public double getLegnth() {
-        return this.length;
     }
 
     public int[] get() {
