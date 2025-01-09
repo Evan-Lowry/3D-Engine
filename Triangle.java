@@ -35,8 +35,8 @@ public class Triangle {
         this.newV3 = this.v3.normalizeCoordinates();
         this.newV4 = new Vertex(0, 0, 0);
 
-        checkClipping();
         backfaceCulling();
+        checkClipping();
 
         if (this.isValid) {
             calculateDepthFromCamera();
@@ -128,7 +128,6 @@ public class Triangle {
 
         if (dotProduct > 0) {
             this.isValid = false;
-            System.out.println("Backface culled");
         }
     }
 

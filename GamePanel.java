@@ -14,7 +14,7 @@ public class GamePanel extends JPanel implements Runnable{
     private Map map = new Map("Map copy");
     private Color[] textures = {Color.BLUE.darker(), Color.BLUE.darker().darker(), Color.RED.darker(), Color.RED.darker().darker(), Color.ORANGE.darker(), Color.ORANGE.darker().darker()};
 
-    static double fullscreen = 1;
+    static double fullscreen = 0.5;
 
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);
