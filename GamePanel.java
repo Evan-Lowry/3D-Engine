@@ -147,10 +147,10 @@ public class GamePanel extends JPanel implements Runnable{
             drawTriangle(g2, t);
         }
         for (Triangle t : triangles) {
-            triangleDebug(g2, t);
+            // triangleDebug(g2, t);
         }
 
-        camDebug(g2, c);
+        // camDebug(g2, c);
 
         g2.dispose();
     }

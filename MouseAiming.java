@@ -35,6 +35,6 @@ public class MouseAiming implements MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        mouseMoved(e);
     }
 }

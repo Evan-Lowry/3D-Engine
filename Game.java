@@ -12,7 +12,6 @@ public class Game {
         frame.setUndecorated(true);
         frame.add(gamePanel);
         frame.requestFocusInWindow();
-        // frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setFocusTraversalKeysEnabled(false);
         frame.pack();

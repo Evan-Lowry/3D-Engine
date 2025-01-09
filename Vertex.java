@@ -30,9 +30,12 @@ public class Vertex {
         newX = x*Math.cos(c.getRot()) + y*Math.sin(c.getRot());
         newY = y*Math.cos(c.getRot()) - x*Math.sin(c.getRot());
 
+
+        double tempX = newX;
+
         // rotates the vertex around the camera y axis
         newX = newX*Math.cos(c.getPitch()) + z*Math.sin(c.getPitch());
-        newZ = z*Math.cos(c.getPitch()) - newX*Math.sin(c.getPitch());
+        newZ = z*Math.cos(c.getPitch()) - tempX*Math.sin(c.getPitch());
 
         return new Vertex(newX, newY, newZ);
     }

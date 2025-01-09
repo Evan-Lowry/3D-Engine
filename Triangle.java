@@ -27,6 +27,7 @@ public class Triangle {
 
     public void update() {
 
+        this.isValid = true;
         this.numVertices = 3;
 
         this.newV1 = this.v1.normalizeCoordinates();
@@ -51,7 +52,7 @@ public class Triangle {
     }
 
     private void checkClipping() {
-        double nearPlaneX = 1;
+        double nearPlaneX = 10;
 
         List<Vertex> behind = new ArrayList<>();
         List<Vertex> inFront = new ArrayList<>();
@@ -64,7 +65,6 @@ public class Triangle {
         // Handle cases
         if (behind.size() == 0) {
             // All vertices in front, draw the triangle as-is
-            this.isValid = true;
         } else if (behind.size() == 1) {
             // One vertex behind, clip into two triangles
             Vertex P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
@@ -76,14 +76,16 @@ public class Triangle {
             this.newV4 = P1;
 
             this.numVertices = 4;
+
         } else if (behind.size() == 2) {
             // Two vertices behind, clip into one triangle
             Vertex P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
             Vertex P2 = interpolate(behind.get(1), inFront.get(0), nearPlaneX);
 
-            this.newV1 = inFront.get(0);
-            this.newV2 = P1;
-            this.newV3 = P2;
+            this.newV1 = P1;
+            this.newV2 = P2;
+            this.newV3 = inFront.get(0);
+            
         } else {
             // All vertices behind, discard triangle
             this.isValid = false;
@@ -126,6 +128,7 @@ public class Triangle {
 
         if (dotProduct > 0) {
             this.isValid = false;
+            System.out.println("Backface culled");
         }
     }
 
