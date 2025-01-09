@@ -11,6 +11,7 @@ public class Map {
     private Triangle[] triangles;
     private int numVertexs;
     private Vertex[] vertexs;
+    private Floor floor = new Floor();
 
     public Map(String filename) {
         // create the scanner to read the file

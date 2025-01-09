@@ -100,11 +100,17 @@ public class Triangle {
     }
 
     private void calculateDepthFromCamera() {
-        double x = (newV1.getX() + newV2.getX() + newV3.getX()) / 3;
-        double y = (newV1.getY() + newV2.getY() + newV3.getY()) / 3;
-        double z = (newV1.getZ() + newV2.getZ() + newV3.getZ()) / 3;
+        if (v1.getX() > v2.getX()) {
+            this.depthFromCamera = v1.getX();    
+        } else {
+            this.depthFromCamera = v2.getX();
+        }
 
-        this.depthFromCamera = Math.sqrt(x*x + y*y + z*z);
+        if (v3.getX() > this.depthFromCamera) {
+            this.depthFromCamera = v3.getX();
+        }
+
+
     }
 
     private void backfaceCulling() {

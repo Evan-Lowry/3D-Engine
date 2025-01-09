@@ -1,15 +1,20 @@
 public class Camera {
     double x;
     double y;
-    double z;
+    double z = 0;
     double rot;
     double pitch;
     double FOV;
-
+    int height;
+    double velocityUp = 0;
+    double floorHeight = 0;
+    double velocityForward;
+    double velocitySideways;
+    
     public Camera(int x, int y, int z, double rot, int FOV) {
         this.x = x;
         this.y = y;
-        this.z = z;
+        this.height = z;
         this.rot = Math.toRadians(rot);
         this.FOV = Math.toRadians(FOV);
         this.pitch = 0;
@@ -84,6 +89,10 @@ public class Camera {
         }
     }
 
+    public void setFloorHeight(double floorHeight) {
+        this.floorHeight = floorHeight;
+    }
+
     public void setFOV( int FOV) {
         this.FOV = FOV;
     }
@@ -95,6 +104,22 @@ public class Camera {
     }
 
     public void jump() {
-        
+        if (this.z == this.floorHeight+this.height) {
+            this.velocityUp = 5;
+        }
+    }
+
+    public void update() {
+
+        this.x += this.velocityForward;
+        this.y += this.velocitySideways;
+        this.z += this.velocityUp;
+
+        if (this.z > this.floorHeight+this.height) {
+            this.velocityUp -= 0.30;
+        } else {
+            this.z = this.floorHeight+this.height;
+            this.velocityUp = 0;
+        }
     }
 }

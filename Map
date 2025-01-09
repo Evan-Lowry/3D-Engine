@@ -1,22 +1,6 @@
-1
-
-4
-
-100 100 0
-100 100 100
-100 200 0
-100 200 100
-
-2
-
-1 2 3 1
-2 4 3 2
-
-
-
-// number of sectors
-// number of vertexs in sector
-// each vertex coordinates (x,y,z) followed by material (each material has an int)
-// number of walls in sector
-// each walls vertexs followed by material (each material has an int)
-// 4 5 0 2
+Face Index,Material Name,Vertex X,Vertex Y,Vertex Z
+0,1,1.000000,0.000000,0.000000
+0,1,0.000000,1.000000,0.000000
+0,1,0.000000,0.000000,1.000000
+1,1,0.500000,0.500000,0.500000
+1,1,-0.500000,-0.500000,-0.50000

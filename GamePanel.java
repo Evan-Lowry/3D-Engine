@@ -14,17 +14,17 @@ public class GamePanel extends JPanel implements Runnable{
     private Map map = new Map("Map copy");
     private Color[] textures = {Color.BLUE.darker(), Color.BLUE.darker().darker(), Color.RED.darker(), Color.RED.darker().darker(), Color.ORANGE.darker(), Color.ORANGE.darker().darker()};
 
-    static double fullscreen = 0.5;
+    static double fullscreen = 1;
 
-    static int windowHeight = (int)(fullscreen*1080);
-    static int windowWidth = (int)(fullscreen*1920);
+    static int windowHeight = (int)(fullscreen*768);
+    static int windowWidth = (int)(fullscreen*1366);
     
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
 
     int FPS = 60;
 
-    public static Camera c = new Camera(300,150,50,180,90);
+    public static Camera c = new Camera(300,150,50,0,90);
     int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
@@ -80,7 +80,6 @@ public class GamePanel extends JPanel implements Runnable{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -120,8 +119,10 @@ public class GamePanel extends JPanel implements Runnable{
             c.movePitch(-0.5 * camSpeed);
             // System.out.println("TURNRIGHT");
         }
+
         if (keyH.spacePressed == true) {
             c.jump();
+            keyH.spacePressed = false;
             // System.out.println("JUMP");
         }
 
@@ -130,7 +131,9 @@ public class GamePanel extends JPanel implements Runnable{
             c.movePitch(mouseA.pitch);
             mouseA.mouseMoved = false;
         }
+
         mouseA.recenterMouse();
+        c.update();
     }
 
     public void paintComponent(Graphics g) {
@@ -138,6 +141,7 @@ public class GamePanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D)g;
 
         Triangle[] triangles = map.getSector().getTriangles();
+        Floor floor = map.getSector().getFloor();
 
         Arrays.sort(triangles, (t1, t2) -> Double.compare(t2.getDepthFromCamera(), t1.getDepthFromCamera()));
 

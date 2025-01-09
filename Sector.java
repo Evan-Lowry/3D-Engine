@@ -9,4 +9,8 @@ public class Sector {
     public Triangle[] getTriangles() {
         return this.triangles;
     }
+
+    public Floor getFloor() {
+        return new Floor();
+    }
 }

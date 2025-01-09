@@ -15,7 +15,6 @@ public class Game {
         frame.setVisible(true);
         frame.setFocusTraversalKeysEnabled(false);
         frame.pack();
-        gamePanel.startGameThread();
 
         // Create an invisible cursor
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -24,5 +23,7 @@ public class Game {
 
         // Set the invisible cursor
         frame.setCursor(invisibleCursor);
+
+        gamePanel.startGameThread();
     }
 }
