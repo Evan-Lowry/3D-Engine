@@ -35,7 +35,7 @@ public class Map {
                 for (int j = 0; j < vertexs.length; j++) {
                     Vertex v;
                     int x = input.nextInt();
-                    int y = input.nextInt();
+                    int y = -input.nextInt();
                     int z = input.nextInt();
                     // drop to new line
                     input.nextLine();
@@ -53,10 +53,10 @@ public class Map {
                     int vertexIndex1 = input.nextInt();
                     int vertexIndex2 = input.nextInt();
                     int vertexIndex3 = input.nextInt();
-                    Vertex v1 = this.vertexs[vertexIndex1-1];
-                    Vertex v2 = this.vertexs[vertexIndex2-1];
-                    Vertex v3 = this.vertexs[vertexIndex3-1];
-                    int materialIndex = input.nextInt();
+                    Vertex v1 = this.vertexs[vertexIndex1];
+                    Vertex v2 = this.vertexs[vertexIndex2];
+                    Vertex v3 = this.vertexs[vertexIndex3];
+                    int materialIndex = (int)input.nextDouble();
                     input.nextLine();
                     t = new Triangle(v1, v2, v3, materialIndex);
                     this.triangles[j] = t;

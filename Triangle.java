@@ -100,14 +100,14 @@ public class Triangle {
     }
 
     private void calculateDepthFromCamera() {
-        if (v1.getX() > v2.getX()) {
-            this.depthFromCamera = v1.getX();    
+        if (newV1.getX() > newV2.getX()) {
+            this.depthFromCamera = newV1.getX();    
         } else {
-            this.depthFromCamera = v2.getX();
+            this.depthFromCamera = newV2.getX();
         }
 
-        if (v3.getX() > this.depthFromCamera) {
-            this.depthFromCamera = v3.getX();
+        if (newV3.getX() > this.depthFromCamera) {
+            this.depthFromCamera = newV3.getX();
         }
 
 

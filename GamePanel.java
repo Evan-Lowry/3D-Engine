@@ -11,20 +11,20 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    private Map map = new Map("Map copy");
+    private Map map = new Map("Map.tsv");
     private Color[] textures = {Color.BLUE.darker(), Color.BLUE.darker().darker(), Color.RED.darker(), Color.RED.darker().darker(), Color.ORANGE.darker(), Color.ORANGE.darker().darker()};
 
     static double fullscreen = 1;
 
-    static int windowHeight = (int)(fullscreen*768);
-    static int windowWidth = (int)(fullscreen*1366);
+    static int windowHeight = (int)(fullscreen*1080);
+    static int windowWidth = (int)(fullscreen*1920);
     
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
 
     int FPS = 60;
 
-    public static Camera c = new Camera(300,150,50,0,90);
+    public static Camera c = new Camera(0,0,50,0,90);
     int camSpeed = 3;
 
     KeyHandler keyH = new KeyHandler();
