@@ -11,30 +11,7 @@ public class Sector {
         this.triangles = triangles;
         this.floors = floors;
         this.obstacles = obstacles;
-
-        calculateSharedEdges();
-        }
-
-        private void calculateSharedEdges() {
-            sharedEdges = new ArrayList<>();
-            for (Floor f1 : floors) {
-            for (Floor f2 : floors) {
-                if (f1 != f2) {
-                for (Edge e1 : f1.getEdges()) {
-                    for (Edge e2 : f2.getEdges()) {
-                    if (e1.equals(e2)) {
-                        this.sharedEdges.add(e1);
-                    }
-                    }
-                }
-                }
-            }
-            }
-
-            for (Floor floor : floors) {
-                floor.addSharedEdges(this.sharedEdges);
-            }
-        }
+    }
 
         public Triangle[] getTriangles() {
         return this.triangles;

@@ -121,12 +121,10 @@ public class Camera {
 
     public void checkCollisions(Floor floor) {
 
-        for (Edge edge : floor.getEdges()) {
-            if (!floor.getSharedEdges().contains(edge)) {
-                Vertex v1 = edge.getVertex1();
-                Vertex v2 = edge.getVertex2();
-                checkLineCollisions(v1, v2);
-            }  
+        for (int i = 0; i < 3; i++) {
+            Vertex v1 = floor.getVertex(i);
+            Vertex v2 = floor.getVertex((i+1)%3);
+            // checkLineCollisions(v1, v2);
         }
     }
 
@@ -145,23 +143,26 @@ public class Camera {
             theta = Math.atan2((y2-y1),(x2-x1));
         }
 
-        double x = this.newX - x1;
-        double y = this.newY - y1;
-
-        this.newX = x*Math.cos(theta) + y*Math.sin(theta);
-        this.newY = y*Math.cos(theta) - x*Math.sin(theta);
-
-        x = this.newX;
-        y = this.newY;
-        if (y < 15) {
-            y = 15;   
+        if (theta == -Math.PI/2 || theta == 0) {
+            double x = this.newX - x1;
+            double y = this.newY - y1;
+    
+            this.newX = x*Math.cos(theta) + y*Math.sin(theta);
+            this.newY = y*Math.cos(theta) - x*Math.sin(theta);
+    
+            x = this.newX;
+            y = this.newY;
+            if (y < 15) {
+                y = 15;   
+            }
+    
+            this.newX = x*Math.cos(-theta) + y*Math.sin(-theta);
+            this.newY = y*Math.cos(-theta) - x*Math.sin(-theta);
+    
+            this.newX += x1;
+            this.newY += y1;
+            
         }
-
-        this.newX = x*Math.cos(-theta) + y*Math.sin(-theta);
-        this.newY = y*Math.cos(-theta) - x*Math.sin(-theta);
-
-        this.newX += x1;
-        this.newY += y1;
     }
 
     public void stop() {

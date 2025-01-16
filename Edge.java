@@ -22,4 +22,8 @@ public class Edge {
     public void setVertex2(Vertex vertex2) {
         this.vertex2 = vertex2;
     }
+
+    public String toString() {
+        return "Edge from " + vertex1 + " to " + vertex2;
+    }
 }

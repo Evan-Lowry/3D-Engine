@@ -8,10 +8,10 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel implements Runnable{
 
     private Map map = new Map("Map.tsv");
-    private Color[] textures = {Color.BLUE.darker(), Color.BLUE.darker().darker(), Color.RED.darker(), Color.RED.darker().darker(), Color.ORANGE.darker(), Color.ORANGE.darker().darker()};
+    static Color[] textures = {Color.RED, Color.GREEN.darker(), Color.BLUE, Color.YELLOW.darker(), Color.ORANGE};
     private Drawing drawing = new Drawing(textures);
 
-    static double fullscreen = 1;
+    static double fullscreen = 0.72;
 
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);
@@ -122,8 +122,8 @@ public class GamePanel extends JPanel implements Runnable{
         }
 
         mouseA.recenterMouse();
-        c.setFloorHeight(this.map.getSector().getFloor(c).getFloorHeight());
         c.calculateNewCordinates();
+        c.setFloorHeight(this.map.getSector().getFloor(c).getFloorHeight());
         Floor currentFloor  = this.map.getSector().getFloor(c);
         c.checkCollisions(currentFloor);
         c.update();

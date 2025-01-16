@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Color;
 
 public class Triangle {
     private Vertex v1;
@@ -13,7 +14,7 @@ public class Triangle {
     private Vertex2D p2;
     private Vertex2D p3;
     private Vertex2D p4;
-    private int materialIndex;
+    private Color material;
     private double depthFromCamera;
     private int numVertices = 3;
     private boolean isValid = true;
@@ -22,7 +23,8 @@ public class Triangle {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
-        this.materialIndex = materialIndex;
+        this.material = GamePanel.textures[materialIndex-1];
+        computeColor();
     }
 
     public void update() {
@@ -138,6 +140,73 @@ public class Triangle {
         }
     }
 
+    private void computeColor() {
+        double ambientLight = 0.8; // Increase ambient light to make everything brighter
+
+        // Calculate the normal of the triangle
+        double x1 = v2.getX() - v1.getX();
+        double y1 = v2.getY() - v1.getY();
+        double z1 = v2.getZ() - v1.getZ();
+
+        double x2 = v3.getX() - v1.getX();
+        double y2 = v3.getY() - v1.getY();
+        double z2 = v3.getZ() - v1.getZ();
+
+        double normalX = y1 * z2 - z1 * y2;
+        double normalY = z1 * x2 - x1 * z2;
+        double normalZ = x1 * y2 - y1 * x2;
+
+        // Normalize the normal
+        double length = Math.sqrt(normalX * normalX + normalY * normalY + normalZ * normalZ);
+        normalX /= length;
+        normalY /= length;
+        normalZ /= length;
+
+        // Light intensities for each axis
+        double lightIntensityX = 1.2; // Increase light intensity
+        double lightIntensityY = 1.5; // Increase light intensity
+        double lightIntensityZ = 1.3; // Increase light intensity
+
+        // Light directions for each axis
+        double lightX = 1;
+        double lightY = 1;
+        double lightZ = 1;
+
+        // Normalize the light directions
+        double lengthX = Math.sqrt(lightX * lightX);
+        double lengthY = Math.sqrt(lightY * lightY);
+        double lengthZ = Math.sqrt(lightZ * lightZ);
+        lightX /= lengthX;
+        lightY /= lengthY;
+        lightZ /= lengthZ;
+
+        // Calculate the dot product of the normal and the light directions
+        double dotProductX = normalX * lightX;
+        double dotProductY = normalY * lightY;
+        double dotProductZ = normalZ * lightZ;
+
+        // Calculate the final intensity for each axis
+        double intensityX = Math.max(ambientLight, lightIntensityX * dotProductX);
+        double intensityY = Math.max(ambientLight, lightIntensityY * dotProductY);
+        double intensityZ = Math.max(ambientLight, lightIntensityZ * dotProductZ);
+
+        // Average the intensities
+        double intensity = (intensityX + intensityY + intensityZ) / 3;
+
+        // Apply the intensity to the material color
+        int red = (int) (material.getRed() * intensity);
+        int green = (int) (material.getGreen() * intensity);
+        int blue = (int) (material.getBlue() * intensity);
+
+        // Ensure the color components are within the valid range
+        red = Math.min(255, Math.max(0, red));
+        green = Math.min(255, Math.max(0, green));
+        blue = Math.min(255, Math.max(0, blue));
+
+        // Set the new color
+        this.material = new Color(red, green, blue);
+    }
+
     public int getNumberOfVertices() {
         return numVertices;
     }
@@ -186,8 +255,8 @@ public class Triangle {
         return this.depthFromCamera;
     }
 
-    public int getColorIndex() {
-        return this.materialIndex-1;
+    public Color getMaterial() {
+        return this.material;
     }
 
     public boolean isValid() {

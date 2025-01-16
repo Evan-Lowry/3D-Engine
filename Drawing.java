@@ -13,7 +13,7 @@ public class Drawing {
         if (!t.isValid()) {
             return;
         }
-        g2.setColor(textures[t.getColorIndex()]);
+        g2.setColor(t.getMaterial());
         int[] cordinatesX = {t.getP1().getX(), t.getP2().getX(), t.getP3().getX(), t.getP4().getX()};
         int[] cordinatesY = {t.getP1().getY(), t.getP2().getY(), t.getP3().getY(), t.getP4().getY()};
         g2.fillPolygon(cordinatesX, cordinatesY, t.getNumberOfVertices());

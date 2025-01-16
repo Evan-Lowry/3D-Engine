@@ -4,34 +4,12 @@ public class Floor {
 
     private Vertex[] vertexs = new Vertex[3];
     private double floorHeight;
-    private ArrayList<Edge> edges = new ArrayList<>();
-    private ArrayList<Edge> sharedEdges = new ArrayList<>();
 
     public Floor(Vertex v1, Vertex v2, Vertex v3) {
         this.vertexs[0] = v1;
         this.vertexs[1] = v2;
         this.vertexs[2] = v3;
         this.floorHeight = this.vertexs[0].getZ();
-
-        for (int i = 0; i < vertexs.length; i++) {
-            this.edges.add(new Edge (this.vertexs[i],this.vertexs[(i+1)%3]));
-        }
-    }
-
-    public ArrayList <Edge> getEdges() {
-        return this.edges;
-    }
-
-    public Edge getEdge(int i) {
-        return this.edges.get(i);
-    }
-
-    public ArrayList <Edge> getSharedEdges() {
-        return this.sharedEdges;
-    }
-
-    public void addSharedEdges(ArrayList <Edge> e) {
-        this.sharedEdges = e;
     }
 
     public double getFloorHeight() {
