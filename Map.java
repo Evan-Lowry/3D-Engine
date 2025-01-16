@@ -7,11 +7,14 @@ public class Map {
     private Sector[] sectors;
     private int currentSectorIndex;
     private Sector currentSector;
-    private int numTriangles;
-    private Triangle[] triangles;
     private int numVertexs;
     private Vertex[] vertexs;
-    private Floor floor = new Floor();
+    private int numTriangles;
+    private Triangle[] triangles;
+    private int numFloors;
+    private Floor[] floors;
+    private int numObstacles;
+    private Obstacle[] obstacles;
 
     public Map(String filename) {
         // create the scanner to read the file
@@ -35,7 +38,7 @@ public class Map {
                 for (int j = 0; j < vertexs.length; j++) {
                     Vertex v;
                     int x = input.nextInt();
-                    int y = -input.nextInt();
+                    int y = input.nextInt();
                     int z = input.nextInt();
                     // drop to new line
                     input.nextLine();
@@ -61,7 +64,43 @@ public class Map {
                     t = new Triangle(v1, v2, v3, materialIndex);
                     this.triangles[j] = t;
                 }
-                this.sectors[i] = new Sector(this.triangles);
+                // scanning number of floors
+                this.numFloors = input.nextInt();
+                // drop to new line
+                input.nextLine();
+                // creates an array to store floors for a sector
+                this.floors = new Floor[this.numFloors];
+                for (int j = 0; j < floors.length; j++) {
+                    Floor f;
+                    int vertexIndex1 = input.nextInt();
+                    int vertexIndex2 = input.nextInt();
+                    int vertexIndex3 = input.nextInt();
+                    Vertex v1 = this.vertexs[vertexIndex1];
+                    Vertex v2 = this.vertexs[vertexIndex2];
+                    Vertex v3 = this.vertexs[vertexIndex3];
+                    input.nextLine();
+                    f = new Floor(v1, v2, v3);
+                    this.floors[j] = f;
+                }
+                // scanning number of obstacles
+                this.numObstacles = input.nextInt();
+                // drop to new line
+                input.nextLine();
+                // creates an array to store obstacles for a sector
+                this.obstacles = new Obstacle[this.numObstacles];
+                for (int j = 0; j < obstacles.length; j++) {
+                    Obstacle o;
+                    int vertexIndex1 = input.nextInt();
+                    int vertexIndex2 = input.nextInt();
+                    int vertexIndex3 = input.nextInt();
+                    Vertex v1 = this.vertexs[vertexIndex1];
+                    Vertex v2 = this.vertexs[vertexIndex2];
+                    Vertex v3 = this.vertexs[vertexIndex3];
+                    input.nextLine();
+                    o = new Obstacle(v1, v2, v3);
+                    this.obstacles[j] = o;
+                }
+                this.sectors[i] = new Sector(this.triangles, this.floors, this.obstacles);
             }
             
             // set the current location

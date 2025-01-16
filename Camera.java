@@ -1,74 +1,66 @@
+import java.util.ArrayList;
+
 public class Camera {
-    double x;
-    double y;
-    double z = 0;
-    double rot;
-    double pitch;
-    double FOV;
-    int height;
-    double velocityUp = 0;
-    double floorHeight = 0;
-    double velocityForward;
-    double velocitySideways;
+    private double x;
+    private double y;
+    private double z;
+    private double rot;
+    private double pitch;
+    private double FOV;
+    private int height;
+    private int camSpeed = 2;
+    private double velocity = 0;
+    private double velocityUp = 0;
+    private double movementRot = 0;
+    private double floorHeight = 0;
+    private double newX;
+    private double newY;
+
     
-    public Camera(int x, int y, int z, double rot, int FOV) {
+    public Camera(int x, int y, int height, double rot, int FOV) {
         this.x = x;
         this.y = y;
-        this.height = z;
+        this.z = 0;
+        this.height = height;
         this.rot = Math.toRadians(rot);
         this.FOV = Math.toRadians(FOV);
         this.pitch = 0;
     }
 
-    public int getX() {
-        return (int)this.x;
+    public void moveForward() {
+        this.velocity = camSpeed;
+        this.movementRot = 0;
     }
 
-    public int getY() {
-        return (int)this.y;
+    public void moveBackward() {
+        this.velocity = camSpeed;
+        this.movementRot = Math.PI;
     }
 
-    public int getZ() {
-        return (int)this.z;
+    public void moveLeft() {
+        this.velocity = camSpeed;
+        if (this.movementRot == 0) {
+            this.movementRot = -Math.PI/4;
+        } else if (this.movementRot == Math.PI) {
+            this.movementRot = -3*Math.PI/4;
+        } else {
+            this.movementRot = -Math.PI/2;
+        }
     }
 
-    public double getRot() {
-        return this.rot;
+    public void moveRight() {
+        this.velocity = camSpeed;
+        if (this.movementRot == 0) {
+            this.movementRot = Math.PI/4;
+        } else if (this.movementRot == Math.PI) {
+            this.movementRot = 3*Math.PI/4;
+        } else {
+            this.movementRot = Math.PI/2;
+        }
     }
 
-    public double getPitch() {
-        return this.pitch;
-    }
-
-    public double getFOV() {
-        return this.FOV;
-    }
-
-    public int[] getPos() {
-        int[] cordinates = {(int)this.x, (int)this.y, (int)this.z};
-        return cordinates;
-    }
-
-    public void moveX(double deltaX) {
-        this.x += deltaX;
-    }
-
-    public void moveY(double deltaY) {
-        this.y += deltaY;
-    }
-
-    public void moveZ(double deltaZ) {
-        this.z += deltaZ;
-    }
-
-    public void moveForward(double delta) {
-        this.x += delta * Math.cos(this.rot);
-        this.y += delta * Math.sin(this.rot);
-    }
-
-    public void moveSideways(double delta) {
-        this.x -= delta * Math.sin(this.rot);
-        this.y += delta * Math.cos(this.rot);
+    public void sprint() {
+        this.velocity = this.velocity*2;
     }
 
     public void moveRot(double deltaRot) {
@@ -97,23 +89,27 @@ public class Camera {
         this.FOV = FOV;
     }
 
-    public void move(int deltaX, int deltaY, int deltaZ) {
-        this.x += deltaX;
-        this.y += deltaY;
-        this.z += deltaZ;
+    public void jump() {
+        // if (this.z == this.floorHeight+this.height) {
+            this.velocityUp += 4;
+        // }
     }
 
-    public void jump() {
-        if (this.z == this.floorHeight+this.height) {
-            this.velocityUp = 5;
-        }
+    public void calculateNewCordinates() {
+        this.newX = this.x + Math.cos(this.movementRot+this.rot) * camSpeed * velocity;
+        this.newY = this.y + Math.sin(this.movementRot+this.rot) * camSpeed * velocity;
     }
 
     public void update() {
-
-        this.x += this.velocityForward;
-        this.y += this.velocitySideways;
+        this.x = this.newX;
+        this.y = this.newY;
         this.z += this.velocityUp;
+
+        if (this.velocity > 0) {
+            this.velocity -= 0.05;
+        } else {
+            this.velocity = 0;
+        }
 
         if (this.z > this.floorHeight+this.height) {
             this.velocityUp -= 0.30;
@@ -121,5 +117,90 @@ public class Camera {
             this.z = this.floorHeight+this.height;
             this.velocityUp = 0;
         }
+    }
+
+    public void checkCollisions(Floor floor) {
+
+        for (Edge edge : floor.getEdges()) {
+            if (!floor.getSharedEdges().contains(edge)) {
+                Vertex v1 = edge.getVertex1();
+                Vertex v2 = edge.getVertex2();
+                checkLineCollisions(v1, v2);
+            }  
+        }
+    }
+
+    private void checkLineCollisions(Vertex v1, Vertex v2) {
+
+        double x1 = v1.getX();
+        double y1 = v1.getY();
+        double x2 = v2.getX();
+        double y2 = v2.getY();
+
+        double theta;
+
+        if (x1 == x2) {
+            theta = -Math.PI/2;
+        } else {
+            theta = Math.atan2((y2-y1),(x2-x1));
+        }
+
+        double x = this.newX - x1;
+        double y = this.newY - y1;
+
+        this.newX = x*Math.cos(theta) + y*Math.sin(theta);
+        this.newY = y*Math.cos(theta) - x*Math.sin(theta);
+
+        x = this.newX;
+        y = this.newY;
+        if (y < 15) {
+            y = 15;   
+        }
+
+        this.newX = x*Math.cos(-theta) + y*Math.sin(-theta);
+        this.newY = y*Math.cos(-theta) - x*Math.sin(-theta);
+
+        this.newX += x1;
+        this.newY += y1;
+    }
+
+    public void stop() {
+        this.velocity = 0;
+    }
+
+    public double getX() {
+        return this.x;
+    }
+
+    public double getY() {
+        return this.y;
+    }
+
+    public double getZ() {
+        return this.z;
+    }
+
+    public double getNewX() {
+        return this.newX;
+    }
+
+    public double getNewY() {
+        return this.newY;
+    }
+
+    public double getRot() {
+        return this.rot;
+    }
+
+    public double getPitch() {
+        return this.pitch;
+    }
+
+    public double getFOV() {
+        return this.FOV;
+    }
+
+    public Vertex toVertex() {
+        return new Vertex(this.x, this.y, this.z);
     }
 }

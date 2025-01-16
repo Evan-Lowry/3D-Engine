@@ -8,7 +8,7 @@ public class KeyHandler implements KeyListener{
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean turnLeftPressed, turnRightPressed, turnUpPressed, turnDownPressed;
-    public boolean spacePressed, fullscreen;
+    public boolean spacePressed, shiftPressed, fullscreen;
 
     public KeyHandler() {
         upPressed = false;
@@ -21,13 +21,12 @@ public class KeyHandler implements KeyListener{
         turnDownPressed = false;
         spacePressed = false;
         fullscreen = false;
+        shiftPressed = false;
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        char keyChar = e.getKeyChar();
-
-        System.out.println(keyChar);
+        char keyChar = Character.toLowerCase(e.getKeyChar());
     
         if (keyChar == 't') {
             upPressed = !upPressed;
@@ -62,7 +61,7 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        char keyChar = e.getKeyChar();
+        char keyChar = Character.toLowerCase(e.getKeyChar());
 
         if (keyChar == 'w') {
             upPressed = true;
@@ -74,12 +73,14 @@ public class KeyHandler implements KeyListener{
             rightPressed = true;
         } else if (keyChar == 'q') {
             System.exit(0);
+        } else if (e.isShiftDown()) {
+            shiftPressed = true;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        char keyChar = e.getKeyChar();
+        char keyChar = Character.toLowerCase(e.getKeyChar());
 
         if (keyChar == 'w') {
             upPressed = false;
@@ -91,6 +92,8 @@ public class KeyHandler implements KeyListener{
             rightPressed = false;
         } else if (keyChar == 'q') {
             System.exit(0);
+        } else if (!e.isShiftDown()) {
+            shiftPressed = false;
         }
     }
 }
