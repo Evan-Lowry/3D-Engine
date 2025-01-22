@@ -1,20 +1,23 @@
 import java.util.ArrayList;
 
 public class Sector {
-    private Triangle[] triangles;
-    private Floor[] floors;
+    private ArrayList<Triangle> triangles;
+    private ArrayList<Floor> floors;
     private Floor currentFloor;
-    private Obstacle[] obstacles;
-    private ArrayList <Edge> sharedEdges;
+    private ArrayList<Obstacle> obstacles;
+    private ArrayList<Edge> sharedEdges;
 
-    public Sector(Triangle[] triangles, Floor[] floors, Obstacle[] obstacles) {
+    public Sector(ArrayList <Triangle> triangles, ArrayList <Floor> floors, ArrayList <Obstacle> obstacles) {
         this.triangles = triangles;
         this.floors = floors;
         this.obstacles = obstacles;
+        this.sharedEdges = new ArrayList<>();
+        this.currentFloor = null;
     }
 
-        public Triangle[] getTriangles() {
-        return this.triangles;
+    public Triangle[] getTriangles() {
+        Triangle[] array = new Triangle[this.triangles.size()];
+        return this.triangles.toArray(array);
     }
 
     public Floor getFloor(Camera c) {

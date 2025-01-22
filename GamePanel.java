@@ -7,11 +7,12 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    private Map map = new Map("Map.tsv");
-    static Color[] textures = {Color.RED, Color.GREEN.darker(), Color.BLUE, Color.YELLOW.darker(), Color.ORANGE};
+    private Map map = new Map("ExportedData/Map.obj");
+    static Textures texturess = new Textures("Textures");
+    static Color[] textures = {Color.RED.darker(), Color.GREEN.darker(), Color.BLUE.darker(), Color.YELLOW.darker(), Color.white.darker()};
     private Drawing drawing = new Drawing(textures);
 
-    static double fullscreen = 0.72;
+    static double fullscreen = 0.36;
 
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);
@@ -123,9 +124,9 @@ public class GamePanel extends JPanel implements Runnable{
 
         mouseA.recenterMouse();
         c.calculateNewCordinates();
-        c.setFloorHeight(this.map.getSector().getFloor(c).getFloorHeight());
-        Floor currentFloor  = this.map.getSector().getFloor(c);
-        c.checkCollisions(currentFloor);
+        c.setFloorHeight(0);
+        // Floor currentFloor  = this.map.getSector().getFloor(c);
+        // c.checkCollisions(currentFloor);
         c.update();
     }
 
@@ -134,14 +135,14 @@ public class GamePanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
         Triangle[] triangles = map.getSector().getTriangles();
-        Floor floor = map.getSector().getFloor(c);
+        // Floor floor = map.getSector().getFloor(c);
 
         Arrays.sort(triangles, (t1, t2) -> Double.compare(t2.getDepthFromCamera(), t1.getDepthFromCamera()));
 
         for (int i = 0; i < triangles.length; i++) {
             Triangle t = triangles[i];
             t.update();
-            drawing.drawTriangle(g2, t);
+            drawing.drawTexturedTriangle(g2, t, this.texturess.getTexture(0));
         }
         for (Triangle t : triangles) {
             // drawing.triangleDebug(g2, t);

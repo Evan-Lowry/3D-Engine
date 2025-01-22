@@ -2,6 +2,8 @@ public class Vertex {
     private double x;
     private double y;
     private double z;
+    private double u;
+    private double v;
 
     public Vertex(double x, double y, double z) {
         this.x = x;
@@ -144,5 +146,9 @@ public class Vertex {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public String toString() {
+        return "(" + this.x + ", " + this.y + ", " + this.z + ")";
     }
 }

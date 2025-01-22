@@ -6,6 +6,12 @@ public class Triangle {
     private Vertex v1;
     private Vertex v2;
     private Vertex v3;
+    private UV uv1;
+    private UV uv2;
+    private UV uv3;
+    private Normal normal1;
+    private Normal normal2;
+    private Normal normal3;
     private Vertex newV1;
     private Vertex newV2;
     private Vertex newV3;
@@ -19,10 +25,16 @@ public class Triangle {
     private int numVertices = 3;
     private boolean isValid = true;
 
-    public Triangle (Vertex v1, Vertex v2, Vertex v3, int materialIndex) {
+    public Triangle (Vertex v1, Vertex v2, Vertex v3, UV uv1, UV uv2, UV uv3, Normal normal1, Normal normal2, Normal normal3, int materialIndex) {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
+        this.uv1 = uv1;
+        this.uv2 = uv2;
+        this.uv3 = uv3;
+        this.normal1 = normal1;
+        this.normal2 = normal2;
+        this.normal3 = normal3;
         this.material = GamePanel.textures[materialIndex-1];
         computeColor();
     }
@@ -221,6 +233,18 @@ public class Triangle {
 
     public Vertex getV3() {
         return this.v3;
+    }
+
+    public UV getUV1() {
+        return this.uv1;
+    }
+
+    public UV getUV2() {
+        return this.uv2;
+    }
+
+    public UV getUV3() {
+        return this.uv3;
     }
 
     public Vertex getNewV1() {
