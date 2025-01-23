@@ -24,25 +24,17 @@ public class Drawing {
     // }
 
     public void drawTexturedTriangle(Graphics2D g2, Triangle t, Texture texture) {
-        if (!t.isValid() || t.getNumberOfVertices() == 4) {
+        if (!t.isValid()) {
             return;
         }
 
         // Get triangle vertices
-        int[] xPoints = {t.getP1().getX(), t.getP2().getX(), t.getP3().getX()};
-        int[] yPoints = {t.getP1().getY(), t.getP2().getY(), t.getP3().getY()};
+        int[] xPoints = {t.getP1().getX(), t.getP2().getX(), t.getP3().getX(), t.getP4().getX()};
+        int[] yPoints = {t.getP1().getY(), t.getP2().getY(), t.getP3().getY(), t.getP4().getY()};
         
-        // Calculate average UV coordinates
-        double avgU = (t.getUV1().getU() + t.getUV2().getU() + t.getUV3().getU()) / 3.0;
-        double avgV = (t.getUV1().getV() + t.getUV2().getV() + t.getUV3().getV()) / 3.0;
-    
-        // Calculate texture index based on average UV coordinates
-        int textureIndex = ((int)(avgU * 32) % 32) + ((int)(avgV * 32) % 32) * 32;
-        textureIndex = Math.min(Math.max(textureIndex, 0), textures.length - 1);
-        
-        // Set color and fill polygon
-        g2.setColor(texture.getColor((int)(avgU * 32) % 32, (int)(avgV * 32) % 32));
-        g2.fillPolygon(xPoints, yPoints, 3);
+        g2.setColor(t.getMaterial());
+        g2.drawPolygon(xPoints, yPoints, t.getNumberOfVertices());
+        // g2.fillPolygon(xPoints, yPoints, t.getNumberOfVertices());
     }
 
     private double[] barycentricWeights(Vertex2D[] vertices, int x, int y) {

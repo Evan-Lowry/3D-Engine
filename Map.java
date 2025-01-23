@@ -45,6 +45,7 @@ public class Map {
 
         this.sectors.add(new Sector(this.triangles, this.floors, this.obstacles));
         this.currentSector = this.sectors.get(0);
+        System.out.println(this.triangles.size());
     }
 
     // reads in vertex data and adds it to arraylist of vertexs
@@ -53,7 +54,7 @@ public class Map {
         float z = 100 * input.nextFloat();
         float y = 100 * input.nextFloat();
         this.vertexs.add(new Vertex(x, y, z));
-        System.out.println("Vertex: (" + x + ", " + y + ", " + z + ")");
+        // System.out.println("Vertex: (" + x + ", " + y + ", " + z + ")");
     }
 
     // reads in normal data and adds it to arraylist of normals
@@ -62,7 +63,7 @@ public class Map {
         float y = input.nextFloat();
         float z = input.nextFloat();
         this.normals.add(new Normal(x, y, z));
-        System.out.println("Normal: (" + x + ", " + y + ", " + z + ")");
+        // System.out.println("Normal: (" + x + ", " + y + ", " + z + ")");
     }
 
     // reads in UV data and adds it to arraylist of UVs
@@ -70,7 +71,7 @@ public class Map {
         float u = input.nextFloat();
         float v = input.nextFloat();
         this.uvs.add(new UV(u, v));
-        System.out.println("UV: (" + u + ", " + v + ")");
+        // System.out.println("UV: (" + u + ", " + v + ")");
     }
 
     // reads in the face data and adds it to arraylist of faces
@@ -105,12 +106,12 @@ public class Map {
         Normal normal3 = this.normals.get(indexNormal3-1);
         
         this.triangles.add(new Triangle(v1, v2, v3, uv1, uv2, uv3, normal1, normal2, normal3, this.materialIndex));
-        System.out.println("Triangle: (" + v1 + ", " + v2 + ", " + v3 + ")");
+        // System.out.println("Triangle: (" + v1 + ", " + v2 + ", " + v3 + ")");
     }
 
     private void readMaterial(Scanner input) {
         this.materialIndex = input.nextInt();
-        System.out.println("Material index: " + this.materialIndex);
+        // System.out.println("Material index: " + this.materialIndex);
     }
 
     public Sector getSector() {

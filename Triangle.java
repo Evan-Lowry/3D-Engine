@@ -20,6 +20,7 @@ public class Triangle {
     private Vertex2D p2;
     private Vertex2D p3;
     private Vertex2D p4;
+    private Texture texture;
     private Color material;
     private double depthFromCamera;
     private int numVertices = 3;
@@ -35,8 +36,9 @@ public class Triangle {
         this.normal1 = normal1;
         this.normal2 = normal2;
         this.normal3 = normal3;
-        this.material = GamePanel.textures[materialIndex-1];
+        this.texture = GamePanel.texturess.getTexture(materialIndex-1);
         computeColor();
+        computeShade();
     }
 
     public void update() {
@@ -153,6 +155,15 @@ public class Triangle {
     }
 
     private void computeColor() {
+        // calculate average UV coordinates
+        float avgU = (getUV1().getU() + getUV2().getU() + getUV3().getU()) / 3;
+        float avgV = (getUV1().getV() + getUV2().getV() + getUV3().getV()) / 3;
+        
+        // set color
+        this.material = texture.getColor(31 - (int)((avgV*32)), (int)((avgU*32)));
+    }
+
+    private void computeShade() {
         double ambientLight = 0.8; // Increase ambient light to make everything brighter
 
         // Calculate the normal of the triangle

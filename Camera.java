@@ -17,14 +17,14 @@ public class Camera {
     private double newY;
 
     
-    public Camera(int x, int y, int height, double rot, int FOV) {
+    public Camera(int x, int y, int z, double rot, int FOV) {
         this.x = x;
         this.y = y;
-        this.z = 0;
-        this.height = height;
+        this.z = z;
+        this.height = 50;
         this.rot = Math.toRadians(rot);
         this.FOV = Math.toRadians(FOV);
-        this.pitch = 0;
+        this.pitch = Math.toRadians(-90);
     }
 
     public void moveForward() {

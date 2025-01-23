@@ -1,3 +1,4 @@
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -12,7 +13,7 @@ public class GamePanel extends JPanel implements Runnable{
     static Color[] textures = {Color.RED.darker(), Color.GREEN.darker(), Color.BLUE.darker(), Color.YELLOW.darker(), Color.white.darker()};
     private Drawing drawing = new Drawing(textures);
 
-    static double fullscreen = 0.36;
+    static float fullscreen = 1;
 
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);
@@ -22,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     int FPS = 60;
 
-    public static Camera c = new Camera(100,-100,50,0,90);
+    public static Camera c = new Camera(1300,-300,10000,180,90);
 
     KeyHandler keyH = new KeyHandler();
     MouseAiming mouseA = new MouseAiming();
@@ -67,14 +68,13 @@ public class GamePanel extends JPanel implements Runnable{
                 if (remainingTime < 0) {
                     remainingTime = 0;
                 }
-                // double gh = drawInterval - remainingTime;
-                // System.out.println(1000000000/gh);
                 Thread.sleep((long) remainingTime);
                 nextDrawTime += drawInterval;
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
     }
 
@@ -133,6 +133,7 @@ public class GamePanel extends JPanel implements Runnable{
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(1));
 
         Triangle[] triangles = map.getSector().getTriangles();
         // Floor floor = map.getSector().getFloor(c);
@@ -142,7 +143,7 @@ public class GamePanel extends JPanel implements Runnable{
         for (int i = 0; i < triangles.length; i++) {
             Triangle t = triangles[i];
             t.update();
-            drawing.drawTexturedTriangle(g2, t, this.texturess.getTexture(0));
+            drawing.drawTexturedTriangle(g2, t, texturess.getTexture(0));
         }
         for (Triangle t : triangles) {
             // drawing.triangleDebug(g2, t);
