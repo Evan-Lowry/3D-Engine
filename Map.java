@@ -8,7 +8,7 @@ public class Map {
     private ArrayList <Sector> sectors = new ArrayList<>();
     private int currentSectorIndex;
     private Sector currentSector;
-    private ArrayList <Vertex> vertexs = new ArrayList<>();
+    private ArrayList <Vertex3D> vertexs = new ArrayList<>();
     private ArrayList <Triangle> triangles = new ArrayList<>();
     private ArrayList <Normal> normals = new ArrayList<>();
     private ArrayList <UV> uvs = new ArrayList<>();
@@ -53,7 +53,7 @@ public class Map {
         float x = 100 * input.nextFloat();
         float z = 100 * input.nextFloat();
         float y = 100 * input.nextFloat();
-        this.vertexs.add(new Vertex(x, y, z));
+        this.vertexs.add(new Vertex3D(x, y, z));
         // System.out.println("Vertex: (" + x + ", " + y + ", " + z + ")");
     }
 
@@ -93,9 +93,9 @@ public class Map {
         int indexUV3 = Integer.parseInt(data[1]);
         int indexNormal3 = Integer.parseInt(data[2]);
 
-        Vertex v1 = this.vertexs.get(indexV1-1);
-        Vertex v2 = this.vertexs.get(indexV2-1);
-        Vertex v3 = this.vertexs.get(indexV3-1);
+        Vertex3D v1 = this.vertexs.get(indexV1-1);
+        Vertex3D v2 = this.vertexs.get(indexV2-1);
+        Vertex3D v3 = this.vertexs.get(indexV3-1);
 
         UV uv1 = this.uvs.get(indexUV1-1);
         UV uv2 = this.uvs.get(indexUV2-1);
@@ -119,5 +119,11 @@ public class Map {
     }
 
     public void changeSector() {
+    }
+
+    public void updateVertexs() {
+        for (Vertex3D v : this.vertexs) {
+            v.normalizeCoordinates();
+        }
     }
 }

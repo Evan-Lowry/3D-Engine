@@ -3,13 +3,24 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Stroke;
+import java.util.Arrays;
 
 public class Drawing {
 
-    private Color[] textures;
+    public Drawing() {
+    }
 
-    public Drawing(Color[] textures) {
-        this.textures = textures;
+    public void draw(Graphics2D g2) {
+        // gets all triangles to be drawn
+        Triangle[] triangles = map.getSector().getTriangles();
+        // sorts the triangles in order of farthest from camera to closest
+        Arrays.sort(triangles, (t1, t2) -> Double.compare(t2.getDepthFromCamera(), t1.getDepthFromCamera()));
+
+        // 
+        for (Triangle t : triangles) {
+            t.update();
+            drawing.drawTexturedTriangle(g2, t, texturess.getTexture(0));
+        }
     }
 
     // Commented out the original method
@@ -72,10 +83,10 @@ public class Drawing {
     }
 
     public void triangleDebug(Graphics2D g2, Triangle t) {
-        Vertex v1 = t.getV1();
-        Vertex v2 = t.getV2();
-        Vertex v3 = t.getV3();
+        Vertex3D v1 = t.getV1();
+        Vertex3D v2 = t.getV2();
+        Vertex3D v3 = t.getV3();
         g2.setColor(Color.WHITE);
-        g2.drawLine(v3.getIX(), v3.getIY(), v1.getIX(), v1.getIY());
+        g2.drawLine((int)v3.getX(), (int)v3.getY(), (int)v1.getX(), (int)v1.getY());
     }
 }

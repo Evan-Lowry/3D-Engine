@@ -1,1 +1,1 @@
-WASD to move J and L to look
+WASD to move mouse to look

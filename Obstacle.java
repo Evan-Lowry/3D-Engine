@@ -1,8 +1,8 @@
 public class Obstacle {
 
-private Vertex[] vertexs = new Vertex[3];
+private Vertex3D[] vertexs = new Vertex3D[3];
 
-    public Obstacle(Vertex v1, Vertex v2, Vertex v3) {
+    public Obstacle(Vertex3D v1, Vertex3D v2, Vertex3D v3) {
         this.vertexs[0] = v1;
         this.vertexs[1] = v2;
         this.vertexs[2] = v3;
@@ -18,7 +18,7 @@ private Vertex[] vertexs = new Vertex[3];
         return false;
     }
 
-    public double shortestDistanceToLine(Camera c, Vertex v1, Vertex v2) {
+    public double shortestDistanceToLine(Camera c, Vertex3D v1, Vertex3D v2) {
 
         double x0 = c.getX();
         double y0 = c.getY();

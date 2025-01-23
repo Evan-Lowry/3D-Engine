@@ -1,30 +1,30 @@
 import java.util.ArrayList;
 
 public class Camera {
-    private double x;
-    private double y;
-    private double z;
-    private double rot;
-    private double pitch;
-    private double FOV;
+    private float x;
+    private float y;
+    private float z;
+    private float rot;
+    private float pitch;
+    private float FOV;
     private int height;
     private int camSpeed = 2;
-    private double velocity = 0;
-    private double velocityUp = 0;
-    private double movementRot = 0;
-    private double floorHeight = 0;
-    private double newX;
-    private double newY;
+    private float velocity = 0;
+    private float velocityUp = 0;
+    private float movementRot = 0;
+    private float floorHeight = 0;
+    private float newX;
+    private float newY;
 
     
-    public Camera(int x, int y, int z, double rot, int FOV) {
+    public Camera(int x, int y, int z, float rot, int FOV) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.height = 50;
-        this.rot = Math.toRadians(rot);
-        this.FOV = Math.toRadians(FOV);
-        this.pitch = Math.toRadians(-90);
+        this.rot = (float) Math.toRadians(rot);
+        this.FOV = (float) Math.toRadians(FOV);
+        this.pitch = 0;
     }
 
     public void moveForward() {
@@ -34,28 +34,28 @@ public class Camera {
 
     public void moveBackward() {
         this.velocity = camSpeed;
-        this.movementRot = Math.PI;
+        this.movementRot = (float) Math.PI;
     }
 
     public void moveLeft() {
         this.velocity = camSpeed;
         if (this.movementRot == 0) {
-            this.movementRot = -Math.PI/4;
+            this.movementRot = (float) (-Math.PI/4);
         } else if (this.movementRot == Math.PI) {
-            this.movementRot = -3*Math.PI/4;
+            this.movementRot = (float) (-3*Math.PI/4);
         } else {
-            this.movementRot = -Math.PI/2;
+            this.movementRot = (float) (-Math.PI/2);
         }
     }
 
     public void moveRight() {
         this.velocity = camSpeed;
         if (this.movementRot == 0) {
-            this.movementRot = Math.PI/4;
+            this.movementRot = (float) (Math.PI/4);
         } else if (this.movementRot == Math.PI) {
-            this.movementRot = 3*Math.PI/4;
+            this.movementRot = (float) (3*Math.PI/4);
         } else {
-            this.movementRot = Math.PI/2;
+            this.movementRot = (float) (Math.PI/2);
         }
     }
 
@@ -75,14 +75,14 @@ public class Camera {
     public void movePitch(double deltaPitch) {
         this.pitch += Math.toRadians(deltaPitch);
         if (this.pitch > (Math.PI/2)) {
-            this.pitch = (Math.PI/2);
+            this.pitch = (float) (Math.PI/2);
         } else if (this.pitch < -(Math.PI/2)) {
-            this.pitch = -(Math.PI/2);
+            this.pitch = (float) -(Math.PI/2);
         }
     }
 
     public void setFloorHeight(double floorHeight) {
-        this.floorHeight = floorHeight;
+        this.floorHeight = (float) floorHeight;
     }
 
     public void setFOV( int FOV) {
@@ -96,8 +96,8 @@ public class Camera {
     }
 
     public void calculateNewCordinates() {
-        this.newX = this.x + Math.cos(this.movementRot+this.rot) * camSpeed * velocity;
-        this.newY = this.y + Math.sin(this.movementRot+this.rot) * camSpeed * velocity;
+        this.newX = (float) (this.x + Math.cos(this.movementRot+this.rot) * camSpeed * velocity);
+        this.newY = (float) (this.y + Math.sin(this.movementRot+this.rot) * camSpeed * velocity);
     }
 
     public void update() {
@@ -122,13 +122,13 @@ public class Camera {
     public void checkCollisions(Floor floor) {
 
         for (int i = 0; i < 3; i++) {
-            Vertex v1 = floor.getVertex(i);
-            Vertex v2 = floor.getVertex((i+1)%3);
+            Vertex3D v1 = floor.getVertex(i);
+            Vertex3D v2 = floor.getVertex((i+1)%3);
             // checkLineCollisions(v1, v2);
         }
     }
 
-    private void checkLineCollisions(Vertex v1, Vertex v2) {
+    private void checkLineCollisions(Vertex3D v1, Vertex3D v2) {
 
         double x1 = v1.getX();
         double y1 = v1.getY();
@@ -147,8 +147,8 @@ public class Camera {
             double x = this.newX - x1;
             double y = this.newY - y1;
     
-            this.newX = x*Math.cos(theta) + y*Math.sin(theta);
-            this.newY = y*Math.cos(theta) - x*Math.sin(theta);
+            this.newX = (float) (x*Math.cos(theta) + y*Math.sin(theta));
+            this.newY = (float) (y*Math.cos(theta) - x*Math.sin(theta));
     
             x = this.newX;
             y = this.newY;
@@ -156,8 +156,8 @@ public class Camera {
                 y = 15;   
             }
     
-            this.newX = x*Math.cos(-theta) + y*Math.sin(-theta);
-            this.newY = y*Math.cos(-theta) - x*Math.sin(-theta);
+            this.newX = (float) (x*Math.cos(-theta) + y*Math.sin(-theta));
+            this.newY = (float) (y*Math.cos(-theta) - x*Math.sin(-theta));
     
             this.newX += x1;
             this.newY += y1;
@@ -169,39 +169,39 @@ public class Camera {
         this.velocity = 0;
     }
 
-    public double getX() {
+    public float getX() {
         return this.x;
     }
 
-    public double getY() {
+    public float getY() {
         return this.y;
     }
 
-    public double getZ() {
+    public float getZ() {
         return this.z;
     }
 
-    public double getNewX() {
+    public float getNewX() {
         return this.newX;
     }
 
-    public double getNewY() {
+    public float getNewY() {
         return this.newY;
     }
 
-    public double getRot() {
+    public float getRot() {
         return this.rot;
     }
 
-    public double getPitch() {
+    public float getPitch() {
         return this.pitch;
     }
 
-    public double getFOV() {
+    public float getFOV() {
         return this.FOV;
     }
 
-    public Vertex toVertex() {
-        return new Vertex(this.x, this.y, this.z);
+    public Vertex3D toVertex() {
+        return new Vertex3D(this.x, this.y, this.z);
     }
 }

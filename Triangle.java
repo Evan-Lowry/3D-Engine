@@ -3,19 +3,17 @@ import java.util.List;
 import java.awt.Color;
 
 public class Triangle {
-    private Vertex v1;
-    private Vertex v2;
-    private Vertex v3;
+    private Vertex3D v1;
+    private Vertex3D v2;
+    private Vertex3D v3;
+    private Vertex3D v4;
     private UV uv1;
     private UV uv2;
     private UV uv3;
     private Normal normal1;
     private Normal normal2;
     private Normal normal3;
-    private Vertex newV1;
-    private Vertex newV2;
-    private Vertex newV3;
-    private Vertex newV4;
+    private Normal triangleNormal;
     private Vertex2D p1;
     private Vertex2D p2;
     private Vertex2D p3;
@@ -26,16 +24,25 @@ public class Triangle {
     private int numVertices = 3;
     private boolean isValid = true;
 
-    public Triangle (Vertex v1, Vertex v2, Vertex v3, UV uv1, UV uv2, UV uv3, Normal normal1, Normal normal2, Normal normal3, int materialIndex) {
+    public Triangle (Vertex3D v1, Vertex3D v2, Vertex3D v3, UV uv1, UV uv2, UV uv3, Normal normal1, Normal normal2, Normal normal3, int materialIndex) {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
+        this.v4 = new Vertex3D(0, 0, 0);
         this.uv1 = uv1;
         this.uv2 = uv2;
         this.uv3 = uv3;
         this.normal1 = normal1;
         this.normal2 = normal2;
         this.normal3 = normal3;
+
+        // Average the precalculated normals
+        float normalX = (normal1.getX() + normal2.getX() + normal3.getX()) / 3;
+        float normalY = (normal1.getY() + normal2.getY() + normal3.getY()) / 3;
+        float normalZ = (normal1.getZ() + normal2.getZ() + normal3.getZ()) / 3;
+
+        this.triangleNormal = new Normal(normalX, normalY, normalZ);
+
         this.texture = GamePanel.texturess.getTexture(materialIndex-1);
         computeColor();
         computeShade();
@@ -45,11 +52,6 @@ public class Triangle {
 
         this.isValid = true;
         this.numVertices = 3;
-
-        this.newV1 = this.v1.normalizeCoordinates();
-        this.newV2 = this.v2.normalizeCoordinates();
-        this.newV3 = this.v3.normalizeCoordinates();
-        this.newV4 = new Vertex(0, 0, 0);
 
         backfaceCulling();
         checkClipping();
@@ -61,46 +63,46 @@ public class Triangle {
     }
 
     public void projectToScreen() {
-        p1 = newV1.castToScreen();
-        p2 = newV2.castToScreen();
-        p3 = newV3.castToScreen();
-        p4 = newV4.castToScreen();
+        p1 = v1.castToScreen();
+        p2 = v2.castToScreen();
+        p3 = v3.castToScreen();
+        p4 = v4.castToScreen();
     }
 
     private void checkClipping() {
-        double nearPlaneX = 10;
+        float nearPlaneX = 10;
 
-        List<Vertex> behind = new ArrayList<>();
-        List<Vertex> inFront = new ArrayList<>();
+        List<Vertex3D> behind = new ArrayList<>();
+        List<Vertex3D> inFront = new ArrayList<>();
 
         // classify the vertices
-        if (newV1.getX() <= nearPlaneX) behind.add(newV1); else inFront.add(newV1);
-        if (newV2.getX() <= nearPlaneX) behind.add(newV2); else inFront.add(newV2);
-        if (newV3.getX() <= nearPlaneX) behind.add(newV3); else inFront.add(newV3);
+        if (v1.getNewX() <= nearPlaneX) behind.add(v1); else inFront.add(v1);
+        if (v2.getNewX() <= nearPlaneX) behind.add(v2); else inFront.add(v2);
+        if (v3.getNewX() <= nearPlaneX) behind.add(v3); else inFront.add(v3);
 
         // Handle cases
         if (behind.size() == 0) {
             // All vertices in front, draw the triangle as-is
         } else if (behind.size() == 1) {
             // One vertex behind, clip into two triangles
-            Vertex P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
-            Vertex P2 = interpolate(behind.get(0), inFront.get(1), nearPlaneX);
+            Vertex3D P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
+            Vertex3D P2 = interpolate(behind.get(0), inFront.get(1), nearPlaneX);
 
-            this.newV1 = inFront.get(0);
-            this.newV2 = inFront.get(1);
-            this.newV3 = P2;
-            this.newV4 = P1;
+            this.v1.setNewCords(inFront.get(0).getX(), inFront.get(0).getY(), inFront.get(0).getZ());
+            this.v2.setNewCords(inFront.get(1).getX(), inFront.get(1).getY(), inFront.get(1).getZ());
+            this.v3.setNewCords(P2.getX(), P2.getY(), P2.getZ());
+            this.v4.setNewCords(P1.getX(), P1.getY(), P1.getZ());
 
-            this.numVertices = 4;
+            this.numVertices = 3;
 
         } else if (behind.size() == 2) {
             // Two vertices behind, clip into one triangle
-            Vertex P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
-            Vertex P2 = interpolate(behind.get(1), inFront.get(0), nearPlaneX);
+            Vertex3D P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
+            Vertex3D P2 = interpolate(behind.get(1), inFront.get(0), nearPlaneX);
 
-            this.newV1 = P1;
-            this.newV2 = P2;
-            this.newV3 = inFront.get(0);
+            this.v1.setNewCords(P1.getX(), P1.getY(), P1.getZ());
+            this.v2.setNewCords(P2.getX(), P2.getY(), P2.getZ());
+            this.v3.setNewCords(inFront.get(0).getX(), inFront.get(0).getY(), inFront.get(0).getZ());
             
         } else {
             // All vertices behind, discard triangle
@@ -108,46 +110,35 @@ public class Triangle {
         }
     }
 
-    private Vertex interpolate(Vertex from, Vertex to, double nearPlaneX) {
-        double t = (nearPlaneX - from.getX()) / (to.getX() - from.getX());
-        double newY = from.getY() + t * (to.getY() - from.getY());
-        double newZ = from.getZ() + t * (to.getZ() - from.getZ());
-        return new Vertex(nearPlaneX, newY, newZ);
+    private Vertex3D interpolate(Vertex3D from, Vertex3D to, float nearPlaneX) {
+        float t = (nearPlaneX - from.getX()) / (to.getX() - from.getX());
+        float newY = from.getY() + t * (to.getY() - from.getY());
+        float newZ = from.getZ() + t * (to.getZ() - from.getZ());
+        return new Vertex3D(nearPlaneX, newY, newZ);
     }
 
     private void calculateDepthFromCamera() {
-        double distance1 = distanceToCamera(newV1); // double distance1 = newV1
-        double distance2 = distanceToCamera(newV2); // double distance2 = newV2
-        double distance3 = distanceToCamera(newV3); // double distance3 = newV3
+        double distance1 = distanceToCamera(v1); // double distance1 = newV1
+        double distance2 = distanceToCamera(v2); // double distance2 = newV2
+        double distance3 = distanceToCamera(v3); // double distance3 = newV3
         this.depthFromCamera = Math.max(distance1, Math.max(distance2, distance3));
     }
 
-    private double distanceToCamera(Vertex v) {
-        double x = v.getX();
-        double y = v.getY();
-        double z = v.getZ();
+    private double distanceToCamera(Vertex3D v) {
+        double x = v.getNewX();
+        double y = v.getNewY();
+        double z = v.getNewZ();
 
         return Math.sqrt(x*x + y*y + z*z);
     }
 
     private void backfaceCulling() {
-        double x1 = newV2.getX() - newV1.getX();
-        double y1 = newV2.getY() - newV1.getY();
-        double z1 = newV2.getZ() - newV1.getZ();
+        // View vector (from vertex to camera)
+        float viewX = GamePanel.c.getX() - v1.getX();
+        float viewY = GamePanel.c.getY() - v1.getY();
+        float viewZ = GamePanel.c.getZ() - v1.getZ();
 
-        double x2 = newV3.getX() - newV1.getX();
-        double y2 = newV3.getY() - newV1.getY();
-        double z2 = newV3.getZ() - newV1.getZ();
-
-        double normalX = y1*z2 - z1*y2;
-        double normalY = z1*x2 - x1*z2;
-        double normalZ = x1*y2 - y1*x2;
-
-        double viewX = newV1.getX();
-        double viewY = newV1.getY();
-        double viewZ = newV1.getZ();
-
-        double dotProduct = normalX*viewX + normalY*viewY + normalZ*viewZ;
+        float dotProduct = this.triangleNormal.getX()*viewX + this.triangleNormal.getY()*viewY + this.triangleNormal.getZ()*viewZ;
 
         if (dotProduct > 0) {
             this.isValid = false;
@@ -164,57 +155,38 @@ public class Triangle {
     }
 
     private void computeShade() {
-        double ambientLight = 0.8; // Increase ambient light to make everything brighter
-
-        // Calculate the normal of the triangle
-        double x1 = v2.getX() - v1.getX();
-        double y1 = v2.getY() - v1.getY();
-        double z1 = v2.getZ() - v1.getZ();
-
-        double x2 = v3.getX() - v1.getX();
-        double y2 = v3.getY() - v1.getY();
-        double z2 = v3.getZ() - v1.getZ();
-
-        double normalX = y1 * z2 - z1 * y2;
-        double normalY = z1 * x2 - x1 * z2;
-        double normalZ = x1 * y2 - y1 * x2;
-
-        // Normalize the normal
-        double length = Math.sqrt(normalX * normalX + normalY * normalY + normalZ * normalZ);
-        normalX /= length;
-        normalY /= length;
-        normalZ /= length;
+        float ambientLight = 0.8f; // Increase ambient light to make everything brighter
 
         // Light intensities for each axis
-        double lightIntensityX = 1.2; // Increase light intensity
-        double lightIntensityY = 1.5; // Increase light intensity
-        double lightIntensityZ = 1.3; // Increase light intensity
+        float lightIntensityX = 1.2f; // Increase light intensity
+        float lightIntensityY = 1.5f; // Increase light intensity
+        float lightIntensityZ = 1.3f; // Increase light intensity
 
         // Light directions for each axis
-        double lightX = 1;
-        double lightY = 1;
-        double lightZ = 1;
+        float lightX = 1;
+        float lightY = 1;
+        float lightZ = 1;
 
         // Normalize the light directions
-        double lengthX = Math.sqrt(lightX * lightX);
-        double lengthY = Math.sqrt(lightY * lightY);
-        double lengthZ = Math.sqrt(lightZ * lightZ);
+        float lengthX = (float)Math.sqrt(lightX * lightX);
+        float lengthY = (float)Math.sqrt(lightY * lightY);
+        float lengthZ = (float)Math.sqrt(lightZ * lightZ);
         lightX /= lengthX;
         lightY /= lengthY;
         lightZ /= lengthZ;
 
         // Calculate the dot product of the normal and the light directions
-        double dotProductX = normalX * lightX;
-        double dotProductY = normalY * lightY;
-        double dotProductZ = normalZ * lightZ;
+        float dotProductX = triangleNormal.getX() * lightX;
+        float dotProductY = triangleNormal.getY() * lightY;
+        float dotProductZ = triangleNormal.getZ() * lightZ;
 
         // Calculate the final intensity for each axis
-        double intensityX = Math.max(ambientLight, lightIntensityX * dotProductX);
-        double intensityY = Math.max(ambientLight, lightIntensityY * dotProductY);
-        double intensityZ = Math.max(ambientLight, lightIntensityZ * dotProductZ);
+        float intensityX = Math.max(ambientLight, lightIntensityX * dotProductX);
+        float intensityY = Math.max(ambientLight, lightIntensityY * dotProductY);
+        float intensityZ = Math.max(ambientLight, lightIntensityZ * dotProductZ);
 
         // Average the intensities
-        double intensity = (intensityX + intensityY + intensityZ) / 3;
+        float intensity = (intensityX + intensityY + intensityZ) / 3;
 
         // Apply the intensity to the material color
         int red = (int) (material.getRed() * intensity);
@@ -234,15 +206,15 @@ public class Triangle {
         return numVertices;
     }
 
-    public Vertex getV1() {
+    public Vertex3D getV1() {
         return this.v1;
     }
 
-    public Vertex getV2() {
+    public Vertex3D getV2() {
         return this.v2;
     }
 
-    public Vertex getV3() {
+    public Vertex3D getV3() {
         return this.v3;
     }
 
@@ -256,18 +228,6 @@ public class Triangle {
 
     public UV getUV3() {
         return this.uv3;
-    }
-
-    public Vertex getNewV1() {
-        return this.newV1;
-    }
-
-    public Vertex getNewV2() {
-        return this.newV2;
-    }
-
-    public Vertex getNewV3() {
-        return this.newV3;
     }
 
     public Vertex2D getP1() {

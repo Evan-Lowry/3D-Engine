@@ -2,10 +2,10 @@ import java.util.ArrayList;
 
 public class Floor {
 
-    private Vertex[] vertexs = new Vertex[3];
+    private Vertex3D[] vertexs = new Vertex3D[3];
     private double floorHeight;
 
-    public Floor(Vertex v1, Vertex v2, Vertex v3) {
+    public Floor(Vertex3D v1, Vertex3D v2, Vertex3D v3) {
         this.vertexs[0] = v1;
         this.vertexs[1] = v2;
         this.vertexs[2] = v3;
@@ -59,7 +59,7 @@ public class Floor {
         return passSAT;
     }
 
-    public double shortestDistanceToLine(Camera c, Vertex v1, Vertex v2) {
+    public double shortestDistanceToLine(Camera c, Vertex3D v1, Vertex3D v2) {
         double x0 = c.getNewX();
         double y0 = c.getNewY();
         double x1 = v1.getX();
@@ -77,7 +77,7 @@ public class Floor {
         return numerator / denominator;
     }
 
-    public Vertex getVertex(int index) {
+    public Vertex3D getVertex(int index) {
         if (index < 0 || index >= vertexs.length) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
