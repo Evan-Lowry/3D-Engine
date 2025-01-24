@@ -1,23 +1,28 @@
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class Camera {
-    private float x;
-    private float y;
-    private float z;
-    private float rot;
-    private float pitch;
-    private float FOV;
+    // stores location, rotation and FOV data
+    private float x, y, z, rot, pitch, FOV;
     private int height;
+    // used for camera physics
     private int camSpeed = 2;
+    // stores velocity on x, y plane
     private float velocity = 0;
+    // stores z velocity
     private float velocityUp = 0;
+    // rotation applied to x, y velocity
     private float movementRot = 0;
+    // floor height
     private float floorHeight = 0;
-    private float newX;
-    private float newY;
+    // used to store the next coordinates for the camera
+    private float newX, newY;
 
     
     public Camera(int x, int y, int z, float rot, int FOV) {
+        // sets all variables to inputed stating coordinates
         this.x = x;
         this.y = y;
         this.z = z;
@@ -25,46 +30,115 @@ public class Camera {
         this.rot = (float) Math.toRadians(rot);
         this.FOV = (float) Math.toRadians(FOV);
         this.pitch = 0;
+
+        // if possible tries to read camera save data
+        readSave();
     }
 
+    // reads in save data to apply to camera loc and rot
+    private void readSave() {
+        try {
+            // accesses file location
+            File saveFile = new File("SaveData/Camera.csv");
+            Scanner input = new Scanner(saveFile);
+            // clears first line
+            input.nextLine();
+            // takes data and splits it
+            String[] data = input.nextLine().split(",");
+            // reads through data and sets variables
+            this.x = Float.parseFloat(data[0]);
+            this.y = Float.parseFloat(data[1]);
+            this.z = Float.parseFloat(data[2]);
+            this.rot = Float.parseFloat(data[3]);
+            this.pitch = Float.parseFloat(data[4]);
+            // closes scanner
+            input.close();
+        } catch (FileNotFoundException e) {
+            // if read in fails camera will use previously set data
+            e.printStackTrace();
+        }
+    }
+
+    // used before program closes to save data
+    public void saveData() {
+        // create a PrintWriter from the file
+        PrintWriter output = null;
+        try{
+            output =  new PrintWriter("SaveData/Camera.csv");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        // adds the header line
+        output.println("x,y,z,rot,pitch");
+        // writes out camera location data
+        output.println(this.x + "," + this.y + "," + this.z  + "," + this.rot  + "," + this.pitch);
+        // closes the PrintWriter
+        output.close();
+    }
+
+    // used to adjust velocities and rotations that move the player
+
     public void moveForward() {
+        // sets the camera speed to the camSpeed
         this.velocity = camSpeed;
+        // points the movement vector forward
         this.movementRot = 0;
     }
 
     public void moveBackward() {
+        // sets the camera speed to the camSpeed
         this.velocity = camSpeed;
+        // points movement vectore backward
         this.movementRot = (float) Math.PI;
     }
 
     public void moveLeft() {
+        // sets the camera speed to the camSpeed
         this.velocity = camSpeed;
+        // if moving forward
         if (this.movementRot == 0) {
+            // turn vector 45 degrees left
             this.movementRot = (float) (-Math.PI/4);
+            // if moving backward
         } else if (this.movementRot == Math.PI) {
+            // turn vector 45 degrees left
             this.movementRot = (float) (-3*Math.PI/4);
+            // if not moving forward or backward
         } else {
+            // set vector left
             this.movementRot = (float) (-Math.PI/2);
         }
     }
 
     public void moveRight() {
+        // sets the camera speed to the camSpeed
         this.velocity = camSpeed;
+        // if moving forward
         if (this.movementRot == 0) {
+            // turn vector 45 degrees right
             this.movementRot = (float) (Math.PI/4);
+            // if moving backward
         } else if (this.movementRot == Math.PI) {
+            // turn vector 45 degrees right
             this.movementRot = (float) (3*Math.PI/4);
+            // if not moving forward or backward
         } else {
+            // set vector left
             this.movementRot = (float) (Math.PI/2);
         }
     }
 
     public void sprint() {
+        // doubles velocity
         this.velocity = this.velocity*2;
     }
 
+    // moves camera view
+
     public void moveRot(double deltaRot) {
+        // converts to radians
         this.rot += Math.toRadians(deltaRot);
+        // keeps rotation between 0 and 2PI
         if (this.rot > 2*Math.PI) {
             this.rot -= 2*Math.PI;
         } else if (this.rot < 0) {
@@ -73,7 +147,10 @@ public class Camera {
     }
 
     public void movePitch(double deltaPitch) {
+        // converts to radians
         this.pitch += Math.toRadians(deltaPitch);
+        // makes sure you can only look up/down 90 degrees
+        // keeps the rotation between PI/2 to -PI/2
         if (this.pitch > (Math.PI/2)) {
             this.pitch = (float) (Math.PI/2);
         } else if (this.pitch < -(Math.PI/2)) {
@@ -81,40 +158,48 @@ public class Camera {
         }
     }
 
-    public void setFloorHeight(double floorHeight) {
-        this.floorHeight = (float) floorHeight;
-    }
-
-    public void setFOV( int FOV) {
-        this.FOV = FOV;
-    }
-
+    // makes the player jump
     public void jump() {
+        // if player is on the ground
         // if (this.z == this.floorHeight+this.height) {
+            // adds to the velocity upward
             this.velocityUp += 4;
         // }
     }
 
+    // uses current velocities to generate the new coordinates
+    // prior to collision detection
     public void calculateNewCordinates() {
         this.newX = (float) (this.x + Math.cos(this.movementRot+this.rot) * camSpeed * velocity);
         this.newY = (float) (this.y + Math.sin(this.movementRot+this.rot) * camSpeed * velocity);
     }
 
+    // updates all location variables using velocities
     public void update() {
+        // updates x, y, z
         this.x = this.newX;
         this.y = this.newY;
         this.z += this.velocityUp;
 
+        // if the velocity is positive
         if (this.velocity > 0) {
+            // decelerate
             this.velocity -= 0.05;
+            // if negative
         } else {
+            // set to 0
             this.velocity = 0;
         }
 
+        // if player is in the air
         if (this.z > this.floorHeight+this.height) {
+            // accelerate downward
             this.velocityUp -= 0.30;
+            // if player is below ground
         } else {
+            // set player to ground height
             this.z = this.floorHeight+this.height;
+            // stop movement upward/downward
             this.velocityUp = 0;
         }
     }
@@ -165,8 +250,19 @@ public class Camera {
         }
     }
 
+    // stops the player
     public void stop() {
         this.velocity = 0;
+    }
+
+    // setters and getters
+
+    public void setFloorHeight(float floorHeight) {
+        this.floorHeight = floorHeight;
+    }
+
+    public void setFOV( int FOV) {
+        this.FOV = FOV;
     }
 
     public float getX() {
@@ -201,6 +297,7 @@ public class Camera {
         return this.FOV;
     }
 
+    // converts camera to 3D Vertex
     public Vertex3D toVertex() {
         return new Vertex3D(this.x, this.y, this.z);
     }

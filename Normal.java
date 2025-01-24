@@ -1,35 +1,15 @@
-public class Normal {
-    private float x;
-    private float y;
-    private float z;
+public class Normal extends Point3D{
 
     public Normal(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        super(x, y, z);
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public float getZ() {
-        return z;
-    }
-
-    public void setZ(float z) {
-        this.z = z;
+    // returns the average normal
+    // used for three normals making up a face
+    public Normal averageNormals(Normal n1, Normal n2) {
+        float newX = (this.getX() + n1.getX() + n2.getX()) / 3;
+        float newY = (this.getY() + n1.getY() + n2.getY()) / 3;
+        float newZ = (this.getZ() + n1.getZ() + n2.getZ()) / 3;
+        return new Normal(newX, newY, newZ);
     }
 }

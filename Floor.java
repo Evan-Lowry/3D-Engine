@@ -16,12 +16,12 @@ public class Floor {
         return floorHeight;
     }
 
-    public boolean isPlayerInside(Camera c) {
-        return insideAABB(c) && passesSAT(c);
+    public boolean isPlayerInside() {
+        return insideAABB() && passesSAT();
     }
 
     // checks if player is inside axis aligned bounding boxes (AABB)
-    private boolean insideAABB(Camera c) {
+    private boolean insideAABB() {
 
         boolean insideX = false;
         boolean insideY = false;
@@ -34,12 +34,12 @@ public class Floor {
         double minY = Math.min(this.vertexs[0].getY(), Math.min(this.vertexs[1].getY(), this.vertexs[2].getY()));
 
         // checks if camera is inside bounding box on the x axis
-        if (c.getNewX() <= maxX && c.getNewX() >= minX) {
+        if (GamePanel.c.getNewX() <= maxX && GamePanel.c.getNewX() >= minX) {
             insideX = true;
         }
 
         // checks if camera is inside bounding box on the y axis
-        if (c.getNewY() <= maxY && c.getNewY() >= minY) {
+        if (GamePanel.c.getNewY() <= maxY && GamePanel.c.getNewY() >= minY) {
             insideY = true;
         }
 
@@ -47,11 +47,11 @@ public class Floor {
     }
 
     // checks if player passes the seperating axis therom (SAT)
-    private boolean passesSAT(Camera c) {
+    private boolean passesSAT() {
         boolean passSAT = true;
 
         for (int i = 0; i < this.vertexs.length; i++) {
-            if (shortestDistanceToLine(c, this.vertexs[i], this.vertexs[(i+1)%3]) > 0) {
+            if (shortestDistanceToLine(GamePanel.c.toVertex(), this.vertexs[i], this.vertexs[(i+1)%3]) > 0) {
                 passSAT = false;
             }
         }
@@ -59,7 +59,7 @@ public class Floor {
         return passSAT;
     }
 
-    public double shortestDistanceToLine(Camera c, Vertex3D v1, Vertex3D v2) {
+    public double shortestDistanceToLine(Vertex3D c, Vertex3D v1, Vertex3D v2) {
         double x0 = c.getNewX();
         double y0 = c.getNewY();
         double x1 = v1.getX();

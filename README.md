@@ -1,1 +1,1 @@
-WASD to move mouse to look
+WASD to move, mouse to look

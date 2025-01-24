@@ -41,25 +41,23 @@ public class Vertex3D {
     public Vertex2D castToScreen() {
         Camera c = GamePanel.c;
 
-        double intersectionToScreenX;
-        double intersectionToScreenY;
+        float intersectionToScreenX;
+        float intersectionToScreenY;
 
-        double screenToWindowRatio;
-
-        double pixelOffsetX;
-        double pixelOffsetY;
-        double screenPosX;
-        double screenPosY;
+        float pixelOffsetX;
+        float pixelOffsetY;
+        int screenPosX;
+        int screenPosY;
 
         int windowWidth = GamePanel.windowWidth;
         int windowHeight = GamePanel.windowHeight;
 
-        double screenWidth;
-        double screenHeight;
+        float screenWidth;
+        float screenHeight;
 
         int screenDistance = 10;
 
-        screenWidth = Math.tan(c.getFOV()/2)*screenDistance;
+        screenWidth = (float) Math.tan(c.getFOV()/2)*screenDistance;
         screenHeight = (screenWidth*windowHeight/windowWidth);
 
         intersectionToScreenX = (screenDistance*newY/newX);

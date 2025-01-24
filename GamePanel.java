@@ -1,22 +1,22 @@
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Arrays;
+import java.io.PrintWriter;
+
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
 
-    // creates a map to load in and store obj files
-    static Map map = new Map("ExportedData/Map.obj");
     // creates textures to load in and store pngs as textures
     static Textures texturess = new Textures("Textures");
+    // creates a map to load in and store obj files
+    static Map map = new Map("ExportedData/Map.obj");
     static Color[] textures = {Color.RED.darker(), Color.GREEN.darker(), Color.BLUE.darker(), Color.YELLOW.darker(), Color.white.darker()};
     // creates a drawing object to handle all drawing of objects to screen
     static Drawing drawing = new Drawing();
     // used to store the resolution of the window measured as a percentage of 1920 x 1080
-    static float fullscreen = (float) 0.72;
+    static float fullscreen = (float) 0.59;
     // sets the resolution variables in accordance with the fullscreen variables
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);
@@ -145,9 +145,10 @@ public class GamePanel extends JPanel implements Runnable{
         c.update();
 
         // updates the location of all vertexes in respect to the camera
-        this.map.updateVertexs();
+        map.updateVertexs();
     }
 
+    // the actual drawing method
     public void paintComponent(Graphics g) {
         // adds in a graphics object to draw with
         super.paintComponent(g);
@@ -157,5 +158,13 @@ public class GamePanel extends JPanel implements Runnable{
         drawing.draw(g2);
 
         g2.dispose();
+    }
+
+
+    public static void exit() {
+        // saves the camera position and location data
+        c.saveData();
+        // ends program
+        System.exit(0);
     }
 }

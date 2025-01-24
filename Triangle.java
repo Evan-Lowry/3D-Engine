@@ -6,13 +6,13 @@ public class Triangle {
     private Vertex3D v1;
     private Vertex3D v2;
     private Vertex3D v3;
-    private Vertex3D v4;
+    private Vertex3D newV1;
+    private Vertex3D newV2;
+    private Vertex3D newV3;
+    private Vertex3D newV4;
     private UV uv1;
     private UV uv2;
     private UV uv3;
-    private Normal normal1;
-    private Normal normal2;
-    private Normal normal3;
     private Normal triangleNormal;
     private Vertex2D p1;
     private Vertex2D p2;
@@ -28,20 +28,15 @@ public class Triangle {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
-        this.v4 = new Vertex3D(0, 0, 0);
         this.uv1 = uv1;
         this.uv2 = uv2;
         this.uv3 = uv3;
-        this.normal1 = normal1;
-        this.normal2 = normal2;
-        this.normal3 = normal3;
+        this.newV1 = new Vertex3D(0, 0, 0);
+        this.newV2 = new Vertex3D(0, 0, 0);
+        this.newV3 = new Vertex3D(0, 0, 0);
+        this.newV4 = new Vertex3D(0, 0, 0);
 
-        // Average the precalculated normals
-        float normalX = (normal1.getX() + normal2.getX() + normal3.getX()) / 3;
-        float normalY = (normal1.getY() + normal2.getY() + normal3.getY()) / 3;
-        float normalZ = (normal1.getZ() + normal2.getZ() + normal3.getZ()) / 3;
-
-        this.triangleNormal = new Normal(normalX, normalY, normalZ);
+        this.triangleNormal = normal1.averageNormals(normal2, normal3);
 
         this.texture = GamePanel.texturess.getTexture(materialIndex-1);
         computeColor();
@@ -54,6 +49,7 @@ public class Triangle {
         this.numVertices = 3;
 
         backfaceCulling();
+
         checkClipping();
 
         if (this.isValid) {
@@ -63,10 +59,10 @@ public class Triangle {
     }
 
     public void projectToScreen() {
-        p1 = v1.castToScreen();
-        p2 = v2.castToScreen();
-        p3 = v3.castToScreen();
-        p4 = v4.castToScreen();
+        p1 = newV1.castToScreen();
+        p2 = newV2.castToScreen();
+        p3 = newV3.castToScreen();
+        p4 = newV4.castToScreen();
     }
 
     private void checkClipping() {
@@ -83,26 +79,29 @@ public class Triangle {
         // Handle cases
         if (behind.size() == 0) {
             // All vertices in front, draw the triangle as-is
+            this.newV1.setNewCords(v1.getNewX(), v1.getNewY(), v1.getNewZ());
+            this.newV2.setNewCords(v2.getNewX(), v2.getNewY(), v2.getNewZ());
+            this.newV3.setNewCords(v3.getNewX(), v3.getNewY(), v3.getNewZ());
         } else if (behind.size() == 1) {
             // One vertex behind, clip into two triangles
             Vertex3D P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
             Vertex3D P2 = interpolate(behind.get(0), inFront.get(1), nearPlaneX);
 
-            this.v1.setNewCords(inFront.get(0).getX(), inFront.get(0).getY(), inFront.get(0).getZ());
-            this.v2.setNewCords(inFront.get(1).getX(), inFront.get(1).getY(), inFront.get(1).getZ());
-            this.v3.setNewCords(P2.getX(), P2.getY(), P2.getZ());
-            this.v4.setNewCords(P1.getX(), P1.getY(), P1.getZ());
+            this.newV1.setNewCords(inFront.get(0).getNewX(), inFront.get(0).getNewY(), inFront.get(0).getNewZ());
+            this.newV2.setNewCords(inFront.get(1).getNewX(), inFront.get(1).getNewY(), inFront.get(1).getNewZ());
+            this.newV3.setNewCords(P2.getX(), P2.getY(), P2.getZ());
+            this.newV4.setNewCords(P1.getX(), P1.getY(), P1.getZ());
 
-            this.numVertices = 3;
+            this.numVertices = 4;
 
         } else if (behind.size() == 2) {
             // Two vertices behind, clip into one triangle
             Vertex3D P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
             Vertex3D P2 = interpolate(behind.get(1), inFront.get(0), nearPlaneX);
 
-            this.v1.setNewCords(P1.getX(), P1.getY(), P1.getZ());
-            this.v2.setNewCords(P2.getX(), P2.getY(), P2.getZ());
-            this.v3.setNewCords(inFront.get(0).getX(), inFront.get(0).getY(), inFront.get(0).getZ());
+            this.newV1.setNewCords(inFront.get(0).getNewX(), inFront.get(0).getNewY(), inFront.get(0).getNewZ());
+            this.newV2.setNewCords(P2.getX(), P2.getY(), P2.getZ());
+            this.newV3.setNewCords(P1.getX(), P1.getY(), P1.getZ());
             
         } else {
             // All vertices behind, discard triangle
@@ -111,9 +110,9 @@ public class Triangle {
     }
 
     private Vertex3D interpolate(Vertex3D from, Vertex3D to, float nearPlaneX) {
-        float t = (nearPlaneX - from.getX()) / (to.getX() - from.getX());
-        float newY = from.getY() + t * (to.getY() - from.getY());
-        float newZ = from.getZ() + t * (to.getZ() - from.getZ());
+        float t = (nearPlaneX - from.getNewX()) / (to.getNewX() - from.getNewX());
+        float newY = from.getNewY() + t * (to.getNewY() - from.getNewY());
+        float newZ = from.getNewZ() + t * (to.getNewZ() - from.getNewZ());
         return new Vertex3D(nearPlaneX, newY, newZ);
     }
 
@@ -133,13 +132,28 @@ public class Triangle {
     }
 
     private void backfaceCulling() {
-        // View vector (from vertex to camera)
-        float viewX = GamePanel.c.getX() - v1.getX();
-        float viewY = GamePanel.c.getY() - v1.getY();
-        float viewZ = GamePanel.c.getZ() - v1.getZ();
+        // Calculate vectors from v1 to v2 and v1 to v3
+        float vectorAX = v2.getNewX() - v1.getNewX();
+        float vectorAY = v2.getNewY() - v1.getNewY();
+        float vectorAZ = v2.getNewZ() - v1.getNewZ();
+        float vectorBX = v3.getNewX() - v1.getNewX();
+        float vectorBY = v3.getNewY() - v1.getNewY();
+        float vectorBZ = v3.getNewZ() - v1.getNewZ();
 
-        float dotProduct = this.triangleNormal.getX()*viewX + this.triangleNormal.getY()*viewY + this.triangleNormal.getZ()*viewZ;
+        // Calculate the normal of the triangle using the cross product
+        float normalX = vectorAY * vectorBZ - vectorAZ * vectorBY;
+        float normalY = vectorAZ * vectorBX - vectorAX * vectorBZ;
+        float normalZ = vectorAX * vectorBY - vectorAY * vectorBX;
 
+        // Calculate the vector from the camera to the triangle
+        float viewVectorX = v1.getNewX();
+        float viewVectorY = v1.getNewY();
+        float viewVectorZ = v1.getNewZ();
+
+        // Calculate the dot product of the normal and the view vector
+        float dotProduct = normalX * viewVectorX + normalY * viewVectorY + normalZ * viewVectorZ;
+
+        // If the dot product is positive, the triangle is facing away from the camera
         if (dotProduct > 0) {
             this.isValid = false;
         }

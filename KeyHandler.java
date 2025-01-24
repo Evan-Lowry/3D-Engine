@@ -5,7 +5,8 @@ import java.awt.event.MouseMotionListener;
 
 public class KeyHandler implements KeyListener{
 
-
+    // stores all input
+    // stored as boolean so you can hold down keys
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean turnLeftPressed, turnRightPressed, turnUpPressed, turnDownPressed;
     public boolean spacePressed, shiftPressed, fullscreen;
@@ -26,8 +27,10 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyTyped(KeyEvent e) {
+
+        // used for the Microsoft virtual desktop which only detects key typed
+
         char keyChar = Character.toLowerCase(e.getKeyChar());
-    
         if (keyChar == 't') {
             upPressed = !upPressed;
             downPressed = false;
@@ -55,14 +58,17 @@ public class KeyHandler implements KeyListener{
         } else if (keyChar == ' ') {
             spacePressed = true;
         } else if (keyChar == 'q') {
-            System.exit(0);
+            GamePanel.exit();
         }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // captures key as char
+        // to lower case to avoid changes when sprinting
         char keyChar = Character.toLowerCase(e.getKeyChar());
 
+        // when pressed set the key pressed to true
         if (keyChar == 'w') {
             upPressed = true;
         } else if (keyChar == 'a') {
@@ -71,8 +77,6 @@ public class KeyHandler implements KeyListener{
             downPressed = true;
         } else if (keyChar == 'd') {
             rightPressed = true;
-        } else if (keyChar == 'q') {
-            System.exit(0);
         } else if (e.isShiftDown()) {
             shiftPressed = true;
         }
@@ -80,8 +84,11 @@ public class KeyHandler implements KeyListener{
 
     @Override
     public void keyReleased(KeyEvent e) {
+        // captures key as char
+        // to lower case to avoid changes when sprinting
         char keyChar = Character.toLowerCase(e.getKeyChar());
 
+        // when released set the key pressed to false
         if (keyChar == 'w') {
             upPressed = false;
         } else if (keyChar == 'a') {
@@ -90,8 +97,6 @@ public class KeyHandler implements KeyListener{
             downPressed = false;
         } else if (keyChar == 'd') {
             rightPressed = false;
-        } else if (keyChar == 'q') {
-            System.exit(0);
         } else if (!e.isShiftDown()) {
             shiftPressed = false;
         }

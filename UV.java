@@ -1,25 +1,22 @@
-public class UV {
-    private float u;
-    private float v;
+public class UV extends Point2D{
 
     public UV(float u, float v) {
-        this.u = u;
-        this.v = v;
+        super(u, v);
     }
 
     public float getU() {
-        return u;
-    }
-
-    public void setU(float u) {
-        this.u = u;
+        return super.getX();
     }
 
     public float getV() {
-        return v;
+        return super.getY();
+    }
+
+    public void setU(float u) {
+        super.setX(u);
     }
 
     public void setV(float v) {
-        this.v = v;
+        super.setY(v);
     }
 }

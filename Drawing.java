@@ -1,8 +1,4 @@
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.Stroke;
 import java.util.Arrays;
 
 public class Drawing {
@@ -10,42 +6,35 @@ public class Drawing {
     public Drawing() {
     }
 
+    // used to draw all items to screen
     public void draw(Graphics2D g2) {
         // gets all triangles to be drawn
-        Triangle[] triangles = map.getSector().getTriangles();
+        Triangle[] triangles = GamePanel.map.getSector().getTriangles();
         // sorts the triangles in order of farthest from camera to closest
         Arrays.sort(triangles, (t1, t2) -> Double.compare(t2.getDepthFromCamera(), t1.getDepthFromCamera()));
 
-        // 
+        // loops through each triangle, updates variables and draws to screen
         for (Triangle t : triangles) {
             t.update();
-            drawing.drawTexturedTriangle(g2, t, texturess.getTexture(0));
+            drawTexturedTriangle(g2, t);
         }
     }
 
-    // Commented out the original method
-    // public void drawTexturedTriangle(Graphics2D g2, Triangle t, Texture texture) {
-    //     if (!t.isValid()) {
-    //         return;
-    //     }
-    //     g2.setColor(t.getMaterial());
-    //     int[] xCords = {t.getP1().getX(), t.getP2().getX(), t.getP3().getX(), t.getP4().getX()};
-    //     int[] yCords = {t.getP1().getY(), t.getP2().getY(), t.getP3().getY(), t.getP4().getY()};
-    //     g2.fillPolygon(xCords, yCords, t.getNumberOfVertices());
-    // }
-
-    public void drawTexturedTriangle(Graphics2D g2, Triangle t, Texture texture) {
+    public void drawTexturedTriangle(Graphics2D g2, Triangle t) {
+        // makes sure the triangle is valid to render
         if (!t.isValid()) {
             return;
         }
 
-        // Get triangle vertices
-        int[] xPoints = {t.getP1().getX(), t.getP2().getX(), t.getP3().getX(), t.getP4().getX()};
-        int[] yPoints = {t.getP1().getY(), t.getP2().getY(), t.getP3().getY(), t.getP4().getY()};
-        
+        // gets triangle points in screen space
+        int[] xPoints = {(int)t.getP1().getX(), (int)t.getP2().getX(),(int) t.getP3().getX(), (int)t.getP4().getX()};
+        int[] yPoints = {(int)t.getP1().getY(), (int)t.getP2().getY(), (int)t.getP3().getY(), (int)t.getP4().getY()};
+
+        // sets the drawing color to triangle color
         g2.setColor(t.getMaterial());
-        g2.drawPolygon(xPoints, yPoints, t.getNumberOfVertices());
-        // g2.fillPolygon(xPoints, yPoints, t.getNumberOfVertices());
+        // draws the triangle to screen as a polygon
+        // g2.drawPolygon(xPoints, yPoints, t.getNumberOfVertices());
+        g2.fillPolygon(xPoints, yPoints, t.getNumberOfVertices());
     }
 
     private double[] barycentricWeights(Vertex2D[] vertices, int x, int y) {
@@ -59,34 +48,5 @@ public class Drawing {
         double w3 = 1 - w1 - w2;
 
         return new double[]{w1, w2, w3};
-    }
-
-    public void drawPointer(Graphics2D g2, int x, int y, int magnitude, double angle) {
-        double deltaX = Math.cos(angle) * magnitude;
-        double deltaY = Math.sin(angle) * magnitude;
-        g2.drawLine(x, y, x + (int)deltaX, y + (int)deltaY);
-    }
-
-    public void drawRadius(Graphics2D g2, int x, int y, int magnitude) {
-        g2.setColor(Color.RED);
-        g2.drawOval(x - magnitude / 2, y - magnitude / 2, magnitude, magnitude);
-    }
-
-    public void camDebug(Graphics2D g2, Camera c) {
-        g2.setColor(Color.WHITE);
-        g2.drawOval((int)c.getX() - 10, (int)c.getY() - 10, 20, 20);
-        drawPointer(g2, (int)c.getX(), (int)c.getY(), 25, c.getRot());
-        drawPointer(g2, (int)c.getX(), (int)c.getY(), 500, c.getRot() + (c.getFOV() / 2));
-        drawPointer(g2, (int)c.getX(), (int)c.getY(), 500, c.getRot() - (c.getFOV() / 2));
-        drawPointer(g2, (int)c.getX(), (int)c.getY(), 1000, c.getRot() + (Math.PI / 2));
-        drawPointer(g2, (int)c.getX(), (int)c.getY(), 1000, c.getRot() - (Math.PI / 2));
-    }
-
-    public void triangleDebug(Graphics2D g2, Triangle t) {
-        Vertex3D v1 = t.getV1();
-        Vertex3D v2 = t.getV2();
-        Vertex3D v3 = t.getV3();
-        g2.setColor(Color.WHITE);
-        g2.drawLine((int)v3.getX(), (int)v3.getY(), (int)v1.getX(), (int)v1.getY());
     }
 }
