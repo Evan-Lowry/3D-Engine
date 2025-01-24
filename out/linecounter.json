@@ -1,0 +1,196 @@
+{
+    "extension": "linecounter",
+    "version": "0.2.7",
+    "workspace": "c:\\Users\\lowry\\Documents\\VS Code\\3D-Engine",
+    "linecount": [
+        {
+            "version": "0.2.7",
+            "counttime": "2025-01-24 13:43:13",
+            "filesum": 25,
+            "codesum": 17581,
+            "commentsum": 250,
+            "blanksum": 283,
+            "statistics": {
+                ".java": {
+                    "code": 1114,
+                    "comment": 250,
+                    "blank": 281
+                },
+                ".md": {
+                    "code": 1,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".csv": {
+                    "code": 2,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".mtl": {
+                    "code": 20,
+                    "comment": 0,
+                    "blank": 2
+                },
+                ".obj": {
+                    "code": 16444,
+                    "comment": 0,
+                    "blank": 0
+                }
+            },
+            "filelist": [
+                {
+                    "blank": 45,
+                    "code": 190,
+                    "comment": 69,
+                    "filename": "Camera.java"
+                },
+                {
+                    "blank": 10,
+                    "code": 33,
+                    "comment": 9,
+                    "filename": "Drawing.java"
+                },
+                {
+                    "blank": 6,
+                    "code": 23,
+                    "comment": 0,
+                    "filename": "Edge.java"
+                },
+                {
+                    "blank": 2,
+                    "code": 20,
+                    "comment": 0,
+                    "filename": "ExportedData\\Map.mtl"
+                },
+                {
+                    "blank": 0,
+                    "code": 16444,
+                    "comment": 0,
+                    "filename": "ExportedData\\Map.obj"
+                },
+                {
+                    "blank": 20,
+                    "code": 58,
+                    "comment": 8,
+                    "filename": "Floor.java"
+                },
+                {
+                    "blank": 5,
+                    "code": 21,
+                    "comment": 8,
+                    "filename": "Game.java"
+                },
+                {
+                    "blank": 20,
+                    "code": 111,
+                    "comment": 39,
+                    "filename": "GamePanel.java"
+                },
+                {
+                    "blank": 10,
+                    "code": 85,
+                    "comment": 9,
+                    "filename": "KeyHandler.java"
+                },
+                {
+                    "blank": 19,
+                    "code": 94,
+                    "comment": 48,
+                    "filename": "Map.java"
+                },
+                {
+                    "blank": 9,
+                    "code": 32,
+                    "comment": 12,
+                    "filename": "MouseAiming.java"
+                },
+                {
+                    "blank": 2,
+                    "code": 11,
+                    "comment": 2,
+                    "filename": "Normal.java"
+                },
+                {
+                    "blank": 8,
+                    "code": 20,
+                    "comment": 3,
+                    "filename": "Point2D.java"
+                },
+                {
+                    "blank": 6,
+                    "code": 13,
+                    "comment": 2,
+                    "filename": "Point3D.java"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "README.md"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "SaveData\\Camera.csv"
+                },
+                {
+                    "blank": 8,
+                    "code": 26,
+                    "comment": 5,
+                    "filename": "Sector.java"
+                },
+                {
+                    "blank": 4,
+                    "code": 13,
+                    "comment": 0,
+                    "filename": "Texture.java"
+                },
+                {
+                    "blank": 6,
+                    "code": 46,
+                    "comment": 0,
+                    "filename": "Textures.java"
+                },
+                {
+                    "filename": "Textures\\BrickGrey.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Textures\\Floor.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 55,
+                    "code": 198,
+                    "comment": 30,
+                    "filename": "Triangle.java"
+                },
+                {
+                    "blank": 5,
+                    "code": 17,
+                    "comment": 0,
+                    "filename": "UV.java"
+                },
+                {
+                    "blank": 1,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": "Vertex2D.java"
+                },
+                {
+                    "blank": 42,
+                    "code": 118,
+                    "comment": 6,
+                    "filename": "Vertex3D.java"
+                }
+            ]
+        }
+    ]
+}

@@ -216,6 +216,8 @@ public class Triangle {
         this.material = new Color(red, green, blue);
     }
 
+    // getters and setters
+
     public int getNumberOfVertices() {
         return numVertices;
     }

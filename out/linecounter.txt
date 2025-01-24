@@ -1,0 +1,46 @@
+===============================================================================
+EXTENSION NAME : linecounter
+EXTENSION VERSION : 0.2.7
+-------------------------------------------------------------------------------
+count time : 2025-01-24 13:43:13
+count workspace : c:\Users\lowry\Documents\VS Code\3D-Engine
+total files : 25
+total code lines : 17581
+total comment lines : 250
+total blank lines : 283
+
+    statistics
+   |      extension|     total code|  total comment|    total blank|percent|
+   -------------------------------------------------------------------------
+   |          .java|           1114|            250|            281|    6.3|
+   |            .md|              1|              0|              0| 0.0057|
+   |           .csv|              2|              0|              0|  0.011|
+   |           .mtl|             20|              0|              2|   0.11|
+   |           .obj|          16444|              0|              0|     94|
+   -------------------------------------------------------------------------
+Camera.java, code is 190, comment is 69, blank is 45.
+Drawing.java, code is 33, comment is 9, blank is 10.
+Edge.java, code is 23, comment is 0, blank is 6.
+ExportedData\Map.mtl, code is 20, comment is 0, blank is 2.
+ExportedData\Map.obj, code is 16444, comment is 0, blank is 0.
+Floor.java, code is 58, comment is 8, blank is 20.
+Game.java, code is 21, comment is 8, blank is 5.
+GamePanel.java, code is 111, comment is 39, blank is 20.
+KeyHandler.java, code is 85, comment is 9, blank is 10.
+Map.java, code is 94, comment is 48, blank is 19.
+MouseAiming.java, code is 32, comment is 12, blank is 9.
+Normal.java, code is 11, comment is 2, blank is 2.
+Point2D.java, code is 20, comment is 3, blank is 8.
+Point3D.java, code is 13, comment is 2, blank is 6.
+README.md, code is 1, comment is 0, blank is 0.
+SaveData\Camera.csv, code is 2, comment is 0, blank is 0.
+Sector.java, code is 26, comment is 5, blank is 8.
+Texture.java, code is 13, comment is 0, blank is 4.
+Textures.java, code is 46, comment is 0, blank is 6.
+Textures\BrickGrey.png, it is a binary file.
+Textures\Floor.png, it is a binary file.
+Triangle.java, code is 198, comment is 30, blank is 55.
+UV.java, code is 17, comment is 0, blank is 5.
+Vertex2D.java, code is 5, comment is 0, blank is 1.
+Vertex3D.java, code is 118, comment is 6, blank is 42.
+===============================================================================
