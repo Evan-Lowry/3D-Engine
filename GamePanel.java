@@ -16,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable{
     // creates a drawing object to handle all drawing of objects to screen
     static Drawing drawing = new Drawing();
     // used to store the resolution of the window measured as a percentage of 1920 x 1080
-    static float fullscreen = (float) 1;
+    static float fullscreen = (float) 0.5;
     // sets the resolution variables in accordance with the fullscreen variables
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);
@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable{
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
     // sets the target fram rate
-    static int FPS = 60;
+    static int FPS = 40;
     // creates a new camera with inputed starting location rotation and FOV
     public static Camera c = new Camera(100,-100,0,180,90);
     // creates a KeyHandler to read and store key inputs
@@ -140,7 +140,9 @@ public class GamePanel extends JPanel implements Runnable{
         // uses all input data to calculate new location
         c.calculateNewCordinates();
         // checks the floor height of the current floor
-        c.setFloorHeight(0);
+        // c.setFloorHeight(0);
+
+        c.checkCollisions(map.getSector().getFloor());
         // updates the camera variables using the calculations
         c.update();
 

@@ -3,7 +3,8 @@ import java.util.ArrayList;
 public class Floor {
 
     private Vertex3D[] vertexs = new Vertex3D[3];
-    private double floorHeight;
+    private float floorHeight;
+    private Edge[] edges = new Edge[3];
 
     public Floor(Vertex3D v1, Vertex3D v2, Vertex3D v3) {
         this.vertexs[0] = v1;
@@ -12,12 +13,12 @@ public class Floor {
         this.floorHeight = this.vertexs[0].getZ();
     }
 
-    public double getFloorHeight() {
+    public float getFloorHeight() {
         return floorHeight;
     }
 
     public boolean isPlayerInside() {
-        return insideAABB() && passesSAT();
+        return insideAABB();
     }
 
     // checks if player is inside axis aligned bounding boxes (AABB)
@@ -82,5 +83,13 @@ public class Floor {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         return vertexs[index];
+    }
+
+    public Edge[] getEdges() {
+        return this.edges;
+    }
+
+    public Triangle gTriangle() {
+        return new Triangle(vertexs[0], vertexs[1], vertexs[2], null, null, null, null, null, null, 0);
     }
 }

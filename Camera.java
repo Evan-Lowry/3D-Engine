@@ -209,13 +209,43 @@ public class Camera {
         }
     }
 
+    // given a floor it keeps the camera withing its bounding box
     public void checkCollisions(Floor floor) {
 
-        for (int i = 0; i < 3; i++) {
-            Vertex3D v1 = floor.getVertex(i);
-            Vertex3D v2 = floor.getVertex((i+1)%3);
-            // checkLineCollisions(v1, v2);
+        // a buffer at the edge of the floor, so the player camera doesn't go half way through a wall
+        int buffer = 3;
+        
+        // calculates the min and max values on each axis
+        float maxX = Math.max(floor.getVertex(0).getX(), Math.max(floor.getVertex(1).getX(), floor.getVertex(2).getX()));
+        float minX = Math.min(floor.getVertex(0).getX(), Math.min(floor.getVertex(1).getX(), floor.getVertex(2).getX()));
+
+        float maxY = Math.max(floor.getVertex(0).getY(), Math.max(floor.getVertex(1).getY(), floor.getVertex(2).getY()));
+        float minY = Math.min(floor.getVertex(0).getY(), Math.min(floor.getVertex(1).getY(), floor.getVertex(2).getY()));
+
+        // if player above the max X
+        if (this.newX > maxX - buffer) {
+            // set to max X minus buffer
+            this.newX = maxX - buffer;
+            // if player below the min X
+        } else if (this.newX < minX + buffer) {
+            // set to min X plus buffer
+            this.newX = minX + buffer;
         }
+
+        // if player above the max Y
+        if (this.newY > maxY - buffer) {
+            // set to max Y minus buffer
+            this.newY = maxY - buffer;
+            // if player below the min Y
+        } else if (this.newY < minY + buffer) {
+            // set to min Y plus buffer
+            this.newY = minY + buffer;
+        }
+    }
+
+    // checks axis aligned collisions with floors
+    private void checkAACollisions() {
+
     }
 
     private void checkLineCollisions(Vertex3D v1, Vertex3D v2) {

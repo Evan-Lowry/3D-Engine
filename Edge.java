@@ -7,6 +7,13 @@ public class Edge {
         this.vertex2 = vertex2;
     }
 
+    public boolean equals(Edge e) {
+        boolean eqauls1 = this.getVertex1() == e.getVertex1() && this.getVertex2() == e.getVertex2();
+        boolean eqauls2 = this.getVertex1() == e.getVertex2() && this.getVertex2() == e.getVertex1();
+
+        return eqauls1 || eqauls2;
+    }
+
     public Vertex3D getVertex1() {
         return vertex1;
     }

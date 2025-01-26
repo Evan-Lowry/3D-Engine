@@ -1,10 +1,11 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.util.Arrays;
 
 public class Drawing {
 
-    private int pixelSize = 7;
+    private int pixelSize = 4;
 
     public Drawing() {
     }
@@ -32,7 +33,7 @@ public class Drawing {
             int[] yPoints = t.yPoints();
             double[] uPoints = {t.getUV1().getU(), t.getUV2().getU(), t.getUV3().getU()};
             double[] vPoints = {t.getUV1().getV(), t.getUV2().getV(), t.getUV3().getV()};
-
+            
             // Find bounding box and constrain to screen dimensions
             int minX = Math.max(0, Math.min(Math.min(xPoints[0], xPoints[1]), xPoints[2]));
             minX = ((int)(minX/pixelSize))*pixelSize;

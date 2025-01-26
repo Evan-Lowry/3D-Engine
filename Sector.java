@@ -11,6 +11,7 @@ public class Sector {
     public Sector(ArrayList <Triangle> triangles) {
         this.triangles = triangles;
         generateFloors();
+        generateBoundingEdges();
     }
 
     // takes all triangles and detects horizontal ones as floors
@@ -31,7 +32,23 @@ public class Sector {
     }
 
     private void generateBoundingEdges() {
-        
+        // this.boundingEdges = new ArrayList<>();
+        // for (Floor f : this.floors) {
+        //     this.boundingEdges.add(f.getEdges()[0]);
+        //     this.boundingEdges.add(f.getEdges()[1]);
+        //     this.boundingEdges.add(f.getEdges()[2]);
+        // }
+
+        // for (int i = 0; i < this.boundingEdges.size(); i++) {
+        //     for (int j = i + 1; j < this.boundingEdges.size(); j++) {
+        //     if (this.boundingEdges.get(i).equals(this.boundingEdges.get(j))) {
+        //         this.boundingEdges.remove(j);
+        //         this.boundingEdges.remove(i);
+        //         i--;
+        //         break;
+        //     }
+        //     }
+        // }
     }
 
     // returns the triangles as an array
@@ -57,13 +74,18 @@ public class Sector {
 
         // if not inside the current floor, check all other floors
         for (Floor floor : floors) { 
-            if (floor != this.currentFloor && floor.isPlayerInside()) {
+            if (floor != this.currentFloor && floor.isPlayerInside() && GamePanel.c.getZ() > floor.getFloorHeight() + 30) {
                 this.currentFloor = floor;
                 System.out.println("Changed Floor");
+                GamePanel.c.setFloorHeight(floor.getFloorHeight());
                 return this.currentFloor;
             }
         }
 
         return this.currentFloor;
+    }
+
+    public ArrayList<Floor> getFloors() {
+        return this.floors;
     }
 }
