@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
+import java.awt.Polygon;
 
 public class Triangle {
     private Vertex3D v1;
@@ -13,13 +14,17 @@ public class Triangle {
     private UV uv1;
     private UV uv2;
     private UV uv3;
+    private UV newUV1;
+    private UV newUV2;
+    private UV newUV3;
+    private UV newUV4;
     private Normal triangleNormal;
     private Vertex2D p1;
     private Vertex2D p2;
     private Vertex2D p3;
     private Vertex2D p4;
     private Texture texture;
-    private Color material;
+    private float colorIntensity;
     private double depthFromCamera;
     private int numVertices = 3;
     private boolean isValid = true;
@@ -39,7 +44,6 @@ public class Triangle {
         this.triangleNormal = normal1.averageNormals(normal2, normal3);
 
         this.texture = GamePanel.texturess.getTexture(materialIndex-1);
-        computeColor();
         computeShade();
     }
 
@@ -47,6 +51,14 @@ public class Triangle {
 
         this.isValid = true;
         this.numVertices = 3;
+
+        newV1.setUV(this.uv1);
+        newV2.setUV(this.uv2);
+        newV3.setUV(this.uv3);
+
+        this.newV1.setNewCords(v1.getNewX(), v1.getNewY(), v1.getNewZ(), this.newV1.getUV());
+        this.newV2.setNewCords(v2.getNewX(), v2.getNewY(), v2.getNewZ(), this.newV2.getUV());
+        this.newV3.setNewCords(v3.getNewX(), v3.getNewY(), v3.getNewZ(), this.newV3.getUV());
 
         backfaceCulling();
 
@@ -72,25 +84,22 @@ public class Triangle {
         List<Vertex3D> inFront = new ArrayList<>();
 
         // classify the vertices
-        if (v1.getNewX() <= nearPlaneX) behind.add(v1); else inFront.add(v1);
-        if (v2.getNewX() <= nearPlaneX) behind.add(v2); else inFront.add(v2);
-        if (v3.getNewX() <= nearPlaneX) behind.add(v3); else inFront.add(v3);
+        if (this.newV1.getNewX() <= nearPlaneX) behind.add(this.newV1); else inFront.add(this.newV1);
+        if (this.newV2.getNewX() <= nearPlaneX) behind.add(this.newV2); else inFront.add(this.newV2);
+        if (this.newV3.getNewX() <= nearPlaneX) behind.add(this.newV3); else inFront.add(this.newV3);
 
         // Handle cases
         if (behind.size() == 0) {
             // All vertices in front, draw the triangle as-is
-            this.newV1.setNewCords(v1.getNewX(), v1.getNewY(), v1.getNewZ());
-            this.newV2.setNewCords(v2.getNewX(), v2.getNewY(), v2.getNewZ());
-            this.newV3.setNewCords(v3.getNewX(), v3.getNewY(), v3.getNewZ());
         } else if (behind.size() == 1) {
             // One vertex behind, clip into two triangles
             Vertex3D P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
             Vertex3D P2 = interpolate(behind.get(0), inFront.get(1), nearPlaneX);
 
-            this.newV1.setNewCords(inFront.get(0).getNewX(), inFront.get(0).getNewY(), inFront.get(0).getNewZ());
-            this.newV2.setNewCords(inFront.get(1).getNewX(), inFront.get(1).getNewY(), inFront.get(1).getNewZ());
-            this.newV3.setNewCords(P2.getX(), P2.getY(), P2.getZ());
-            this.newV4.setNewCords(P1.getX(), P1.getY(), P1.getZ());
+            this.newV1.setNewCords(inFront.get(0).getNewX(), inFront.get(0).getNewY(), inFront.get(0).getNewZ(), inFront.get(0).getUV());
+            this.newV2.setNewCords(inFront.get(1).getNewX(), inFront.get(1).getNewY(), inFront.get(1).getNewZ(), inFront.get(1).getUV());
+            this.newV3.setNewCords(P2.getX(), P2.getY(), P2.getZ(), P2.getUV());
+            this.newV4.setNewCords(P1.getX(), P1.getY(), P1.getZ(), P1.getUV());
 
             this.numVertices = 4;
 
@@ -99,9 +108,9 @@ public class Triangle {
             Vertex3D P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
             Vertex3D P2 = interpolate(behind.get(1), inFront.get(0), nearPlaneX);
 
-            this.newV1.setNewCords(inFront.get(0).getNewX(), inFront.get(0).getNewY(), inFront.get(0).getNewZ());
-            this.newV2.setNewCords(P2.getX(), P2.getY(), P2.getZ());
-            this.newV3.setNewCords(P1.getX(), P1.getY(), P1.getZ());
+            this.newV1.setNewCords(inFront.get(0).getNewX(), inFront.get(0).getNewY(), inFront.get(0).getNewZ(), inFront.get(0).getUV());
+            this.newV2.setNewCords(P2.getX(), P2.getY(), P2.getZ(), P2.getUV());
+            this.newV3.setNewCords(P1.getX(), P1.getY(), P1.getZ(), P1.getUV());
             
         } else {
             // All vertices behind, discard triangle
@@ -113,14 +122,16 @@ public class Triangle {
         float t = (nearPlaneX - from.getNewX()) / (to.getNewX() - from.getNewX());
         float newY = from.getNewY() + t * (to.getNewY() - from.getNewY());
         float newZ = from.getNewZ() + t * (to.getNewZ() - from.getNewZ());
-        return new Vertex3D(nearPlaneX, newY, newZ);
+        float newU = from.getUV().getU() + t * (to.getUV().getU() - from.getUV().getU());
+        float newV = from.getUV().getV() + t * (to.getUV().getV() - from.getUV().getV());
+        return new Vertex3D(nearPlaneX, newY, newZ, newU, newV);
     }
 
     private void calculateDepthFromCamera() {
-        double distance1 = distanceToCamera(v1); // double distance1 = newV1
-        double distance2 = distanceToCamera(v2); // double distance2 = newV2
-        double distance3 = distanceToCamera(v3); // double distance3 = newV3
-        this.depthFromCamera = Math.max(distance1, Math.max(distance2, distance3));
+        double distance1 = distanceToCamera(newV1);
+        double distance2 = distanceToCamera(newV2);
+        double distance3 = distanceToCamera(newV3);
+        this.depthFromCamera = (distance1 + distance2 + distance3) / 3;
     }
 
     private double distanceToCamera(Vertex3D v) {
@@ -159,15 +170,6 @@ public class Triangle {
         }
     }
 
-    private void computeColor() {
-        // calculate average UV coordinates
-        float avgU = (getUV1().getU() + getUV2().getU() + getUV3().getU()) / 3;
-        float avgV = (getUV1().getV() + getUV2().getV() + getUV3().getV()) / 3;
-        
-        // set color
-        this.material = texture.getColor(31 - (int)((avgV*32)), (int)((avgU*32)));
-    }
-
     private void computeShade() {
         float ambientLight = 0.8f; // Increase ambient light to make everything brighter
 
@@ -200,26 +202,41 @@ public class Triangle {
         float intensityZ = Math.max(ambientLight, lightIntensityZ * dotProductZ);
 
         // Average the intensities
-        float intensity = (intensityX + intensityY + intensityZ) / 3;
-
-        // Apply the intensity to the material color
-        int red = (int) (material.getRed() * intensity);
-        int green = (int) (material.getGreen() * intensity);
-        int blue = (int) (material.getBlue() * intensity);
-
-        // Ensure the color components are within the valid range
-        red = Math.min(255, Math.max(0, red));
-        green = Math.min(255, Math.max(0, green));
-        blue = Math.min(255, Math.max(0, blue));
-
-        // Set the new color
-        this.material = new Color(red, green, blue);
+        this.colorIntensity = (intensityX + intensityY + intensityZ) / 3;
     }
 
     // getters and setters
 
     public int getNumberOfVertices() {
         return numVertices;
+    }
+
+    public Polygon toPolygon() {
+        int[] xPoints = {(int)this.p1.getX(), (int)this.p2.getX(), (int)this.p3.getX()};
+        int[] yPoints = {(int)this.p1.getY(), (int)this.p2.getY(), (int)this.p3.getY()};
+        Polygon p = new Polygon(xPoints, yPoints, 3);
+        return p;
+    }
+
+    public int[] xPoints() {
+        if (this.getNumberOfVertices() == 3) {
+            int[] xPoints = {(int)this.p1.getX(), (int)this.p2.getX(), (int)this.p3.getX()};
+            return xPoints;
+        } else {
+            int[] xPoints = {(int)this.p1.getX(), (int)this.p2.getX(), (int)this.p3.getX(), (int)this.p4.getX()};
+            return xPoints;
+        }
+
+    }
+
+    public int[] yPoints() {
+        if (this.getNumberOfVertices() == 3) {
+            int[] yPoints = {(int)this.p1.getY(), (int)this.p2.getY(), (int)this.p3.getY()};
+            return yPoints;
+        } else {
+            int[] yPoints = {(int)this.p1.getY(), (int)this.p2.getY(), (int)this.p3.getY(), (int)this.p4.getY()};
+            return yPoints;
+        }
     }
 
     public Vertex3D getV1() {
@@ -235,15 +252,34 @@ public class Triangle {
     }
 
     public UV getUV1() {
-        return this.uv1;
+        return this.newV1.getUV();
     }
 
     public UV getUV2() {
-        return this.uv2;
+        return this.newV2.getUV();
     }
 
     public UV getUV3() {
-        return this.uv3;
+        return this.newV3.getUV();
+    }
+
+    public UV getUV4() {
+        return this.newV4.getUV();
+    }
+
+    public Vertex3D getNewV1() {
+        return this.newV1;
+    }
+    public Vertex3D getNewV2() {
+        return this.newV2;
+    }
+
+    public Vertex3D getNewV3() {
+        return this.newV3;
+    }
+
+    public Vertex3D getNewV4() {
+        return this.newV4;
     }
 
     public Vertex2D getP1() {
@@ -266,8 +302,12 @@ public class Triangle {
         return this.depthFromCamera;
     }
 
-    public Color getMaterial() {
-        return this.material;
+    public Texture gTexture() {
+        return this.texture;
+    }
+
+    public float getColorIntensity() {
+        return this.colorIntensity;
     }
 
     public boolean isValid() {

@@ -14,4 +14,8 @@ public class Texture {
     public void setColor(int x, int y, Color color) {
         this.texture[x][y] = color;
     }
+
+    public int getHeight() {
+        return 0;
+    }
 }

@@ -16,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable{
     // creates a drawing object to handle all drawing of objects to screen
     static Drawing drawing = new Drawing();
     // used to store the resolution of the window measured as a percentage of 1920 x 1080
-    static float fullscreen = (float) 0.59;
+    static float fullscreen = (float) 1;
     // sets the resolution variables in accordance with the fullscreen variables
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);

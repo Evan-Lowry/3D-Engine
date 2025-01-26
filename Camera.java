@@ -32,7 +32,12 @@ public class Camera {
         this.pitch = 0;
 
         // if possible tries to read camera save data
-        readSave();
+        try {
+            readSave();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     // reads in save data to apply to camera loc and rot

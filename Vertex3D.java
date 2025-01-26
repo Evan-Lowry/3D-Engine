@@ -7,10 +7,20 @@ public class Vertex3D {
     private float newY;
     private float newZ;
 
+    private UV uv = new UV(0, 0);
+
     public Vertex3D(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public Vertex3D(float x, float y, float z, float u, float v) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.uv.setU(u);
+        this.uv.setV(v);
     }
 
     public void normalizeCoordinates() {
@@ -100,28 +110,8 @@ public class Vertex3D {
         return this.newZ;
     }
 
-    public int[] get() {
-        int[] cordinates = {(int)this.x, (int)this.y, (int)this.z};
-        return cordinates;
-    }
-
-    public void moveX( double deltaX) {
-        this.x += deltaX;
-
-    }
-
-    public void moveY( float deltaY) {
-        this.y += deltaY;
-    }
-
-    public void moveZ( float deltaZ) {
-        this.z += deltaZ;
-    }
-
-    public void move(float deltaX, float deltaY, float deltaZ) {
-        this.x += deltaX;
-        this.y += deltaY;
-        this.z += deltaZ;
+    public UV getUV() {
+        return this.uv;
     }
 
     public void setX( float x) {
@@ -148,10 +138,15 @@ public class Vertex3D {
         this.newZ = newZ;
     }
 
-    public void setNewCords(float newX, float newY, float newZ) {
+    public void setUV(UV uv) {
+        this.uv = uv;
+    }
+
+    public void setNewCords(float newX, float newY, float newZ, UV uv) {
         this.newX = newX;
         this.newY = newY;
         this.newZ = newZ;
+        this.uv = uv;
     }
 
     public void set(float x, float y, float z) {

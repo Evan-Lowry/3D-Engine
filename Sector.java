@@ -34,12 +34,17 @@ public class Sector {
         
     }
 
-
-
     // returns the triangles as an array
-    public Triangle[] getTriangles() {
-        Triangle[] array = new Triangle[this.triangles.size()];
-        return this.triangles.toArray(array);
+    public Triangle[] getValidTriangles() {
+        ArrayList<Triangle> validTriangles = new ArrayList<>();
+        for (Triangle triangle : this.triangles) {
+            triangle.update();
+            if (triangle.isValid()) {
+                validTriangles.add(triangle);
+            }
+        }
+        Triangle[] array = new Triangle[validTriangles.size()];
+        return validTriangles.toArray(array);
     }
 
     // returns the floor the player is in
