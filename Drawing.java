@@ -80,7 +80,8 @@ public class Drawing {
                 }
             }
         }
-        private double[] getBarycentricCoordinates(int x, int y, int[] xPoints, int[] yPoints) {
+
+        public double[] getBarycentricCoordinates(int x, int y, int[] xPoints, int[] yPoints) {
             double denominator = ((yPoints[1] - yPoints[2]) * (xPoints[0] - xPoints[2]) + 
                                     (xPoints[2] - xPoints[1]) * (yPoints[0] - yPoints[2]));
             double a = ((yPoints[1] - yPoints[2]) * (x - xPoints[2]) + 
@@ -136,7 +137,7 @@ public class Drawing {
             }
         }
 
-        private double[] getBarycentricCoordinates4Vertices(int x, int y, int[] xPoints, int[] yPoints) {
+        public double[] getBarycentricCoordinates4Vertices(int x, int y, int[] xPoints, int[] yPoints) {
             double[] weights = new double[4];
             
             // Split quad into two triangles and check which one contains the point
