@@ -9,7 +9,7 @@ public class KeyHandler implements KeyListener{
     // stored as boolean so you can hold down keys
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean turnLeftPressed, turnRightPressed, turnUpPressed, turnDownPressed;
-    public boolean spacePressed, shiftPressed, fullscreen;
+    public boolean spacePressed, shiftPressed, reset, fullscreen;
 
     public KeyHandler() {
         upPressed = false;
@@ -23,6 +23,7 @@ public class KeyHandler implements KeyListener{
         spacePressed = false;
         fullscreen = false;
         shiftPressed = false;
+        reset = false;
     }
 
     @Override
@@ -55,6 +56,8 @@ public class KeyHandler implements KeyListener{
         } else if (keyChar == 'k') {
             turnDownPressed = !turnDownPressed;
             turnUpPressed = false;
+        } else if (keyChar == 'r') {
+            reset = true;
         } else if (keyChar == ' ') {
             spacePressed = true;
         } else if (keyChar == 'q') {

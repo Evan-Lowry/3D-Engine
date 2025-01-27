@@ -139,7 +139,7 @@ public class Triangle {
         double y = v.getNewY();
         double z = v.getNewZ();
 
-        return Math.sqrt(x*x + y*y + z*z);
+        return v.getNewX();
     }
 
     private void backfaceCulling() {
@@ -165,7 +165,7 @@ public class Triangle {
         float dotProduct = normalX * viewVectorX + normalY * viewVectorY + normalZ * viewVectorZ;
 
         // If the dot product is positive, the triangle is facing away from the camera
-        if (dotProduct > 0) {
+        if (dotProduct < 0) {
             this.isValid = false;
         }
     }
@@ -203,6 +203,7 @@ public class Triangle {
 
         // Average the intensities
         this.colorIntensity = (intensityX + intensityY + intensityZ) / 3;
+        this.colorIntensity = Math.min(this.colorIntensity, 1);
     }
 
     // getters and setters

@@ -16,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable{
     // creates a drawing object to handle all drawing of objects to screen
     static Drawing drawing = new Drawing();
     // used to store the resolution of the window measured as a percentage of 1920 x 1080
-    static float fullscreen = (float) 0.5;
+    static float fullscreen = (float) 1;
     // sets the resolution variables in accordance with the fullscreen variables
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);
@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable{
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
     // sets the target fram rate
-    static int FPS = 40;
+    static int FPS = 60;
     // creates a new camera with inputed starting location rotation and FOV
     public static Camera c = new Camera(100,-100,0,180,90);
     // creates a KeyHandler to read and store key inputs
@@ -57,7 +57,6 @@ public class GamePanel extends JPanel implements Runnable{
     // runs through the game loop
     @Override
     public void run() {
-
         // calculates the draw interval
         // the number of nanoseconds allowed for each frame
         double drawInterval = 1000000000/FPS;
@@ -122,6 +121,10 @@ public class GamePanel extends JPanel implements Runnable{
         if (keyH.spacePressed) {
             c.jump();
             keyH.spacePressed = false;
+        }
+        if (keyH.reset) {
+            c.resetLocation();
+            keyH.reset = false;
         }
         if (keyH.shiftPressed) {
             // makes sure you can't sprint while not moving

@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Sector {
 
@@ -23,6 +25,7 @@ public class Sector {
                 this.floors.add(new Floor(t.getV1(), t.getV2(), t.getV3()));
             }
         }
+        this.currentFloor = this.floors.get(0);
     }
 
     // checks if triangle is horizontal
@@ -66,22 +69,26 @@ public class Sector {
 
     // returns the floor the player is in
     public Floor getFloor() {
+        ArrayList<Floor> possibleFloors = new ArrayList<>();
 
         // if still inside current floor return the current floor
-        if (this.currentFloor != null && this.currentFloor.isPlayerInside()) {
-            return this.currentFloor;
-        }
+        // if (this.currentFloor != null && this.currentFloor.isPlayerInside()) {
+        //     return this.currentFloor;
+        // }
 
         // if not inside the current floor, check all other floors
         for (Floor floor : floors) { 
-            if (floor != this.currentFloor && floor.isPlayerInside() && GamePanel.c.getZ() > floor.getFloorHeight() + 30) {
-                this.currentFloor = floor;
-                System.out.println("Changed Floor");
-                GamePanel.c.setFloorHeight(floor.getFloorHeight());
-                return this.currentFloor;
+            if (floor.isPlayerInside() && GamePanel.c.getZ() > floor.getFloorHeight() + 30) {
+                possibleFloors.add(floor);
             }
         }
+        if (possibleFloors.isEmpty()) {
+            return this.currentFloor;
+        }
 
+        Collections.sort(possibleFloors, (f1, f2) -> Double.compare(f2.getFloorHeight(), f1.getFloorHeight()));
+        this.currentFloor = possibleFloors.getFirst();
+        GamePanel.c.setFloorHeight(this.currentFloor.getFloorHeight());
         return this.currentFloor;
     }
 

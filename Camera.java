@@ -13,6 +13,8 @@ public class Camera {
     private float velocity = 0;
     // stores z velocity
     private float velocityUp = 0;
+    // stores the current number of jumps since touching ground
+    private float numJumps = 0;
     // rotation applied to x, y velocity
     private float movementRot = 0;
     // floor height
@@ -85,21 +87,27 @@ public class Camera {
 
     public void moveForward() {
         // sets the camera speed to the camSpeed
-        this.velocity = camSpeed;
+        if (this.velocity < camSpeed) {
+            this.velocity = camSpeed;
+        }
         // points the movement vector forward
         this.movementRot = 0;
     }
 
     public void moveBackward() {
         // sets the camera speed to the camSpeed
-        this.velocity = camSpeed;
+        if (this.velocity < camSpeed) {
+            this.velocity = camSpeed;
+        }
         // points movement vectore backward
         this.movementRot = (float) Math.PI;
     }
 
     public void moveLeft() {
         // sets the camera speed to the camSpeed
-        this.velocity = camSpeed;
+        if (this.velocity < camSpeed) {
+            this.velocity = camSpeed;
+        }
         // if moving forward
         if (this.movementRot == 0) {
             // turn vector 45 degrees left
@@ -117,7 +125,9 @@ public class Camera {
 
     public void moveRight() {
         // sets the camera speed to the camSpeed
-        this.velocity = camSpeed;
+        if (this.velocity < camSpeed) {
+            this.velocity = camSpeed;
+        }
         // if moving forward
         if (this.movementRot == 0) {
             // turn vector 45 degrees right
@@ -135,7 +145,7 @@ public class Camera {
 
     public void sprint() {
         // doubles velocity
-        this.velocity = this.velocity*2;
+        this.velocity = this.camSpeed*2;
     }
 
     // moves camera view
@@ -166,10 +176,24 @@ public class Camera {
     // makes the player jump
     public void jump() {
         // if player is on the ground
-        // if (this.z == this.floorHeight+this.height) {
+        if (this.numJumps < 2) {
             // adds to the velocity upward
             this.velocityUp += 4;
-        // }
+            // increases the number of jumps
+            this.numJumps++;
+        }
+    }
+
+    // resets the player position
+    public void resetLocation () {
+        this.x = 100;
+        this.y = -250;
+        this.z = 250;
+        this.rot = 0;
+        this.newX = 100;
+        this.newY = -250;
+        this.numJumps = 0;
+        this.velocity = 0;
     }
 
     // uses current velocities to generate the new coordinates
@@ -186,10 +210,14 @@ public class Camera {
         this.y = this.newY;
         this.z += this.velocityUp;
 
+        if (this.z < -250 + this.height) {
+            resetLocation();
+        }
+
         // if the velocity is positive
         if (this.velocity > 0) {
             // decelerate
-            this.velocity -= 0.05;
+            this.velocity -= 0.1;
             // if negative
         } else {
             // set to 0
@@ -206,6 +234,8 @@ public class Camera {
             this.z = this.floorHeight+this.height;
             // stop movement upward/downward
             this.velocityUp = 0;
+            // sets number of jumps in air to 0
+            this.numJumps = 0;
         }
     }
 

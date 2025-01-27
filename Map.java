@@ -51,8 +51,8 @@ public class Map {
 
         this.sectors.add(new Sector(this.triangles));
         this.currentSector = this.sectors.get(0);
-        // prints out how may triangles are in the scdne
-        System.out.println(this.triangles.size());
+        // prints out how may triangles are in the scene
+        System.out.println("Number of Triangles: " + this.triangles.size());
     }
 
     // reads in vertex data and adds it to arraylist of vertexs
