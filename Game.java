@@ -3,6 +3,8 @@ import java.awt.*;
 
 public class Game {
 
+    // NOTE: basic setup, and frame pacing is taken from a 2D game tutorial on youtube
+
     // main method to run everything
     public static void main(String[] args) {
 
