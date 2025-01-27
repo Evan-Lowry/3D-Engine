@@ -89,7 +89,11 @@ public class Floor {
         return this.edges;
     }
 
-    public Triangle gTriangle() {
-        return new Triangle(vertexs[0], vertexs[1], vertexs[2], null, null, null, null, null, null, 0);
+    public Triangle getTriangle() {
+        // creates placeholder normal
+        Normal n = new Normal(0, 0, 1);
+        // creates placeholder UV
+        UV uv = new UV(0, 0);
+        return new Triangle(vertexs[0], vertexs[1], vertexs[2], uv, uv, uv, n, n, n, 1);
     }
 }
