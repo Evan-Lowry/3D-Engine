@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class Drawing {
 
-    private int pixelSize = 1;
+    private int pixelSize = 5;
 
     public Drawing() {
     }

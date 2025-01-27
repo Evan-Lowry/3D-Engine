@@ -78,7 +78,7 @@ public class Sector {
 
         // if not inside the current floor, check all other floors
         for (Floor floor : floors) { 
-            if (floor.isPlayerInside() && GamePanel.c.getZ() > floor.getFloorHeight() + 30) {
+            if (floor.isPlayerInside() && GamePanel.c.getZ() > floor.getFloorHeight() + 20) {
                 possibleFloors.add(floor);
             }
         }

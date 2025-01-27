@@ -131,7 +131,7 @@ public class Triangle {
         double distance1 = distanceToCamera(newV1);
         double distance2 = distanceToCamera(newV2);
         double distance3 = distanceToCamera(newV3);
-        this.depthFromCamera = (distance1 + distance2 + distance3) / 3;
+        this.depthFromCamera = Math.max(distance1, Math.max(distance2, distance3));
     }
 
     private double distanceToCamera(Vertex3D v) {
@@ -139,7 +139,7 @@ public class Triangle {
         double y = v.getNewY();
         double z = v.getNewZ();
 
-        return v.getNewX();
+        return Math.sqrt(x * x + y * y + z * z);
     }
 
     private void backfaceCulling() {

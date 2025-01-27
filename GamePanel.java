@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable{
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
     // sets the target fram rate
-    static int FPS = 60;
+    static int FPS = 30;
     // creates a new camera with inputed starting location rotation and FOV
     public static Camera c = new Camera(100,-100,0,180,90);
     // creates a KeyHandler to read and store key inputs
