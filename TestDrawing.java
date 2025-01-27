@@ -33,6 +33,24 @@ public class TestDrawing {
     }
 
     @Test
+    // tests to see if barycentric coordinates work
+    public void testBarycentricCoordinatesOutsideTriangle() {
+        this.draw = new Drawing();
+        int x = 10;
+        int y = 10;
+        // creates a triangle out of points
+        int[] xPoints = {0, 10, 0};
+        int[] yPoints = {0, 0, 10};
+
+        // checks and stores the weights of each coordinate
+        double[] bary = this.draw.getBarycentricCoordinates(x, y, xPoints, yPoints);
+
+        assertEquals(-1, bary[0], 0.000001);
+        assertEquals(1, bary[1], 0.000001);
+        assertEquals(1, bary[2], 0.000001);
+    }
+
+    @Test
     // tests to see if 4 barycentric coordinates work
     public void testBarycentric4Coordinates() {
         this.draw = new Drawing();
@@ -48,6 +66,25 @@ public class TestDrawing {
         assertEquals(0.5, bary[0], 0.000001);
         assertEquals(0, bary[1], 0.000001);
         assertEquals(0.5, bary[2], 0.000001);
+        assertEquals(0, bary[3], 0.000001);
+    }
+
+    @Test
+    // tests to see if 4 barycentric coordinates work
+    public void testBarycentric4CoordinatesOutsideQuad() {
+        this.draw = new Drawing();
+        int x = 20;
+        int y = 20;
+        // creates a triangle out of points
+        int[] xPoints = {0, 10, 10, 0};
+        int[] yPoints = {0, 0, 10, 10};
+
+        // checks and stores the weights of each coordinate
+        double[] bary = this.draw.getBarycentricCoordinates4Vertices(x, y, xPoints, yPoints);
+
+        assertEquals(-1, bary[0], 0.000001);
+        assertEquals(0, bary[1], 0.000001);
+        assertEquals(2, bary[2], 0.000001);
         assertEquals(0, bary[3], 0.000001);
     }
 }
