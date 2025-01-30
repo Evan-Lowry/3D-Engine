@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class Drawing {
 
-    private int pixelSize = 5;
+    private int pixelSize = 8;
 
     public Drawing() {
     }
@@ -18,10 +18,12 @@ public class Drawing {
         Arrays.sort(triangles, (t1, t2) -> Double.compare(t2.getDepthFromCamera(), t1.getDepthFromCamera()));
         
         for (Triangle t : triangles) {
-            if (t.getNumberOfVertices() == 3) {
-                drawTexturedTriangle(g2, t);   
-            } else {
-                drawTexturedQuad(g2, t);
+            if (t.gTexture() != null) {
+                if (t.getNumberOfVertices() == 3) {
+                    drawTexturedTriangle(g2, t);   
+                } else {
+                    drawTexturedQuad(g2, t);
+                }
             }
         }
     }

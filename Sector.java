@@ -8,12 +8,12 @@ public class Sector {
     private ArrayList<Triangle> triangles;
     private ArrayList<Floor> floors = new ArrayList<>();
     private Floor currentFloor = null;
-    private ArrayList<Edge> boundingEdges;
+    private ArrayList<Wall> walls = new ArrayList<>();
 
     public Sector(ArrayList <Triangle> triangles) {
         this.triangles = triangles;
+        generateWalls();
         generateFloors();
-        generateBoundingEdges();
     }
 
     // takes all triangles and detects horizontal ones as floors
@@ -22,7 +22,7 @@ public class Sector {
             // checks if it is horizontal
             if (isHorizontal(t)) {
                 // adds to floor array
-                this.floors.add(new Floor(t.getV1(), t.getV2(), t.getV3()));
+                this.floors.add(new Floor(t.getV1(), t.getV2(), t.getV3(), this.walls));
             }
         }
         this.currentFloor = this.floors.get(0);
@@ -34,24 +34,25 @@ public class Sector {
         return t.getV1().getZ() == t.getV2().getZ() && t.getV1().getZ() == t.getV3().getZ();
     }
 
-    private void generateBoundingEdges() {
-        // this.boundingEdges = new ArrayList<>();
-        // for (Floor f : this.floors) {
-        //     this.boundingEdges.add(f.getEdges()[0]);
-        //     this.boundingEdges.add(f.getEdges()[1]);
-        //     this.boundingEdges.add(f.getEdges()[2]);
-        // }
+    private void generateWalls() {
+        for (Triangle t : this.triangles) {
+            // checks if it is vertical
+            if (isVertical(t)) {
+                // adds to wall array
+                this.walls.add(new Wall(t));
+            }
+        }
+    }
 
-        // for (int i = 0; i < this.boundingEdges.size(); i++) {
-        //     for (int j = i + 1; j < this.boundingEdges.size(); j++) {
-        //     if (this.boundingEdges.get(i).equals(this.boundingEdges.get(j))) {
-        //         this.boundingEdges.remove(j);
-        //         this.boundingEdges.remove(i);
-        //         i--;
-        //         break;
-        //     }
-        //     }
-        // }
+    // checks if triangle is horizontal
+    private boolean isVertical(Triangle t) {
+        // if all z coordinates are equal
+        return verticalLine(t.getV1(), t.getV2()) || verticalLine(t.getV2(), t.getV3()) || verticalLine(t.getV3(), t.getV1());
+    }
+
+    //checks if two vertexs are on the same vertical line
+    private boolean verticalLine(Vertex3D v1, Vertex3D v2) {
+        return v1.getX() == v2.getX() && v1.getY() == v2.getY();
     }
 
     // returns the triangles as an array
@@ -83,7 +84,8 @@ public class Sector {
             }
         }
         if (possibleFloors.isEmpty()) {
-            return this.currentFloor;
+            GamePanel.c.setFloorHeight(-10000);
+            return null;
         }
 
         Collections.sort(possibleFloors, (f1, f2) -> Double.compare(f2.getFloorHeight(), f1.getFloorHeight()));

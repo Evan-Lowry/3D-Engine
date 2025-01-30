@@ -78,7 +78,7 @@ public class Triangle {
     }
 
     private void checkClipping() {
-        float nearPlaneX = 10;
+        float nearPlaneX = 15;
 
         List<Vertex3D> behind = new ArrayList<>();
         List<Vertex3D> inFront = new ArrayList<>();
@@ -313,5 +313,9 @@ public class Triangle {
 
     public boolean isValid() {
         return this.isValid;
+    }
+
+    public Normal getNormal() {
+        return this.triangleNormal;
     }
 }

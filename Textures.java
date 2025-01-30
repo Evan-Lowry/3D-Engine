@@ -46,7 +46,7 @@ public class Textures {
         if (index >= 0 && index < textures.size()) {
             return textures.get(index);
         } else {
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+            return null;
         }
     }
 }

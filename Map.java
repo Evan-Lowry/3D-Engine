@@ -70,8 +70,8 @@ public class Map {
     private void readNormal(Scanner input) {
         // scans normals
         float x = input.nextFloat();
-        float y = input.nextFloat();
         float z = input.nextFloat();
+        float y = input.nextFloat();
         // adds the new normal to ArrayList
         this.normals.add(new Normal(x, y, z));
         // System.out.println("Normal: (" + x + ", " + y + ", " + z + ")");

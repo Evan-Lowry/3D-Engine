@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Camera {
@@ -242,34 +243,16 @@ public class Camera {
     // given a floor it keeps the camera withing its bounding box
     public void checkCollisions(Floor floor) {
 
-        // a buffer at the edge of the floor, so the player camera doesn't go half way through a wall
-        int buffer = 3;
-        
-        // calculates the min and max values on each axis
-        float maxX = Math.max(floor.getVertex(0).getX(), Math.max(floor.getVertex(1).getX(), floor.getVertex(2).getX()));
-        float minX = Math.min(floor.getVertex(0).getX(), Math.min(floor.getVertex(1).getX(), floor.getVertex(2).getX()));
-
-        float maxY = Math.max(floor.getVertex(0).getY(), Math.max(floor.getVertex(1).getY(), floor.getVertex(2).getY()));
-        float minY = Math.min(floor.getVertex(0).getY(), Math.min(floor.getVertex(1).getY(), floor.getVertex(2).getY()));
-
-        // if player above the max X
-        if (this.newX > maxX - buffer) {
-            // set to max X minus buffer
-            this.newX = maxX - buffer;
-            // if player below the min X
-        } else if (this.newX < minX + buffer) {
-            // set to min X plus buffer
-            this.newX = minX + buffer;
+        if (floor == null) {
+            return;
         }
 
-        // if player above the max Y
-        if (this.newY > maxY - buffer) {
-            // set to max Y minus buffer
-            this.newY = maxY - buffer;
-            // if player below the min Y
-        } else if (this.newY < minY + buffer) {
-            // set to min Y plus buffer
-            this.newY = minY + buffer;
+        ArrayList <Wall> walls = floor.getWalls();
+
+        for (Wall w : walls) {
+            if (this.z - this.height + 20 > w.getMinZ() && this.z - this.height + 20 < w.getMaxZ()) {
+                checkLineCollisions(w.getPoint1(), w.getPoint2(), w.getNormal());
+            }
         }
     }
 
@@ -278,32 +261,51 @@ public class Camera {
 
     }
 
-    private void checkLineCollisions(Vertex3D v1, Vertex3D v2) {
+    private void checkLineCollisions(Vertex2D v1, Vertex2D v2, Normal n) {
 
         double x1 = v1.getX();
         double y1 = v1.getY();
         double x2 = v2.getX();
         double y2 = v2.getY();
+        float length = (float) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
 
         double theta;
-
         if (x1 == x2) {
-            theta = -Math.PI/2;
+            if (y1 <= y2) {
+                theta = Math.PI/2;
+            } else {
+                theta = -Math.PI/2;
+            }
         } else {
             theta = Math.atan2((y2-y1),(x2-x1));
         }
-
-        if (theta == -Math.PI/2 || theta == 0) {
+        if (theta == -Math.PI/2 || theta == Math.PI/2 || theta == 0 || theta == Math.PI || theta == -Math.PI) {
             double x = this.newX - x1;
             double y = this.newY - y1;
+
+            double normalY;
     
             this.newX = (float) (x*Math.cos(theta) + y*Math.sin(theta));
             this.newY = (float) (y*Math.cos(theta) - x*Math.sin(theta));
+
+            normalY = (float) (n.getY()*Math.cos(theta) - n.getX()*Math.sin(theta));
     
             x = this.newX;
             y = this.newY;
-            if (y < 15) {
-                y = 15;   
+
+            if (normalY > 0) {
+                if (this.newX > -20 && this.newX < length + 20) {
+                    if (y < 25 && y > 0) {
+                        y = 25; 
+                    }
+                }
+            } else if (normalY < 0) {
+                if (this.newX > -20 && this.newX < length + 20) {
+                    if (y > -25 && y < 0) {
+                        y = - 25;
+                    }
+                }
             }
     
             this.newX = (float) (x*Math.cos(-theta) + y*Math.sin(-theta));

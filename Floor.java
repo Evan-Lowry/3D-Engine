@@ -4,13 +4,34 @@ public class Floor {
 
     private Vertex3D[] vertexs = new Vertex3D[3];
     private float floorHeight;
-    private Edge[] edges = new Edge[3];
+    private ArrayList <Wall> walls = new ArrayList<>();
+    
+    private double maxX, minX, maxY, minY;
 
-    public Floor(Vertex3D v1, Vertex3D v2, Vertex3D v3) {
+    public Floor(Vertex3D v1, Vertex3D v2, Vertex3D v3, ArrayList <Wall> walls) {
         this.vertexs[0] = v1;
         this.vertexs[1] = v2;
         this.vertexs[2] = v3;
         this.floorHeight = this.vertexs[0].getZ();
+
+        // calculates the min and max values on each axis
+        this.maxX = Math.max(this.vertexs[0].getX(), Math.max(this.vertexs[1].getX(), this.vertexs[2].getX()));
+        this.minX = Math.min(this.vertexs[0].getX(), Math.min(this.vertexs[1].getX(), this.vertexs[2].getX()));
+
+        this.maxY = Math.max(this.vertexs[0].getY(), Math.max(this.vertexs[1].getY(), this.vertexs[2].getY()));
+        this.minY = Math.min(this.vertexs[0].getY(), Math.min(this.vertexs[1].getY(), this.vertexs[2].getY()));
+
+        for (Wall w : walls) {
+            if (isWallInside(w)) {
+                if (w.getMaxZ() > this.floorHeight) {
+                    this.walls.add(w);   
+                }
+            }
+        }
+    }
+
+    private boolean isWallInside(Wall w) {
+        return insideAABB(w.getPoint1().getX(), w.getPoint1().getY()) && insideAABB(w.getPoint2().getX(), w.getPoint2().getY());
     }
 
     public float getFloorHeight() {
@@ -18,33 +39,23 @@ public class Floor {
     }
 
     public boolean isPlayerInside() {
-        return insideAABB();
+        return insideAABB(GamePanel.c.getNewX(), GamePanel.c.getNewY());
     }
 
-    // checks if player is inside axis aligned bounding boxes (AABB)
-    private boolean insideAABB() {
+    // checks if point is inside axis aligned bounding boxes (AABB)
+    private boolean insideAABB(float x, float y) {
 
-        boolean insideX = false;
-        boolean insideY = false;
-
-        // calculates the min and max values on each axis
-        double maxX = Math.max(this.vertexs[0].getX(), Math.max(this.vertexs[1].getX(), this.vertexs[2].getX()));
-        double minX = Math.min(this.vertexs[0].getX(), Math.min(this.vertexs[1].getX(), this.vertexs[2].getX()));
-
-        double maxY = Math.max(this.vertexs[0].getY(), Math.max(this.vertexs[1].getY(), this.vertexs[2].getY()));
-        double minY = Math.min(this.vertexs[0].getY(), Math.min(this.vertexs[1].getY(), this.vertexs[2].getY()));
-
-        // checks if camera is inside bounding box on the x axis
-        if (GamePanel.c.getNewX() <= maxX && GamePanel.c.getNewX() >= minX) {
-            insideX = true;
+        // checks if point is inside bounding box on the x axis
+        if (x > this.maxX || x < this.minX) {
+            return false;
         }
 
-        // checks if camera is inside bounding box on the y axis
-        if (GamePanel.c.getNewY() <= maxY && GamePanel.c.getNewY() >= minY) {
-            insideY = true;
+        // checks if point is inside bounding box on the y axis
+        if (y > this.maxY || y < this.minY) {
+            return false;
         }
 
-        return insideX && insideY;
+        return true;
     }
 
     // checks if player passes the seperating axis therom (SAT)
@@ -85,15 +96,31 @@ public class Floor {
         return vertexs[index];
     }
 
-    public Edge[] getEdges() {
-        return this.edges;
-    }
-
     public Triangle getTriangle() {
         // creates placeholder normal
         Normal n = new Normal(0, 0, 1);
         // creates placeholder UV
         UV uv = new UV(0, 0);
         return new Triangle(vertexs[0], vertexs[1], vertexs[2], uv, uv, uv, n, n, n, 1);
+    }
+
+    public ArrayList <Wall> getWalls() {
+        return this.walls;
+    }
+
+    public double getMaxX() {
+        return this.maxX;
+    }
+
+    public double getMinX() {
+        return this.minX;
+    }
+
+    public double getMaxY() {
+        return this.maxY;
+    }
+
+    public double getMinY() {
+        return this.minY;
     }
 }
