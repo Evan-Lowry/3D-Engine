@@ -14,10 +14,6 @@ public class Triangle {
     private UV uv1;
     private UV uv2;
     private UV uv3;
-    private UV newUV1;
-    private UV newUV2;
-    private UV newUV3;
-    private UV newUV4;
     private Normal triangleNormal;
     private Vertex2D p1;
     private Vertex2D p2;
@@ -78,52 +74,65 @@ public class Triangle {
     }
 
     private void checkClipping() {
-        float nearPlaneX = 15;
+        // list of vertices behind the clipping plane
+        int behindCount = 0;
+        Vertex3D[] behind = new Vertex3D[3];
+        // list of vertices in front of the clipping plane
+        int inFrontCount = 0;
+        Vertex3D[] inFront = new Vertex3D[3];
 
-        List<Vertex3D> behind = new ArrayList<>();
-        List<Vertex3D> inFront = new ArrayList<>();
+        // classify the vertices into front and back of the clipping plane
+        if (this.newV1.getNewX() <= GamePanel.NEAR_PLANE_X) behind[behindCount++] = this.newV1; else inFront[inFrontCount++] = this.newV1;
+        if (this.newV2.getNewX() <= GamePanel.NEAR_PLANE_X) behind[behindCount++] = this.newV2; else inFront[inFrontCount++] = this.newV2;
+        if (this.newV3.getNewX() <= GamePanel.NEAR_PLANE_X) behind[behindCount++] = this.newV3; else inFront[inFrontCount++] = this.newV3;
 
-        // classify the vertices
-        if (this.newV1.getNewX() <= nearPlaneX) behind.add(this.newV1); else inFront.add(this.newV1);
-        if (this.newV2.getNewX() <= nearPlaneX) behind.add(this.newV2); else inFront.add(this.newV2);
-        if (this.newV3.getNewX() <= nearPlaneX) behind.add(this.newV3); else inFront.add(this.newV3);
+        // handle cases
+        if (behindCount == 0) {
+            // all vertices in front, draw the triangle as-is
+        } else if (behindCount == 1) {
+            // one vertex behind, clip into two triangles
+            // interpolate the vertices to the clipping plane to create a quad
+            Vertex3D P1 = interpolate(behind[0], inFront[0], GamePanel.NEAR_PLANE_X);
+            Vertex3D P2 = interpolate(behind[0], inFront[1], GamePanel.NEAR_PLANE_X);
 
-        // Handle cases
-        if (behind.size() == 0) {
-            // All vertices in front, draw the triangle as-is
-        } else if (behind.size() == 1) {
-            // One vertex behind, clip into two triangles
-            Vertex3D P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
-            Vertex3D P2 = interpolate(behind.get(0), inFront.get(1), nearPlaneX);
-
-            this.newV1.setNewCords(inFront.get(0).getNewX(), inFront.get(0).getNewY(), inFront.get(0).getNewZ(), inFront.get(0).getUV());
-            this.newV2.setNewCords(inFront.get(1).getNewX(), inFront.get(1).getNewY(), inFront.get(1).getNewZ(), inFront.get(1).getUV());
+            this.newV1.setNewCords(inFront[0].getNewX(), inFront[0].getNewY(), inFront[0].getNewZ(), inFront[0].getUV());
+            this.newV2.setNewCords(inFront[1].getNewX(), inFront[1].getNewY(), inFront[1].getNewZ(), inFront[1].getUV());
             this.newV3.setNewCords(P2.getX(), P2.getY(), P2.getZ(), P2.getUV());
             this.newV4.setNewCords(P1.getX(), P1.getY(), P1.getZ(), P1.getUV());
 
             this.numVertices = 4;
 
-        } else if (behind.size() == 2) {
-            // Two vertices behind, clip into one triangle
-            Vertex3D P1 = interpolate(behind.get(0), inFront.get(0), nearPlaneX);
-            Vertex3D P2 = interpolate(behind.get(1), inFront.get(0), nearPlaneX);
+        } else if (behindCount == 2) {
+            // two vertices behind the clipping plane
+            // interpolate the vertices to the clipping plane to create a quad
 
-            this.newV1.setNewCords(inFront.get(0).getNewX(), inFront.get(0).getNewY(), inFront.get(0).getNewZ(), inFront.get(0).getUV());
+            // create
+            Vertex3D P1 = interpolate(behind[0], inFront[0], GamePanel.NEAR_PLANE_X);
+            Vertex3D P2 = interpolate(behind[1], inFront[0], GamePanel.NEAR_PLANE_X);
+
+            this.newV1.setNewCords(inFront[0].getNewX(), inFront[0].getNewY(), inFront[0].getNewZ(), inFront[0].getUV());
             this.newV2.setNewCords(P2.getX(), P2.getY(), P2.getZ(), P2.getUV());
             this.newV3.setNewCords(P1.getX(), P1.getY(), P1.getZ(), P1.getUV());
             
         } else {
-            // All vertices behind, discard triangle
+            // all vertices behind the clipping plane
+            // discard triangle
             this.isValid = false;
         }
     }
 
+    // finds the intersection point between a vertex and the clipping plane
     private Vertex3D interpolate(Vertex3D from, Vertex3D to, float nearPlaneX) {
+
+        // calculate the interpolation factor
         float t = (nearPlaneX - from.getNewX()) / (to.getNewX() - from.getNewX());
+        // calculate the new x y z coordinates
         float newY = from.getNewY() + t * (to.getNewY() - from.getNewY());
         float newZ = from.getNewZ() + t * (to.getNewZ() - from.getNewZ());
+        // calculate the new u v coordinates
         float newU = from.getUV().getU() + t * (to.getUV().getU() - from.getUV().getU());
         float newV = from.getUV().getV() + t * (to.getUV().getV() - from.getUV().getV());
+
         return new Vertex3D(nearPlaneX, newY, newZ, newU, newV);
     }
 
