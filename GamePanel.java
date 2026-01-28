@@ -20,6 +20,8 @@ public class GamePanel extends JPanel implements Runnable{
     // sets the resolution variables in accordance with the fullscreen variables
     static int windowHeight = (int)(fullscreen*1080);
     static int windowWidth = (int)(fullscreen*1920);
+    // sets the near plane x coordinate
+    static final float NEAR_PLANE_X = 15;
     // calculates the coordinates of center of the window
     static int centerY = windowHeight/2;
     static int centerX = windowWidth/2;
@@ -172,4 +174,5 @@ public class GamePanel extends JPanel implements Runnable{
         // ends program
         System.exit(0);
     }
+
 }
